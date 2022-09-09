@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">VidMe</string>
+    <string name="time_remaining">Time remaining: %ss</string>
+</resources>

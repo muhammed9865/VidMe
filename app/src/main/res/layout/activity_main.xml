@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1B1A1A"
+    android:padding="10dp"
+    tools:context=".MainActivity">
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:indeterminate="false"
+        android:max="100"
+
+        android:text="Hello World!"
+        android:textColor="@color/white"
+        app:trackThickness="50dp"
+        app:indicatorColor="#00FF00"
+
+        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:trackColor="#40FFFFFF"
+        app:trackCornerRadius="5dp" />
+
+    <TextView
+        android:id="@+id/time_remaining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+
+        android:textColor="#00FF00"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progress" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Video URL"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeColor="#00FF00"
+        app:boxStrokeWidth="2dp"
+        app:hintEnabled="true"
+        app:hintTextColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/download"
+        app:layout_constraintEnd_toEndOf="@+id/download"
+        app:layout_constraintStart_toStartOf="@+id/download"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/url_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/download"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:padding="15dp"
+        android:text="Download"
+        app:backgroundTint="@color/primary_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/starting_download_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="13sp"
+        android:text="Starting the download.."
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@+id/progress"
+        app:layout_constraintTop_toBottomOf="@+id/progress" />
+
+    <ProgressBar
+        android:id="@+id/starting_download_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/primary_color"
+        app:layout_constraintBottom_toBottomOf="@+id/starting_download_tv"
+        app:layout_constraintStart_toEndOf="@+id/starting_download_tv"
+        app:layout_constraintTop_toTopOf="@+id/starting_download_tv" />
+
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/starting_download"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:constraint_referenced_ids="starting_download_pb, starting_download_tv"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
