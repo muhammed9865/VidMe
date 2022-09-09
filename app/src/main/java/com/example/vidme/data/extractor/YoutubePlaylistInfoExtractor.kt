@@ -1,7 +1,7 @@
 package com.example.vidme.data.extractor
 
 import com.example.vidme.data.extractor.video.YoutubeVideoInfoExtractor
-import com.example.vidme.data.pojo.info.PlaylistInfo
+import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import javax.inject.Inject
 
 class YoutubePlaylistInfoExtractor  @Inject constructor(
@@ -11,8 +11,8 @@ class YoutubePlaylistInfoExtractor  @Inject constructor(
     /*
         @param linesMap: key: index of line, value: line
      */
-    fun extract(linesMap: Map<Int, String>): PlaylistInfo {
-        val playlistInfo = PlaylistInfo()
+    fun extract(linesMap: Map<Int, String>): YoutubePlaylistInfo {
+        val playlistInfo = YoutubePlaylistInfo()
         val lines = chunkMap(linesMap)
 
         lines.forEach {
