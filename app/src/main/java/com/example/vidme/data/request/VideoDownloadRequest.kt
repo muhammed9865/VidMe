@@ -6,7 +6,7 @@ class VideoDownloadRequest : DownloadRequest {
 
     override fun getOptions(): Map<String, String?> {
         return mapOf(
-            "-o" to DataConstants.getStorageUri().toString(),
+            "-o" to DataConstants.getStorageUri().toString() + "/%(title)s.%(ext)s",
             "--no-playlist" to null,
             "-f" to "best"
         )

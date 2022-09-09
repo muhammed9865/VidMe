@@ -5,6 +5,6 @@ import android.os.Environment
 import java.io.File
 
 object DataConstants {
-    fun getStorageFile(): File = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-    fun getStorageUri() : Uri = Uri.parse(getStorageFile().absolutePath + "VidMe")
+    fun getStorageFile(): File = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "VidMe")
+    fun getStorageUri() : Uri = Uri.parse(getStorageFile().absolutePath)
 }
