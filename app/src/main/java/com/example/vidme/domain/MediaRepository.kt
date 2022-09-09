@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import java.io.File
 import java.util.concurrent.Executor
 
-interface VideosRepository {
+interface MediaRepository {
 
     suspend fun getVideoInfo(url: String, executor: Executor) : Flow<VideoInfo>
 
