@@ -6,7 +6,7 @@ interface DownloadRequest {
 
     fun getOptions(): Map<String, String?>
 
-    fun getRequest(url: String) : YoutubeDLRequest {
+    fun getRequest(url: String, audioOnly: Boolean) : YoutubeDLRequest {
 
         val request = YoutubeDLRequest(url)
         getOptions().onEach { entry ->
@@ -15,6 +15,10 @@ interface DownloadRequest {
             } else {
                 request.addOption(entry.key)
             }
+        }
+
+        if (audioOnly) {
+            request.addOption("-f", "bestaudio")
         }
 
         return request
