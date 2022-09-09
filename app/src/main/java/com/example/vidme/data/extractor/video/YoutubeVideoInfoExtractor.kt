@@ -8,9 +8,9 @@ class YoutubeVideoInfoExtractor : VideoInfoExtractor {
     override fun extract(lines: List<String>): VideoInfo {
         var info = VideoInfo()
         lines.forEach { line ->
-            info = if (line.contains("https://i.ytimg")) {
+            info = if (line.contains(THUMBNAIL_SLICE)) {
                 info.copy(thumbnail = line)
-            } else if (line.contains("https://rr")) {
+            } else if (line.contains(REMOTE_URL_SLICE)) {
                 info.copy(remoteUrl = line)
             } else if (line.length == VIDEO_ID_LENGTH) {
                 info.copy(id = line)
@@ -24,5 +24,7 @@ class YoutubeVideoInfoExtractor : VideoInfoExtractor {
 
     companion object {
         private const val VIDEO_ID_LENGTH = 11
+        private const val THUMBNAIL_SLICE = "https://i.ytimg"
+        private const val REMOTE_URL_SLICE = "https://rr"
     }
 }
