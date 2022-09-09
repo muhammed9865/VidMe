@@ -9,7 +9,7 @@ data class VideoInfo(
     val remoteUrl: String = "",
     val thumbnail: String = "",
     var storageUrl: String? = null
-) {
+) : Info {
 
     fun isDownloaded() = storageUrl != null
 

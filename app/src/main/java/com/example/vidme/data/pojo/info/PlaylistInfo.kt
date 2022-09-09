@@ -4,7 +4,7 @@ data class PlaylistInfo(
     var count: Int = -1,
 
     var videos: List<VideoInfo> = emptyList(),
-) {
+) : Info {
 
     fun addVideo(videoInfo: VideoInfo) {
         val newList = videos.toMutableList()
