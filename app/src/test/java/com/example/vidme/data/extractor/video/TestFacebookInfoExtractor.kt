@@ -29,25 +29,25 @@ class TestFacebookInfoExtractor {
 
     @Test
     fun `list of string returns VideoInfo with title`() {
-        val result = extractor.extract(lines) as VideoInfo
+        val result = extractor.extract(lines[2]!!, lines) as VideoInfo
         assertThat(result.title).isEqualTo(lines[0])
     }
 
     @Test
     fun `list of string returns VideoInfo with id`() {
-        val result = extractor.extract(lines) as VideoInfo
+        val result = extractor.extract(lines[2]!!, lines) as VideoInfo
         assertThat(result.id).isEqualTo(lines[1])
     }
 
     @Test
     fun `list of string returns VideoInfo with remoteUrl`() {
-        val result = extractor.extract(lines) as VideoInfo
+        val result = extractor.extract(lines[2]!!, lines) as VideoInfo
         assertThat(result.remoteUrl).isEqualTo(lines[2])
     }
 
     @Test
     fun `list of string returns VideoInfo with thumbnail`() {
-        val result = extractor.extract(lines) as VideoInfo
+        val result = extractor.extract(lines[2]!!, lines) as VideoInfo
         assertThat(result.thumbnail).isEqualTo(lines[3])
     }
 }
