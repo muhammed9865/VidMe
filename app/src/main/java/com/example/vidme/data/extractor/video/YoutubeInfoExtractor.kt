@@ -1,13 +1,17 @@
 package com.example.vidme.data.extractor.video
 
+import com.example.vidme.data.extractor.InfoExtractor
+import com.example.vidme.data.pojo.info.Info
 import com.example.vidme.data.pojo.info.VideoInfo
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class YoutubeVideoInfoExtractor @Inject constructor(): VideoInfoExtractor {
+@Singleton
+class YoutubeInfoExtractor @Inject constructor(): InfoExtractor {
 
-    override fun extract(lines: List<String>): VideoInfo {
+    override fun extract(lines: Map<Int, String>): Info {
         var info = VideoInfo()
-        lines.forEach { line ->
+        lines.values.forEach { line ->
             info = if (line.contains(THUMBNAIL_SLICE)) {
                 info.copy(thumbnail = line)
             } else if (line.contains(REMOTE_URL_SLICE)) {

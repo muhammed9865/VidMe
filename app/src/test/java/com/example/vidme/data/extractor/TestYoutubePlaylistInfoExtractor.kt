@@ -1,11 +1,12 @@
 package com.example.vidme.data.extractor
 
-import com.example.vidme.data.extractor.video.YoutubeVideoInfoExtractor
+import com.example.vidme.data.extractor.video.YoutubeInfoExtractor
+import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 
-class TestYoutubeYoutubePlaylistInfoExtractor {
+class TestYoutubePlaylistInfoExtractor {
 
     // lines to be repeated in the map
     private val _lines = listOf(
@@ -22,7 +23,7 @@ class TestYoutubeYoutubePlaylistInfoExtractor {
 
     @Before
     fun setUp() {
-        val videoExtractor = YoutubeVideoInfoExtractor()
+        val videoExtractor = YoutubeInfoExtractor()
         extractor = YoutubePlaylistInfoExtractor(videoExtractor)
 
         lines = mutableMapOf<Int, String>().apply {
@@ -39,19 +40,19 @@ class TestYoutubeYoutubePlaylistInfoExtractor {
 
     @Test
     fun `extractor returns playlist info with count`() {
-        val result = extractor.extract(lines)
+        val result = extractor.extract(lines) as YoutubePlaylistInfo
         assertThat(result.count).isEqualTo(3)
     }
 
     @Test
     fun `extractor returns playlist info with videos not empty`() {
-        val result = extractor.extract(lines)
+        val result = extractor.extract(lines) as YoutubePlaylistInfo
         assertThat(result.videos).isNotEmpty()
     }
 
     @Test
     fun `extractor returns playlist info with videos has correct size expected 3`() {
-        val result = extractor.extract(lines)
+        val result = extractor.extract(lines) as YoutubePlaylistInfo
         assertThat(result.videos).hasSize(3)
     }
 }

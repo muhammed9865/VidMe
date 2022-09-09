@@ -3,11 +3,12 @@ package com.example.vidme.data.extractor
 import com.example.vidme.data.pojo.info.DownloadInfo
 import javax.inject.Inject
 
-class DownloadInfoExtractor @Inject constructor() {
-    fun extract(videoId: String, progress: Float, timeRemaining: Float, lines: List<String>): DownloadInfo {
+class DownloadInfoExtractor @Inject constructor() : InfoExtractor {
+
+    fun extract(videoId: String, progress: Float, timeRemaining: Long, lines: Map<Int, String>): DownloadInfo {
         var info = DownloadInfo()
 
-        lines.first { line -> line.contains("Destination") }.let {
+        lines.values.first { line -> line.contains("Destination") }.let {
             info = info.copy(storageLocation = getStorageLocation(it))
         }
 
