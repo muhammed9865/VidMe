@@ -8,8 +8,8 @@ import javax.inject.Inject
 class FacebookInfoExtractor @Inject constructor(): InfoExtractor {
 
 
-    override fun extract(lines: Map<Int, String>): Info {
-        var info = VideoInfo()
+    override fun extract(originalUrl: String, lines: Map<Int, String>): Info {
+        var info = VideoInfo(originalUrl = originalUrl)
 
         lines.values.forEach { line ->
             info = if (line.contains(THUMBNAIL_SLICE)) {

@@ -13,15 +13,14 @@ class YoutubePlaylistInfoExtractor  @Inject constructor(
     /*
         @param linesMap: key: index of line, value: line
      */
-    override fun extract(linesMap: Map<Int, String>): Info {
-        val playlistInfo = YoutubePlaylistInfo()
+    override fun extract(originalUrl: String, linesMap: Map<Int, String>): Info {
+        val playlistInfo = YoutubePlaylistInfo(originalUrl = originalUrl)
         val lines = chunkMap(linesMap)
 
         lines.forEach {
-            val videoInfo = youtubeVideoInfoExtractor.extract(it) as VideoInfo
+            val videoInfo = youtubeVideoInfoExtractor.extract(originalUrl, it) as VideoInfo
             playlistInfo.addVideo(videoInfo)
         }
-
 
         return playlistInfo
     }

@@ -5,7 +5,7 @@ import com.example.vidme.data.pojo.info.VideoInfo
 
 interface InfoExtractor {
 
-    fun extract(lines: Map<Int, String>) : Info {
+    fun extract(originalUrl: String = "", lines: Map<Int, String>): Info {
         return VideoInfo()
     }
 

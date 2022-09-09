@@ -5,19 +5,27 @@ import javax.inject.Inject
 
 class DownloadInfoExtractor @Inject constructor() : InfoExtractor {
 
-    fun extract(videoId: String, progress: Float, timeRemaining: Long, lines: Map<Int, String>): DownloadInfo {
+    fun extract(progress: Float, timeRemaining: Long, lines: Map<Int, String>): DownloadInfo {
         var info = DownloadInfo()
 
         lines.values.first { line -> line.contains("Destination") }.let {
             info = info.copy(storageLocation = getStorageLocation(it))
         }
 
+        lines.values.last { line -> line.contains("Downloading video") }.let {
+            info = info.copy(currentVideoIndex = getCurrentVideoIndexFromLine(it))
+        }
+
         info.progress = progress
         info.timeRemaining = timeRemaining
-        info = info.copy(videoId = videoId)
+
 
         return info
     }
 
     private fun getStorageLocation(line: String) = line.substringAfter("Destination: ").trim()
+    private fun getCurrentVideoIndexFromLine(line: String): Int {
+        val subString = line.substringAfter("Downloading video ")
+        return subString[0].digitToInt()
+    }
 }
