@@ -8,6 +8,8 @@ data class VideoInfo(
     val title: String = "",
     val remoteUrl: String = "",
     val thumbnail: String = "",
+    var isVideo: Boolean = false,
+    var isAudio: Boolean = false,
     var storageUrl: String? = null
 ) : Info {
 
