@@ -1,6 +1,8 @@
 package com.example.vidme.data.request
 
 import com.example.vidme.data.DataConstants
+import com.example.vidme.data.extractor.DownloadInfoExtractor
+import com.example.vidme.data.extractor.InfoExtractor
 
 class VideoDownloadRequest : DownloadRequest {
 
@@ -11,6 +13,10 @@ class VideoDownloadRequest : DownloadRequest {
             "-f" to "best"
         )
 
+    }
+
+    override fun getExtractor(): InfoExtractor {
+        return DownloadInfoExtractor()
     }
 
 }
