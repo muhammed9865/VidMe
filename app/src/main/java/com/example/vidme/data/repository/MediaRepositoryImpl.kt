@@ -1,7 +1,7 @@
 package com.example.vidme.data.repository
 
 import com.example.vidme.data.pojo.info.DownloadInfo
-import com.example.vidme.data.pojo.info.PlaylistInfo
+import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import com.example.vidme.data.pojo.info.VideoInfo
 import com.example.vidme.domain.MediaRepository
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +14,7 @@ class MediaRepositoryImpl @Inject constructor(): MediaRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getPlaylistInfo(url: String, executor: Executor): Flow<PlaylistInfo> {
+    override suspend fun getPlaylistInfo(url: String, executor: Executor): Flow<YoutubePlaylistInfo> {
         TODO("Not yet implemented")
     }
 
