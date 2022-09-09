@@ -9,7 +9,7 @@ import javax.inject.Singleton
 @Singleton
 class YoutubeVideoInfoExtractor @Inject constructor() : InfoExtractor {
 
-    fun extract(originalUrl: Map<Int, String>, lines: Map<Int, String>): Info {
+    override fun extract(originalUrl: String, lines: Map<Int, String>): Info {
         var info = VideoInfo(originalUrl = originalUrl)
         lines.values.forEach { line ->
             info = if (line.contains(THUMBNAIL_SLICE)) {

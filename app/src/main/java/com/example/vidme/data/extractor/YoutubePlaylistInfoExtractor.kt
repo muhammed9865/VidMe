@@ -5,19 +5,23 @@ import com.example.vidme.data.pojo.info.Info
 import com.example.vidme.data.pojo.info.VideoInfo
 import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class YoutubePlaylistInfoExtractor  @Inject constructor(
-    private val youtubeVideoInfoExtractor: YoutubeVideoInfoExtractor,
+@Singleton
+open class YoutubePlaylistInfoExtractor @Inject constructor(
 ) : InfoExtractor {
+
+    @Inject
+    protected lateinit var youtubeVideoInfoExtractor: YoutubeVideoInfoExtractor
 
     /*
         @param linesMap: key: index of line, value: line
      */
-    override fun extract(originalUrl: String, linesMap: Map<Int, String>): Info {
+    override fun extract(originalUrl: String, lines: Map<Int, String>): Info {
         val playlistInfo = YoutubePlaylistInfo(originalUrl = originalUrl)
-        val lines = chunkMap(linesMap)
+        val chunkedLines = chunkMap(lines)
 
-        lines.forEach {
+        chunkedLines.forEach {
             val videoInfo = youtubeVideoInfoExtractor.extract(originalUrl, it) as VideoInfo
             playlistInfo.addVideo(videoInfo)
         }
