@@ -1,11 +1,12 @@
 package com.example.vidme.data.pojo.info
 
 data class PlaylistInfo(
-    val count: Int = -1,
+    var count: Int = -1,
+
     var videos: List<VideoInfo>,
 ) {
-    fun setCount(): PlaylistInfo {
-        return this.copy(count = videos.size)
+    fun setCount() {
+        count = videos.size
     }
 
     fun addVideo(videoInfo: VideoInfo) {
