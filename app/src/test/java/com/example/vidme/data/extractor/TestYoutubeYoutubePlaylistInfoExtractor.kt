@@ -5,8 +5,9 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 
-class TestYoutubePlaylistInfoExtractor {
+class TestYoutubeYoutubePlaylistInfoExtractor {
 
+    // lines to be repeated in the map
     private val _lines = listOf(
         "نشيد أخي أنت حر (بدون ايقاع) - النسخة الأصلية",
         "jqHZD9EgO5s",
@@ -45,7 +46,6 @@ class TestYoutubePlaylistInfoExtractor {
     @Test
     fun `extractor returns playlist info with videos not empty`() {
         val result = extractor.extract(lines)
-        result.videos.forEach { println(it.toString()) }
         assertThat(result.videos).isNotEmpty()
     }
 
