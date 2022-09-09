@@ -2,8 +2,8 @@ package com.example.vidme.data.pojo.info
 
 data class YoutubePlaylistInfo(
     var count: Int = -1,
-
     var videos: List<VideoInfo> = emptyList(),
+    val originalUrl: String = "",
 ) : Info {
 
     fun addVideo(videoInfo: VideoInfo) {
