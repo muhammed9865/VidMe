@@ -5,7 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 
-class TestYoutubeInfoExtractor {
+class TestYoutubeVideoInfoExtractor {
 
     private val lines = mapOf(
         0 to "نشيد أخي أنت حر (بدون ايقاع) - النسخة الأصلية",
@@ -18,28 +18,28 @@ class TestYoutubeInfoExtractor {
 
     @Test
     fun `list of string returns VideoInfo with title`() {
-        val extractor = YoutubeInfoExtractor()
+        val extractor = YoutubeVideoInfoExtractor()
         val result = extractor.extract(lines[2]!!, lines) as VideoInfo
         assertThat(result.title).isEqualTo(lines[0])
     }
 
     @Test
     fun `list of string returns VideoInfo with id`() {
-        val extractor = YoutubeInfoExtractor()
+        val extractor = YoutubeVideoInfoExtractor()
         val result = extractor.extract(lines[2]!!, lines) as VideoInfo
         assertThat(result.id).isEqualTo(lines[1])
     }
 
     @Test
     fun `list of string returns VideoInfo with remoteUrl`() {
-        val extractor = YoutubeInfoExtractor()
+        val extractor = YoutubeVideoInfoExtractor()
         val result = extractor.extract(lines[2]!!, lines) as VideoInfo
         assertThat(result.remoteUrl).isEqualTo(lines[2])
     }
 
     @Test
     fun `list of string returns VideoInfo with thumbnail`() {
-        val extractor = YoutubeInfoExtractor()
+        val extractor = YoutubeVideoInfoExtractor()
         val result = extractor.extract(lines[2]!!, lines) as VideoInfo
         assertThat(result.thumbnail).isEqualTo(lines[3])
     }

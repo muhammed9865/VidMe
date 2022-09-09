@@ -1,6 +1,6 @@
 package com.example.vidme.data.extractor
 
-import com.example.vidme.data.extractor.video.YoutubeInfoExtractor
+import com.example.vidme.data.extractor.video.YoutubeVideoInfoExtractor
 import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -22,7 +22,7 @@ class TestYoutubePlaylistInfoExtractor {
 
     @Before
     fun setUp() {
-        val videoExtractor = YoutubeInfoExtractor()
+        val videoExtractor = YoutubeVideoInfoExtractor()
         extractor = YoutubePlaylistInfoExtractor(videoExtractor)
 
         lines = mutableMapOf<Int, String>().apply {

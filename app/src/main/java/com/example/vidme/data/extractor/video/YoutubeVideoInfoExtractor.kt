@@ -7,7 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class YoutubeInfoExtractor @Inject constructor(): InfoExtractor {
+class YoutubeVideoInfoExtractor @Inject constructor() : InfoExtractor {
 
     fun extract(originalUrl: Map<Int, String>, lines: Map<Int, String>): Info {
         var info = VideoInfo(originalUrl = originalUrl)

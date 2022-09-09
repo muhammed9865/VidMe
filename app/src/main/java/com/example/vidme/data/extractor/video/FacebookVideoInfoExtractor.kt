@@ -5,7 +5,7 @@ import com.example.vidme.data.pojo.info.Info
 import com.example.vidme.data.pojo.info.VideoInfo
 import javax.inject.Inject
 
-class FacebookInfoExtractor @Inject constructor(): InfoExtractor {
+class FacebookVideoInfoExtractor @Inject constructor() : InfoExtractor {
 
 
     override fun extract(originalUrl: String, lines: Map<Int, String>): Info {

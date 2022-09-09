@@ -1,13 +1,13 @@
 package com.example.vidme.data.extractor
 
-import com.example.vidme.data.extractor.video.YoutubeInfoExtractor
+import com.example.vidme.data.extractor.video.YoutubeVideoInfoExtractor
 import com.example.vidme.data.pojo.info.Info
 import com.example.vidme.data.pojo.info.VideoInfo
 import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import javax.inject.Inject
 
 class YoutubePlaylistInfoExtractor  @Inject constructor(
-    private val youtubeVideoInfoExtractor: YoutubeInfoExtractor
+    private val youtubeVideoInfoExtractor: YoutubeVideoInfoExtractor,
 ) : InfoExtractor {
 
     /*

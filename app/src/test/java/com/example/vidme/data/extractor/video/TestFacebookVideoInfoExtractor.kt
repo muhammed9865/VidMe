@@ -6,7 +6,7 @@ import org.junit.Before
 import org.junit.Test
 
 
-class TestFacebookInfoExtractor {
+class TestFacebookVideoInfoExtractor {
 
 
     private val lines = mapOf(
@@ -17,11 +17,11 @@ class TestFacebookInfoExtractor {
 
     )
 
-    lateinit var extractor: FacebookInfoExtractor
+    lateinit var extractor: FacebookVideoInfoExtractor
 
     @Before
     fun setUp() {
-        extractor = FacebookInfoExtractor()
+        extractor = FacebookVideoInfoExtractor()
     }
 
 
