@@ -4,7 +4,8 @@ import com.example.vidme.data.DataConstants
 import com.example.vidme.data.extractor.DownloadInfoExtractor
 import com.example.vidme.data.extractor.InfoExtractor
 
-class VideoDownloadRequest : DownloadRequest {
+class VideoDownloadRequest(url: String, audioOnly: Boolean = false) :
+    DownloadRequest(url, audioOnly) {
 
     override fun getOptions(): Map<String, String?> {
         return mapOf(

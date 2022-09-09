@@ -3,11 +3,11 @@ package com.example.vidme.data.request
 import com.example.vidme.data.extractor.InfoExtractor
 import com.yausername.youtubedl_android.YoutubeDLRequest
 
-interface DownloadRequest {
+abstract class DownloadRequest(val url: String, private val audioOnly: Boolean = false) {
 
-    fun getOptions(): Map<String, String?>
+    abstract fun getOptions(): Map<String, String?>
 
-    fun getRequest(url: String, audioOnly: Boolean) : YoutubeDLRequest {
+    fun getRequest(): YoutubeDLRequest {
         val request = YoutubeDLRequest(url)
         getOptions().onEach { entry ->
             if (entry.value != null) {
@@ -24,5 +24,5 @@ interface DownloadRequest {
         return request
     }
 
-    fun getExtractor() : InfoExtractor
+    abstract fun getExtractor(): InfoExtractor
 }

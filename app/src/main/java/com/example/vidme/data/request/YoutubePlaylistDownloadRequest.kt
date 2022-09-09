@@ -6,7 +6,8 @@ import com.example.vidme.data.extractor.YoutubePlaylistInfoExtractor
 import com.example.vidme.data.extractor.video.YoutubeInfoExtractor
 import javax.inject.Inject
 
-open class YoutubePlaylistDownloadRequest @Inject constructor(): DownloadRequest {
+open class YoutubePlaylistDownloadRequest constructor(url: String, audioOnly: Boolean = false) :
+    DownloadRequest(url, audioOnly) {
 
     @Inject
     protected lateinit var videoExtractor: YoutubeInfoExtractor
