@@ -1,13 +1,16 @@
 package com.example.vidme.data.request
 
 import com.example.vidme.data.extractor.InfoExtractor
-import com.example.vidme.data.extractor.video.FacebookVideoInfoExtractor
-import com.example.vidme.data.extractor.video.YoutubeVideoInfoExtractor
+import com.example.vidme.data.extractor.YoutubePlaylistInfoExtractor
+import javax.inject.Inject
 
-class VideoInfoRequest(url: String) : DownloadRequest(url) {
+open class YoutubePlaylistInfoRequest @Inject constructor(url: String) : DownloadRequest(url) {
+
+    @Inject
+    protected lateinit var extractor: YoutubePlaylistInfoExtractor
+
     override fun getOptions(): Map<String, String?> {
         return mapOf(
-            "--no-playlist" to null,
             "--get-title" to null,
             "--get-thumbnail" to null,
             "--get-url" to null,
@@ -17,9 +20,6 @@ class VideoInfoRequest(url: String) : DownloadRequest(url) {
     }
 
     override fun getExtractor(): InfoExtractor {
-        return if (url.contains("youtube"))
-            YoutubeVideoInfoExtractor()
-        else
-            FacebookVideoInfoExtractor()
+        return extractor
     }
 }

@@ -3,9 +3,13 @@ package com.example.vidme.data.request
 import com.example.vidme.data.DataConstants
 import com.example.vidme.data.extractor.DownloadInfoExtractor
 import com.example.vidme.data.extractor.InfoExtractor
+import javax.inject.Inject
 
-class VideoDownloadRequest(url: String, audioOnly: Boolean = false) :
+open class VideoDownloadRequest @Inject constructor(url: String, audioOnly: Boolean = false) :
     DownloadRequest(url, audioOnly) {
+
+    @Inject
+    protected lateinit var extractor: DownloadInfoExtractor
 
     override fun getOptions(): Map<String, String?> {
         return mapOf(
@@ -17,7 +21,7 @@ class VideoDownloadRequest(url: String, audioOnly: Boolean = false) :
     }
 
     override fun getExtractor(): InfoExtractor {
-        return DownloadInfoExtractor()
+        return extractor
     }
 
 }
