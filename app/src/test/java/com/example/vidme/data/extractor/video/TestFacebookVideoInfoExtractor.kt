@@ -1,6 +1,5 @@
 package com.example.vidme.data.extractor.video
 
-import com.example.vidme.data.extractor.VideoInfoExtractor
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test

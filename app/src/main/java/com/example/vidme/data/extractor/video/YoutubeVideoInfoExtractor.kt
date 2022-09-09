@@ -1,9 +1,9 @@
 package com.example.vidme.data.extractor.video
 
-import com.example.vidme.data.extractor.VideoInfoExtractor
 import com.example.vidme.data.pojo.info.VideoInfo
+import javax.inject.Inject
 
-class YoutubeVideoInfoExtractor : VideoInfoExtractor {
+class YoutubeVideoInfoExtractor @Inject constructor(): VideoInfoExtractor {
 
     override fun extract(lines: List<String>): VideoInfo {
         var info = VideoInfo()

@@ -1,4 +1,4 @@
-package com.example.vidme.data.extractor
+package com.example.vidme.data.extractor.video
 
 import com.example.vidme.data.pojo.info.VideoInfo
 
