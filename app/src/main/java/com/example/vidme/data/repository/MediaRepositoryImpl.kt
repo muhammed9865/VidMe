@@ -1,9 +1,9 @@
 package com.example.vidme.data.repository
 
 import com.example.vidme.data.pojo.info.DownloadInfo
-import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import com.example.vidme.data.pojo.info.VideoInfo
-import com.example.vidme.domain.MediaRepository
+import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
+import com.example.vidme.domain.repository.MediaRepository
 import kotlinx.coroutines.flow.Flow
 import java.io.File
 import java.util.concurrent.Executor
