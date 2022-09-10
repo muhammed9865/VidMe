@@ -26,6 +26,7 @@ class DownloadInfoExtractor @Inject constructor() : InfoExtractor {
     private fun getStorageLocation(line: String) = line.substringAfter("Destination: ").trim()
     private fun getCurrentVideoIndexFromLine(line: String): Int {
         val subString = line.substringAfter("Downloading video ")
-        return subString[0].digitToInt()
+        // subtracting 1 because line pattern is not zero-indexed ex: first is "1 of 3"
+        return subString[0].digitToInt() - 1
     }
 }

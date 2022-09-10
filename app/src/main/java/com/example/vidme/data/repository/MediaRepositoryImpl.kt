@@ -11,10 +11,6 @@ import com.example.vidme.data.request.YoutubePlaylistDownloadRequest
 import com.example.vidme.data.request.YoutubePlaylistInfoRequest
 import com.example.vidme.domain.DataState
 import com.example.vidme.domain.repository.MediaRepository
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import java.io.File
 import java.util.concurrent.Executor
 import javax.inject.Inject
@@ -25,7 +21,11 @@ class MediaRepositoryImpl @Inject constructor(
 ) :
     MediaRepository {
 
-    override suspend fun getVideoInfo(url: String, executor: Executor): Flow<DataState<VideoInfo>> {
+    override suspend fun getVideoInfo(
+        url: String,
+        executor: Executor,
+        onVideoInfo: (DataState<VideoInfo>) -> Unit,
+    ) {
         val request = VideoInfoRequest(url)
         // Before returning the flow, cache the result and return the result from database
         val result = processor.process<VideoInfo>(executor, request)
@@ -34,19 +34,17 @@ class MediaRepositoryImpl @Inject constructor(
                 val data = res.data!!
                 cache.saveVideoInfo(data)
             }
+            onVideoInfo(res)
         }
-        return result
     }
 
     override suspend fun getYoutubePlaylistInfo(
         url: String,
         executor: Executor,
-    ): Flow<DataState<YoutubePlaylistInfo>> {
+        onPlaylistInfo: (DataState<YoutubePlaylistInfo>) -> Unit,
+    ) {
         if (!url.contains("youtube")) {
-            return flow {
-                emit(DataState.failure("url $url is not a youtube playlist url"))
-                currentCoroutineContext().cancel(null)
-            }
+            onPlaylistInfo(DataState.failure("url $url is not a youtube playlist url"))
         }
         val request = YoutubePlaylistInfoRequest(url)
 
@@ -57,16 +55,16 @@ class MediaRepositoryImpl @Inject constructor(
                 val data = res.data!!
                 cache.savePlaylistInfo(data)
             }
+            onPlaylistInfo(res)
         }
-        return result
-
     }
 
     override suspend fun downloadVideo(
         videoInfo: VideoInfo,
         audioOnly: Boolean,
         executor: Executor,
-    ): Flow<DataState<DownloadInfo>> {
+        onDownloadInfo: (DataState<DownloadInfo>) -> Unit,
+    ) {
         val request = VideoDownloadRequest(videoInfo.originalUrl, audioOnly)
         // TODO Collect the flow and update the videoInfo storageUrl to DownloadInfo storageLocation
         val result = processor.process<DownloadInfo>(executor = executor, request = request)
@@ -76,15 +74,16 @@ class MediaRepositoryImpl @Inject constructor(
                 val updatedVideoInfo = videoInfo.copy(storageUrl = data.storageLocation)
                 cache.saveVideoInfo(updatedVideoInfo)
             }
+            onDownloadInfo(res)
         }
-        return result
     }
 
     override suspend fun downloadPlaylist(
         playlistInfo: YoutubePlaylistInfo,
         audioOnly: Boolean,
         executor: Executor,
-    ): Flow<DataState<DownloadInfo>> {
+        onDownloadInfo: (DataState<DownloadInfo>) -> Unit,
+    ) {
         val request =
             YoutubePlaylistDownloadRequest(playlistInfo.name, playlistInfo.originalUrl, audioOnly)
         // TODO Collect the flow and update each videoInfo storageUrl based on DownloadInfo currentVideoIndex
@@ -96,8 +95,8 @@ class MediaRepositoryImpl @Inject constructor(
                     playlistInfo.videos[data.currentVideoIndex].copy(storageUrl = data.storageLocation)
                 cache.saveVideoInfo(updatedVideoInfo)
             }
+            onDownloadInfo(res)
         }
-        return result
     }
 
     override suspend fun getDownloadedPlaylists(file: File) {
