@@ -6,8 +6,9 @@ import javax.inject.Inject
 
 open class YoutubePlaylistInfoRequest @Inject constructor(url: String) : DownloadRequest(url) {
 
-    @Inject
-    protected lateinit var extractor: YoutubePlaylistInfoExtractor
+    private val extractor: YoutubePlaylistInfoExtractor by lazy {
+        YoutubePlaylistInfoExtractor()
+    }
 
     override fun getOptions(): Map<String, String?> {
         return mapOf(

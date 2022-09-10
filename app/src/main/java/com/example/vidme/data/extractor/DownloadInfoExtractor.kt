@@ -8,13 +8,18 @@ class DownloadInfoExtractor @Inject constructor() : InfoExtractor {
     fun extract(progress: Float, timeRemaining: Long, lines: Map<Int, String>): DownloadInfo {
         var info = DownloadInfo()
 
-        lines.values.first { line -> line.contains("Destination") }.let {
-            info = info.copy(storageLocation = getStorageLocation(it))
+        try {
+            lines.values.first { line -> line.contains("Destination") }.let {
+                info = info.copy(storageLocation = getStorageLocation(it))
+            }
+
+            lines.values.last { line -> line.contains("Downloading video") }.let {
+                info = info.copy(currentVideoIndex = getCurrentVideoIndexFromLine(it))
+            }
+        } catch (e: Exception) {
+
         }
 
-        lines.values.last { line -> line.contains("Downloading video") }.let {
-            info = info.copy(currentVideoIndex = getCurrentVideoIndexFromLine(it))
-        }
 
         info.progress = progress
         info.timeRemaining = timeRemaining

@@ -1,6 +1,5 @@
 package com.example.vidme.data.extractor
 
-import com.example.vidme.data.extractor.video.YoutubeVideoInfoExtractor
 import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -22,8 +21,7 @@ class TestYoutubePlaylistInfoExtractor {
 
     @Before
     fun setUp() {
-        val videoExtractor = YoutubeVideoInfoExtractor()
-        extractor = YoutubePlaylistInfoExtractor(videoExtractor)
+        extractor = YoutubePlaylistInfoExtractor()
 
         lines = mutableMapOf<Int, String>().apply {
             var count = 0
@@ -47,6 +45,21 @@ class TestYoutubePlaylistInfoExtractor {
     fun `extractor returns playlist info with videos not empty`() {
         val result = extractor.extract(lines[2]!!, lines) as YoutubePlaylistInfo
         assertThat(result.videos).isNotEmpty()
+
+    }
+
+    @Test
+    fun `extractor returns playlist with videos that contains id`() {
+        val result = extractor.extract(lines[2]!!, lines) as YoutubePlaylistInfo
+        val allHasIDs = result.videos.all { it.id.isNotEmpty() }
+        assertThat(allHasIDs).isTrue()
+    }
+
+    @Test
+    fun `extractor returns playlist with videos that contains title`() {
+        val result = extractor.extract(lines[2]!!, lines) as YoutubePlaylistInfo
+        val allHasIDs = result.videos.all { it.title.isNotEmpty() }
+        assertThat(allHasIDs).isTrue()
     }
 
     @Test

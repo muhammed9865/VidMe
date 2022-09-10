@@ -71,7 +71,9 @@ class MediaRepositoryImpl @Inject constructor(
         result.collect { res ->
             if (res.isSuccessful) {
                 val data = res.data!!
-                val updatedVideoInfo = videoInfo.copy(storageUrl = data.storageLocation)
+                val updatedVideoInfo = videoInfo.copy(storageUrl = data.storageLocation,
+                    isAudio = audioOnly,
+                    isVideo = !audioOnly)
                 cache.saveVideoInfo(updatedVideoInfo)
             }
             onDownloadInfo(res)
@@ -91,9 +93,12 @@ class MediaRepositoryImpl @Inject constructor(
         result.collect { res ->
             if (res.isSuccessful) {
                 val data = res.data!!
-                val updatedVideoInfo =
-                    playlistInfo.videos[data.currentVideoIndex].copy(storageUrl = data.storageLocation)
-                cache.saveVideoInfo(updatedVideoInfo)
+                if (data.currentVideoIndex != -1) {
+                    val updatedVideoInfo =
+                        playlistInfo.videos[data.currentVideoIndex].copy(storageUrl = data.storageLocation)
+
+                    cache.saveVideoInfo(updatedVideoInfo)
+                }
             }
             onDownloadInfo(res)
         }

@@ -1,8 +1,8 @@
 package com.example.vidme.data.request
 
 import com.example.vidme.data.FileUtil
+import com.example.vidme.data.extractor.DownloadInfoExtractor
 import com.example.vidme.data.extractor.InfoExtractor
-import com.example.vidme.data.extractor.YoutubePlaylistInfoExtractor
 
 open class YoutubePlaylistDownloadRequest constructor(
     private val playlistName: String,
@@ -21,7 +21,7 @@ open class YoutubePlaylistDownloadRequest constructor(
     }
 
     override fun getExtractor(): InfoExtractor {
-        return YoutubePlaylistInfoExtractor()
+        return DownloadInfoExtractor()
     }
 
 }

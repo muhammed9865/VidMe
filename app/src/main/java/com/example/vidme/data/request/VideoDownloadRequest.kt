@@ -8,8 +8,7 @@ import javax.inject.Inject
 open class VideoDownloadRequest @Inject constructor(url: String, audioOnly: Boolean = false) :
     DownloadRequest(url, audioOnly) {
 
-    @Inject
-    protected lateinit var extractor: DownloadInfoExtractor
+    private val extractor: DownloadInfoExtractor by lazy { DownloadInfoExtractor() }
 
     override fun getOptions(): Map<String, String?> {
         return mapOf(

@@ -11,8 +11,9 @@ import javax.inject.Singleton
 open class YoutubePlaylistInfoExtractor @Inject constructor(
 ) : InfoExtractor {
 
-    @Inject
-    protected lateinit var youtubeVideoInfoExtractor: YoutubeVideoInfoExtractor
+    private val youtubeVideoInfoExtractor: YoutubeVideoInfoExtractor by lazy {
+        YoutubeVideoInfoExtractor()
+    }
 
     /*
         @param linesMap: key: index of line, value: line
@@ -20,6 +21,8 @@ open class YoutubePlaylistInfoExtractor @Inject constructor(
     override fun extract(originalUrl: String, lines: Map<Int, String>): Info {
         val playlistInfo = YoutubePlaylistInfo(originalUrl = originalUrl)
         val chunkedLines = chunkMap(lines)
+
+
 
         chunkedLines.forEach {
             val videoInfo = youtubeVideoInfoExtractor.extract(originalUrl, it) as VideoInfo
@@ -29,18 +32,20 @@ open class YoutubePlaylistInfoExtractor @Inject constructor(
         return playlistInfo
     }
 
-    private fun chunkMap(map: Map<Int, String>) : List<Map<Int, String>> {
+    private fun chunkMap(map: Map<Int, String>): List<Map<Int, String>> {
         val listOfLists = mutableListOf<Map<Int, String>>()
-        val newMap = mutableMapOf<Int, String>()
 
-        map.onEachIndexed { index, entry ->
-            if (index % 3 == 0 && index != 0) {
-                listOfLists.add(newMap)
-                newMap.clear()
-            } else {
-                newMap[entry.key] = entry.value
+        // TODO FIX BUG RETURNED VALUE IS NOT A LIST OF Maps BUT JUST A LIST OF THE LAST MAP
+        // FIX RETURN EVERY 4 KEYS OF THE MAP IN A NEW MAP
+        val keysChunked = map.keys.chunked(4)
+        keysChunked.forEach { keys ->
+            val newMap = mutableMapOf<Int, String>()
+            keys.forEach { key ->
+                newMap[key] = map[key]!!
             }
+            listOfLists.add(newMap)
         }
+
 
         return listOfLists
     }
