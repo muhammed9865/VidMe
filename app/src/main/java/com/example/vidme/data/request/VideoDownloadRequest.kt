@@ -1,6 +1,6 @@
 package com.example.vidme.data.request
 
-import com.example.vidme.data.DataConstants
+import com.example.vidme.data.FileUtil
 import com.example.vidme.data.extractor.DownloadInfoExtractor
 import com.example.vidme.data.extractor.InfoExtractor
 import javax.inject.Inject
@@ -13,7 +13,7 @@ open class VideoDownloadRequest @Inject constructor(url: String, audioOnly: Bool
 
     override fun getOptions(): Map<String, String?> {
         return mapOf(
-            "-o" to DataConstants.getStorageUri().toString() + "/%(title)s.%(ext)s",
+            "-o" to FileUtil.getStorageUri().toString() + "/%(title)s.%(ext)s",
             "--no-playlist" to null,
             "-f" to "best"
         )
