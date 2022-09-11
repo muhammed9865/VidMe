@@ -21,7 +21,7 @@ class TestYoutubePlaylistInfoExtractor {
 
     @Before
     fun setUp() {
-        extractor = YoutubePlaylistInfoExtractor()
+        extractor = YoutubePlaylistInfoExtractor("Shiekh Abu Mutaan")
 
         lines = mutableMapOf<Int, String>().apply {
             var count = 0
@@ -62,9 +62,24 @@ class TestYoutubePlaylistInfoExtractor {
         assertThat(allHasIDs).isTrue()
     }
 
+
     @Test
     fun `extractor returns playlist info with videos has correct size expected 3`() {
         val result = extractor.extract(lines[2]!!, lines) as YoutubePlaylistInfo
         assertThat(result.videos).hasSize(3)
     }
+
+    @Test
+    fun `extractor returns playlist with the name provided by request`() {
+        val result = extractor.extract(lines[2]!!, lines) as YoutubePlaylistInfo
+        assertThat(result.name).isEqualTo("Shiekh Abu Mutaan")
+    }
+
+    @Test
+    fun `extractor returns playlistInfo with videos that has the same name as the playlist name`() {
+        val result = extractor.extract(lines[2]!!, lines) as YoutubePlaylistInfo
+        val allVideosHavePlaylistName = result.videos.all { it.playlistName == "Shiekh Abu Mutaan" }
+        assertThat(allVideosHavePlaylistName).isTrue()
+    }
+
 }

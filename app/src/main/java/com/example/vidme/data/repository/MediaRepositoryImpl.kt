@@ -39,14 +39,16 @@ class MediaRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getYoutubePlaylistInfo(
+        playlistName: String,
         url: String,
         executor: Executor,
         onPlaylistInfo: (DataState<YoutubePlaylistInfo>) -> Unit,
     ) {
         if (!url.contains("youtube")) {
             onPlaylistInfo(DataState.failure("url $url is not a youtube playlist url"))
+            return
         }
-        val request = YoutubePlaylistInfoRequest(url)
+        val request = YoutubePlaylistInfoRequest(playlistName, url)
 
         // Before returning the flow, cache the result and return the result from database
         val result = processor.process<YoutubePlaylistInfo>(executor, request)
@@ -66,7 +68,6 @@ class MediaRepositoryImpl @Inject constructor(
         onDownloadInfo: (DataState<DownloadInfo>) -> Unit,
     ) {
         val request = VideoDownloadRequest(videoInfo.originalUrl, audioOnly)
-        // TODO Collect the flow and update the videoInfo storageUrl to DownloadInfo storageLocation
         val result = processor.process<DownloadInfo>(executor = executor, request = request)
         result.collect { res ->
             if (res.isSuccessful) {
@@ -87,8 +88,7 @@ class MediaRepositoryImpl @Inject constructor(
         onDownloadInfo: (DataState<DownloadInfo>) -> Unit,
     ) {
         val request =
-            YoutubePlaylistDownloadRequest(playlistInfo.name, playlistInfo.originalUrl, audioOnly)
-        // TODO Collect the flow and update each videoInfo storageUrl based on DownloadInfo currentVideoIndex
+            YoutubePlaylistDownloadRequest(playlistInfo, playlistInfo.originalUrl, audioOnly)
         val result = processor.process<DownloadInfo>(executor, request)
         result.collect { res ->
             if (res.isSuccessful) {

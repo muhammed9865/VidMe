@@ -50,7 +50,8 @@ class DownloadProcessor @Inject constructor(private val ytInstance: YoutubeDL) {
                         }
                     }
                     if (!isDownloading) {
-                        val result = extractor.extract(lines = lines, originalUrl = request.url)
+                        val result =
+                            extractor.extract(outputLines = lines, originalUrl = request.url)
 
                         trySendBlocking(
                             DataState.success(data = result) as DataState<T>

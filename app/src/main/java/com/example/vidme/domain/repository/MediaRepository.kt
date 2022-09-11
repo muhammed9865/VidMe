@@ -16,6 +16,7 @@ interface MediaRepository {
     )
 
     suspend fun getYoutubePlaylistInfo(
+        playlistName: String,
         url: String,
         executor: Executor,
         onPlaylistInfo: (DataState<YoutubePlaylistInfo>) -> Unit,

@@ -3,9 +3,10 @@ package com.example.vidme.data.request
 import com.example.vidme.data.FileUtil
 import com.example.vidme.data.extractor.DownloadInfoExtractor
 import com.example.vidme.data.extractor.InfoExtractor
+import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 
 open class YoutubePlaylistDownloadRequest constructor(
-    private val playlistName: String,
+    private val playlistInfo: YoutubePlaylistInfo,
     url: String,
     audioOnly: Boolean = false,
 ) :
@@ -15,7 +16,7 @@ open class YoutubePlaylistDownloadRequest constructor(
     override fun getOptions(): Map<String, String?> {
 
         return mapOf(
-            "-o" to FileUtil.getStorageFileForPlaylist(playlistName).absolutePath + "/%(title)s.%(ext)s",
+            "-o" to FileUtil.getStorageFileForPlaylist(playlistInfo.name).absolutePath + "/%(title)s.%(ext)s",
             "-f" to "best",
         )
     }

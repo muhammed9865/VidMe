@@ -4,10 +4,13 @@ import com.example.vidme.data.extractor.InfoExtractor
 import com.example.vidme.data.extractor.YoutubePlaylistInfoExtractor
 import javax.inject.Inject
 
-open class YoutubePlaylistInfoRequest @Inject constructor(url: String) : DownloadRequest(url) {
+open class YoutubePlaylistInfoRequest @Inject constructor(
+    private val playlistName: String,
+    url: String,
+) : DownloadRequest(url) {
 
     private val extractor: YoutubePlaylistInfoExtractor by lazy {
-        YoutubePlaylistInfoExtractor()
+        YoutubePlaylistInfoExtractor(playlistName = playlistName)
     }
 
     override fun getOptions(): Map<String, String?> {

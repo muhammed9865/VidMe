@@ -9,6 +9,7 @@ import javax.inject.Singleton
 
 @Singleton
 open class YoutubePlaylistInfoExtractor @Inject constructor(
+    private val playlistName: String,
 ) : InfoExtractor {
 
     private val youtubeVideoInfoExtractor: YoutubeVideoInfoExtractor by lazy {
@@ -18,14 +19,15 @@ open class YoutubePlaylistInfoExtractor @Inject constructor(
     /*
         @param linesMap: key: index of line, value: line
      */
-    override fun extract(originalUrl: String, lines: Map<Int, String>): Info {
-        val playlistInfo = YoutubePlaylistInfo(originalUrl = originalUrl)
-        val chunkedLines = chunkMap(lines)
+    override fun extract(originalUrl: String, outputLines: Map<Int, String>): Info {
+        val playlistInfo = YoutubePlaylistInfo(originalUrl = originalUrl, name = playlistName)
+        val chunkedOutputLines = chunkMap(outputLines)
 
 
 
-        chunkedLines.forEach {
-            val videoInfo = youtubeVideoInfoExtractor.extract(originalUrl, it) as VideoInfo
+        chunkedOutputLines.forEach { linesChunk ->
+            var videoInfo = youtubeVideoInfoExtractor.extract(originalUrl, linesChunk) as VideoInfo
+            videoInfo = videoInfo.copy(playlistName = playlistName)
             playlistInfo.addVideo(videoInfo)
         }
 
@@ -35,8 +37,6 @@ open class YoutubePlaylistInfoExtractor @Inject constructor(
     private fun chunkMap(map: Map<Int, String>): List<Map<Int, String>> {
         val listOfLists = mutableListOf<Map<Int, String>>()
 
-        // TODO FIX BUG RETURNED VALUE IS NOT A LIST OF Maps BUT JUST A LIST OF THE LAST MAP
-        // FIX RETURN EVERY 4 KEYS OF THE MAP IN A NEW MAP
         val keysChunked = map.keys.chunked(4)
         keysChunked.forEach { keys ->
             val newMap = mutableMapOf<Int, String>()
