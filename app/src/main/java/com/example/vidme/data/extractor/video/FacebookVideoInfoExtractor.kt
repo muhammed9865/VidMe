@@ -1,9 +1,9 @@
 package com.example.vidme.data.extractor.video
 
-import com.example.vidme.data.StringUtil
 import com.example.vidme.data.extractor.InfoExtractor
 import com.example.vidme.data.pojo.info.Info
 import com.example.vidme.data.pojo.info.VideoInfo
+import com.example.vidme.domain.util.StringUtil
 import javax.inject.Inject
 
 class FacebookVideoInfoExtractor @Inject constructor() : InfoExtractor {

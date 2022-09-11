@@ -1,8 +1,8 @@
 package com.example.vidme.data.request
 
-import com.example.vidme.data.FileUtil
 import com.example.vidme.data.extractor.DownloadInfoExtractor
 import com.example.vidme.data.extractor.InfoExtractor
+import com.example.vidme.domain.util.FileUtil
 import javax.inject.Inject
 
 open class VideoDownloadRequest @Inject constructor(url: String, audioOnly: Boolean = false) :

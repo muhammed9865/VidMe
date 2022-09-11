@@ -1,4 +1,4 @@
-package com.example.vidme.data
+package com.example.vidme.domain.util
 
 object StringUtil {
     fun containsDuration(line: String): Boolean {

@@ -1,4 +1,4 @@
-package com.example.vidme.data
+package com.example.vidme.domain.util
 
 import android.net.Uri
 import android.os.Environment
