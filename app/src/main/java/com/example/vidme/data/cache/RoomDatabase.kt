@@ -8,8 +8,8 @@ import com.example.vidme.data.pojo.info.VideoInfo
 
 @Database(
     entities = [VideoInfo::class, YoutubePlaylistInfoCache::class],
-    version = 1,
-    exportSchema = true
+    version = 2,
+    exportSchema = true,
 )
 abstract class RoomDatabase : RoomDatabase() {
     abstract val cacheDao: CacheDao

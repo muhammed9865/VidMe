@@ -64,7 +64,14 @@ class MediaRepositoryImpl @Inject constructor(
         executor: Executor,
         onDownloadInfo: (DataState<DownloadInfo>) -> Unit,
     ) {
-        val request = VideoDownloadRequest(videoInfo.originalUrl, audioOnly)
+        /*
+            * If the video is part of a playlist then the originalUrl is the playlist Url
+            * and the video id can be downloaded if it's a Youtube video
+         */
+        val url =
+            if (videoInfo.originalUrl.contains("youtube")) videoInfo.id else videoInfo.originalUrl
+
+        val request = VideoDownloadRequest(url, audioOnly)
         val result = processor.process<DownloadInfo>(executor = executor, request = request)
         result.collect { res ->
             if (res.isSuccessful) {
@@ -86,11 +93,14 @@ class MediaRepositoryImpl @Inject constructor(
     ) {
         val request =
             YoutubePlaylistDownloadRequest(playlistInfo, playlistInfo.originalUrl, audioOnly)
+
         val result = processor.process<DownloadInfo>(executor, request)
+
         result.collect { res ->
             if (res.isSuccessful) {
                 val data = res.data!!
                 if (data.currentVideoIndex != -1) {
+                    // Updating the videoInfo being downloaded with the new storageLocation on device
                     val updatedVideoInfo =
                         playlistInfo.videos[data.currentVideoIndex].copy(storageUrl = data.storageLocation,
                             isAudio = audioOnly,

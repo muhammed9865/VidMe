@@ -1,5 +1,6 @@
 package com.example.vidme.data.pojo.info
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -18,6 +19,7 @@ data class VideoInfo(
     val originalUrl: String = "",
     val remoteUrl: String = "",
     val thumbnail: String = "",
+    @ColumnInfo(defaultValue = "")
     val duration: String = "",
     var isVideo: Boolean = false,
     var isAudio: Boolean = false,
