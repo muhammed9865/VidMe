@@ -10,6 +10,5 @@ data class YoutubePlaylistInfoCache(
     @PrimaryKey
     @ColumnInfo(typeAffinity = ColumnInfo.TEXT)
     val name: String = "",
-    var count: Int = -1,
     val originalUrl: String = "",
 )

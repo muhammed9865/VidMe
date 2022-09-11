@@ -8,6 +8,7 @@ data class YoutubePlaylistInfo(
     val originalUrl: String = "",
 ) : Info {
 
+
     fun addVideo(videoInfo: VideoInfo) {
         val newList = videos.toMutableList()
         newList.add(videoInfo)

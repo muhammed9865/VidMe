@@ -126,7 +126,7 @@ class MediaRepositoryImpl @Inject constructor(
             if (res.isSuccessful) {
                 val data = res.data!!
                 if (data.count > 0) {
-                    val updatedPlaylistInfo = cache.updatePlaylistInfo(playlistInfo, data)
+                    val updatedPlaylistInfo = cache.updatePlaylistInfo(data)
                     onPlaylistInfo(DataState.success(updatedPlaylistInfo))
                 } else {
                     onPlaylistInfo(DataState.failure("Playlist is UP-TO-DATE"))

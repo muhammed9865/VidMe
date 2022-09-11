@@ -6,14 +6,14 @@ import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 
 fun YoutubePlaylistInfo.toCache(): YoutubePlaylistInfoCache {
     return YoutubePlaylistInfoCache(
-        name, count, originalUrl
+        name, originalUrl
     )
 }
 
 fun PlaylistWithVideos.toYoutubePlaylistInfo(): YoutubePlaylistInfo {
     return YoutubePlaylistInfo(
         name = playlistInfoCache.name,
-        count = playlistInfoCache.count,
+        count = videos.size,
         originalUrl = playlistInfoCache.originalUrl,
         videos = videos
     )

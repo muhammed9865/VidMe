@@ -3,6 +3,7 @@ package com.example.vidme.data.cache
 import androidx.room.*
 import com.example.vidme.data.cache.relation.PlaylistWithVideos
 import com.example.vidme.data.mapper.toCache
+import com.example.vidme.data.mapper.toYoutubePlaylistInfo
 import com.example.vidme.data.pojo.cache.YoutubePlaylistInfoCache
 import com.example.vidme.data.pojo.info.VideoInfo
 import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
@@ -23,13 +24,9 @@ abstract class CacheDao : CacheDatabase {
         saveVideosInfo(videos)
     }
 
-    override suspend fun updatePlaylistInfo(
-        old: YoutubePlaylistInfo,
-        new: YoutubePlaylistInfo,
-    ): YoutubePlaylistInfo {
-        val updatedPlaylist = old + new
-        savePlaylistInfo(updatedPlaylist)
-        return updatedPlaylist
+    override suspend fun updatePlaylistInfo(playlistInfo: YoutubePlaylistInfo): YoutubePlaylistInfo {
+        savePlaylistInfo(playlistInfo)
+        return getPlaylistWithVideos(playlistInfo.name).toYoutubePlaylistInfo()
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

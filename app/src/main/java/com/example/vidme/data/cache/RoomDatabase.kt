@@ -8,7 +8,7 @@ import com.example.vidme.data.pojo.info.VideoInfo
 
 @Database(
     entities = [VideoInfo::class, YoutubePlaylistInfoCache::class],
-    version = 2,
+    version = 3,
     exportSchema = true,
 )
 abstract class RoomDatabase : RoomDatabase() {
