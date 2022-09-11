@@ -20,10 +20,11 @@ abstract class CacheDao : CacheDatabase {
         val playlistCache = playlistInfo.toCache()
         val videos = playlistInfo.videos
         savePlaylistInfo(playlistCache)
-        videos.forEach {
-            saveVideoInfo(it)
-        }
+        saveVideosInfo(videos)
     }
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract override suspend fun saveVideosInfo(videosInfo: List<VideoInfo>)
 
     @Query("SELECT * FROM VIDEOS_TABLE")
     abstract override suspend fun getAllVideos(): List<VideoInfo>

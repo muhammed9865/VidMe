@@ -8,6 +8,8 @@ import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 interface CacheDatabase {
     suspend fun saveVideoInfo(videoInfo: VideoInfo)
 
+    suspend fun saveVideosInfo(videosInfo: List<VideoInfo>)
+
     suspend fun savePlaylistInfo(playlistInfoCache: YoutubePlaylistInfoCache)
 
     suspend fun savePlaylistInfo(playlistInfo: YoutubePlaylistInfo)
@@ -18,4 +20,5 @@ interface CacheDatabase {
     suspend fun getAllPlaylists(): List<YoutubePlaylistInfoCache>
 
     suspend fun getPlaylistWithVideos(playlistName: String): PlaylistWithVideos
+
 }
