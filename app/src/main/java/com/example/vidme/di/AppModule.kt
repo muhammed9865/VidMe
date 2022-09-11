@@ -26,7 +26,9 @@ class AppModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): RoomDatabase {
-        return Room.databaseBuilder(context, RoomDatabase::class.java, "media").build()
+        return Room.databaseBuilder(context, RoomDatabase::class.java, "media")
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

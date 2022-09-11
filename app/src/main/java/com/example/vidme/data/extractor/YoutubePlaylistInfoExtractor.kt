@@ -37,7 +37,8 @@ open class YoutubePlaylistInfoExtractor @Inject constructor(
     private fun chunkMap(map: Map<Int, String>): List<Map<Int, String>> {
         val listOfLists = mutableListOf<Map<Int, String>>()
 
-        val keysChunked = map.keys.chunked(4)
+        // 5 is the number of Variables fetched from outputLines
+        val keysChunked = map.keys.chunked(5)
         keysChunked.forEach { keys ->
             val newMap = mutableMapOf<Int, String>()
             keys.forEach { key ->

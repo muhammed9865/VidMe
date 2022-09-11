@@ -16,7 +16,10 @@ import java.util.concurrent.Executor
 import javax.inject.Inject
 
 @Suppress("BlockingMethodInNonBlockingContext")
-class DownloadProcessor @Inject constructor(private val ytInstance: YoutubeDL) {
+class DownloadProcessor @Inject constructor(
+    private val ytInstance: YoutubeDL,
+    private val logger: DownloadLogger,
+) {
 
     @Suppress("unchecked_cast", "unused", "LocalVariableName")
     fun <T : Info> process(
@@ -49,6 +52,9 @@ class DownloadProcessor @Inject constructor(private val ytInstance: YoutubeDL) {
                             )
                         }
                     }
+
+                    logger.log(lines)
+
                     if (!isDownloading) {
                         val result =
                             extractor.extract(outputLines = lines, originalUrl = request.url)
