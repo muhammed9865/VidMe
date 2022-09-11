@@ -23,6 +23,15 @@ abstract class CacheDao : CacheDatabase {
         saveVideosInfo(videos)
     }
 
+    override suspend fun updatePlaylistInfo(
+        old: YoutubePlaylistInfo,
+        new: YoutubePlaylistInfo,
+    ): YoutubePlaylistInfo {
+        val updatedPlaylist = old + new
+        savePlaylistInfo(updatedPlaylist)
+        return updatedPlaylist
+    }
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract override suspend fun saveVideosInfo(videosInfo: List<VideoInfo>)
 

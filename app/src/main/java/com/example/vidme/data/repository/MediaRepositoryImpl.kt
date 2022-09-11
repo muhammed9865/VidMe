@@ -5,10 +5,7 @@ import com.example.vidme.data.downloader.DownloadProcessor
 import com.example.vidme.data.pojo.info.DownloadInfo
 import com.example.vidme.data.pojo.info.VideoInfo
 import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
-import com.example.vidme.data.request.VideoDownloadRequest
-import com.example.vidme.data.request.VideoInfoRequest
-import com.example.vidme.data.request.YoutubePlaylistDownloadRequest
-import com.example.vidme.data.request.YoutubePlaylistInfoRequest
+import com.example.vidme.data.request.*
 import com.example.vidme.domain.DataState
 import com.example.vidme.domain.repository.MediaRepository
 import java.io.File
@@ -103,6 +100,28 @@ class MediaRepositoryImpl @Inject constructor(
                 }
             }
             onDownloadInfo(res)
+        }
+    }
+
+    override suspend fun synchronizeYoutubePlaylistInfo(
+        playlistInfo: YoutubePlaylistInfo,
+        executor: Executor,
+        onPlaylistInfo: (DataState<YoutubePlaylistInfo>) -> Unit,
+    ) {
+        val request = SynchronizePlaylistRequest(playlistInfo)
+
+        // Before returning the flow, cache the result and return the result from database
+        val result = processor.process<YoutubePlaylistInfo>(executor, request)
+        result.collect { res ->
+            if (res.isSuccessful) {
+                val data = res.data!!
+                if (data.count > 0) {
+                    val updatedPlaylistInfo = cache.updatePlaylistInfo(playlistInfo, data)
+                    onPlaylistInfo(DataState.success(updatedPlaylistInfo))
+                } else {
+                    onPlaylistInfo(DataState.failure("Playlist is UP-TO-DATE"))
+                }
+            }
         }
     }
 

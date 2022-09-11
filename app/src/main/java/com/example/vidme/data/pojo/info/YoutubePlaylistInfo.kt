@@ -15,4 +15,8 @@ data class YoutubePlaylistInfo(
 
         count = videos.size
     }
+
+    operator fun plus(other: YoutubePlaylistInfo): YoutubePlaylistInfo {
+        return this.copy(count = count + other.count, videos = videos + other.videos)
+    }
 }

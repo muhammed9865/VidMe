@@ -22,6 +22,12 @@ interface MediaRepository {
         onPlaylistInfo: (DataState<YoutubePlaylistInfo>) -> Unit,
     )
 
+    suspend fun synchronizeYoutubePlaylistInfo(
+        playlistInfo: YoutubePlaylistInfo,
+        executor: Executor,
+        onPlaylistInfo: (DataState<YoutubePlaylistInfo>) -> Unit,
+    )
+
     suspend fun downloadVideo(
         videoInfo: VideoInfo,
         audioOnly: Boolean,

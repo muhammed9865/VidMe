@@ -14,6 +14,10 @@ interface CacheDatabase {
 
     suspend fun savePlaylistInfo(playlistInfo: YoutubePlaylistInfo)
 
+    suspend fun updatePlaylistInfo(
+        old: YoutubePlaylistInfo,
+        new: YoutubePlaylistInfo,
+    ): YoutubePlaylistInfo
 
     suspend fun getAllVideos(): List<VideoInfo>
 
