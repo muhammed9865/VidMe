@@ -7,7 +7,7 @@ class SynchronizePlaylistRequest(private val playlistInfo: YoutubePlaylistInfo) 
 
     override fun getOptions(): Map<String, String?> {
         val options = super.getOptions().toMutableMap()
-        val lastVideoNumber = playlistInfo.videos.size
+        val lastVideoNumber = playlistInfo.videos.size + 1
         options["--playlist-start"] = "$lastVideoNumber"
         return options
     }
