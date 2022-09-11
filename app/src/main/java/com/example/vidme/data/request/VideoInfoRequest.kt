@@ -12,6 +12,7 @@ class VideoInfoRequest(url: String) : DownloadRequest(url) {
             "--get-thumbnail" to null,
             "--get-url" to null,
             "--get-id" to null,
+            "--get-duration" to null,
             "-f" to "best"
         )
     }

@@ -95,7 +95,9 @@ class MediaRepositoryImpl @Inject constructor(
                 val data = res.data!!
                 if (data.currentVideoIndex != -1) {
                     val updatedVideoInfo =
-                        playlistInfo.videos[data.currentVideoIndex].copy(storageUrl = data.storageLocation)
+                        playlistInfo.videos[data.currentVideoIndex].copy(storageUrl = data.storageLocation,
+                            isAudio = audioOnly,
+                            isVideo = !audioOnly)
 
                     cache.saveVideoInfo(updatedVideoInfo)
                 }

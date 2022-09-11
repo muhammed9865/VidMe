@@ -18,6 +18,7 @@ data class VideoInfo(
     val originalUrl: String = "",
     val remoteUrl: String = "",
     val thumbnail: String = "",
+    val duration: String = "",
     var isVideo: Boolean = false,
     var isAudio: Boolean = false,
     var storageUrl: String? = null,

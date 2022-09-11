@@ -1,5 +1,6 @@
 package com.example.vidme.data.extractor.video
 
+import com.example.vidme.data.StringUtil
 import com.example.vidme.data.extractor.InfoExtractor
 import com.example.vidme.data.pojo.info.Info
 import com.example.vidme.data.pojo.info.VideoInfo
@@ -16,8 +17,11 @@ class FacebookVideoInfoExtractor @Inject constructor() : InfoExtractor {
                 info.copy(thumbnail = line)
             } else if (line.contains(REMOTE_URL_SLICE)) {
                 info.copy(remoteUrl = line)
-            } else if (line.isDigitsOnly()) {
+            } else if (StringUtil.isDigitsOnly(line)) {
                 info.copy(id = line)
+
+            } else if (StringUtil.containsDuration(line)) {
+                info.copy(duration = line)
             } else {
                 info.copy(title = line)
             }
@@ -26,9 +30,6 @@ class FacebookVideoInfoExtractor @Inject constructor() : InfoExtractor {
         return info
     }
 
-    private fun String.isDigitsOnly(): Boolean {
-        return this.all { it.isDigit() }
-    }
 
     companion object {
         private const val THUMBNAIL_SLICE = "https://scontent"

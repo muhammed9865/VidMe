@@ -1,5 +1,6 @@
 package com.example.vidme.data.extractor.video
 
+import com.example.vidme.data.StringUtil
 import com.example.vidme.data.extractor.InfoExtractor
 import com.example.vidme.data.pojo.info.Info
 import com.example.vidme.data.pojo.info.VideoInfo
@@ -18,6 +19,8 @@ class YoutubeVideoInfoExtractor @Inject constructor() : InfoExtractor {
                 info.copy(remoteUrl = line)
             } else if (line.length == VIDEO_ID_LENGTH) {
                 info.copy(id = line)
+            } else if (StringUtil.containsDuration(line)) {
+                info.copy(duration = line)
             } else {
                 info.copy(title = line)
             }
