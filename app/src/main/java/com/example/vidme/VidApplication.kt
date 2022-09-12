@@ -8,9 +8,13 @@ import java.util.concurrent.Executors
 
 @HiltAndroidApp
 class VidApplication  : Application() {
-    val executorService: ExecutorService = Executors.newFixedThreadPool(2)
+
     override fun onCreate() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
+    }
+
+    companion object {
+        val executorService: ExecutorService = Executors.newFixedThreadPool(2)
     }
 }
