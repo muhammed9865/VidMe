@@ -1,6 +1,8 @@
 package com.example.vidme.domain.usecase
 
-class GetStoredVideosUseCase : BaseUseCase() {
+import javax.inject.Inject
+
+class GetStoredVideosUseCase @Inject constructor() : BaseUseCase() {
 
     suspend operator fun invoke() = repository.getStoredVideos()
 }

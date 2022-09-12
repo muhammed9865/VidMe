@@ -3,8 +3,9 @@ package com.example.vidme.domain.usecase
 import com.example.vidme.domain.DataState
 import com.example.vidme.domain.pojo.DownloadInfo
 import com.example.vidme.domain.pojo.VideoInfo
+import javax.inject.Inject
 
-class DownloadVideoUseCase : BaseUseCase() {
+class DownloadVideoUseCase @Inject constructor() : BaseUseCase() {
 
     suspend operator fun invoke(
         videoInfo: VideoInfo,
