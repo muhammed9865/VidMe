@@ -19,4 +19,5 @@ class DownloadYoutubePlaylistUseCase @Inject constructor(
         val executor = VidApplication.executorService
         repository.downloadPlaylist(playlistInfo, audioOnly, executor, onDownloadInfo)
     }
+
 }
