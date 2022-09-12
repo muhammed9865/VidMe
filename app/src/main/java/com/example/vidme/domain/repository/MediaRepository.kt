@@ -4,17 +4,18 @@ import com.example.vidme.domain.DataState
 import com.example.vidme.domain.pojo.DownloadInfo
 import com.example.vidme.domain.pojo.VideoInfo
 import com.example.vidme.domain.pojo.YoutubePlaylistInfo
+import com.example.vidme.domain.pojo.YoutubePlaylistWithVideos
 import java.util.concurrent.Executor
 
 interface MediaRepository {
 
-    suspend fun getVideoInfo(
+    suspend fun fetchVideoInfo(
         url: String,
         executor: Executor,
         onVideoInfo: (DataState<VideoInfo>) -> Unit,
     )
 
-    suspend fun getYoutubePlaylistInfo(
+    suspend fun fetchYoutubePlaylistInfo(
         playlistName: String,
         url: String,
         executor: Executor,
@@ -44,6 +45,14 @@ interface MediaRepository {
     suspend fun getStoredYoutubePlaylists(): List<YoutubePlaylistInfo>
 
     suspend fun getStoredVideos(): List<VideoInfo>
+
+    suspend fun getStoredYoutubePlaylistByName(playlistName: String): YoutubePlaylistWithVideos
+
+    suspend fun getStoredVideoByID(id: String): VideoInfo
+
+    suspend fun deleteVideo(videoInfo: VideoInfo): Boolean
+
+    suspend fun deletePlaylistByName(playlistName: String): Boolean
 
 
 }

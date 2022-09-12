@@ -18,10 +18,27 @@ abstract class CacheDao : CacheDatabase {
 
     @Transaction
     override suspend fun savePlaylistInfo(playlistInfo: YoutubePlaylistInfo) {
-        val playlistCache = playlistInfo.toCache()
-        val videos = playlistInfo.videos
+        val currVideos = getAllVideos()
+        val currVideosIDs = playlistInfo.videos.map { it.id }
+        val matchedVideos = currVideos.filter { it.id in currVideosIDs }
+
+        val updatedList = playlistInfo.copy(
+            videos = if (matchedVideos.isNotEmpty()) {
+                playlistInfo.videos.map { update ->
+                    val matchedVideo = matchedVideos.find { match -> match.id == update.id }
+                    matchedVideo?.let {
+                        it.copy(storageUrl = it.storageUrl)
+                    } ?: update
+                }
+            } else playlistInfo.videos
+        )
+
+
+        val playlistCache = updatedList.toCache()
+        val videos = updatedList.videos
         savePlaylistInfo(playlistCache)
         saveVideosInfo(videos)
+
     }
 
     override suspend fun updatePlaylistInfo(playlistInfo: YoutubePlaylistInfo): YoutubePlaylistInfo {
@@ -41,11 +58,31 @@ abstract class CacheDao : CacheDatabase {
         return cachedPlaylist.toYoutubePlaylistInfo()
     }
 
+
+    override suspend fun deleteVideosInfo(videosInfo: List<VideoInfo>) {
+        videosInfo.forEach {
+            deleteVideoInfo(it.id, it.playlistName)
+        }
+    }
+
+    @Query("DELETE FROM VIDEOS_TABLE WHERE id = :id AND playlistName = :playlistName")
+    abstract suspend fun deleteVideoInfo(id: String, playlistName: String = "")
+
+    @Transaction
+    override suspend fun deletePlaylistByName(playlistName: String) {
+        val playlist = getPlaylistWithVideos(playlistName)
+        deletePlaylistInfoByName(playlist.playlistInfoCache.name)
+        deleteVideosInfo(playlist.videos)
+    }
+
+    @Query("DELETE FROM playlists_table WHERE name = :playlistName")
+    abstract suspend fun deletePlaylistInfoByName(playlistName: String)
+
     @Query("SELECT * FROM PLAYLISTS_TABLE WHERE name = :playlistName")
     abstract override suspend fun getPlaylistInfoByName(playlistName: String): YoutubePlaylistInfoCache
 
-    @Query("SELECT * FROM VIDEOS_TABLE WHERE id = :id")
-    abstract override suspend fun getVideoInfoByID(id: String): VideoInfo
+    @Query("SELECT * FROM VIDEOS_TABLE WHERE id = :id AND playlistName = :playlistName")
+    abstract override suspend fun getVideoInfo(id: String, playlistName: String): VideoInfo
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract override suspend fun saveVideosInfo(videosInfo: List<VideoInfo>)

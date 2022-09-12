@@ -2,6 +2,7 @@ package com.example.vidme.domain.util
 
 import android.net.Uri
 import android.os.Environment
+import kotlinx.coroutines.coroutineScope
 import java.io.File
 
 object FileUtil {
@@ -22,4 +23,28 @@ object FileUtil {
             }
         }
     }
+
+    suspend fun deletePlaylistByName(playlistName: String): Boolean {
+        return coroutineScope {
+            try {
+                val file = getStorageFileForPlaylist(playlistName)
+                file.deleteRecursively()
+
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
+
+    suspend fun deleteVideoByName(videoName: String): Boolean {
+        return coroutineScope {
+            try {
+                val file = File(getStorageFile(), videoName)
+                file.delete()
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
+
 }

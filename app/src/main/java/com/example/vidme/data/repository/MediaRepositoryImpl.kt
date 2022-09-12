@@ -9,7 +9,9 @@ import com.example.vidme.data.pojo.info.VideoInfo
 import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import com.example.vidme.data.request.*
 import com.example.vidme.domain.DataState
+import com.example.vidme.domain.pojo.YoutubePlaylistWithVideos
 import com.example.vidme.domain.repository.MediaRepository
+import com.example.vidme.domain.util.FileUtil
 import java.util.concurrent.Executor
 import javax.inject.Inject
 
@@ -19,11 +21,24 @@ class MediaRepositoryImpl @Inject constructor(
 ) :
     MediaRepository {
 
-    override suspend fun getVideoInfo(
+    override suspend fun fetchVideoInfo(
         url: String,
         executor: Executor,
         onVideoInfo: (DataState<com.example.vidme.domain.pojo.VideoInfo>) -> Unit,
     ) {
+
+        // Checking if the video is already saved in Database
+        try {
+            val cachedVideo = cache.getAllVideos().find { it.originalUrl == url }
+            cachedVideo?.let { foundVideo ->
+                onVideoInfo(DataState.success(foundVideo.toDomain()))
+                return
+            }
+        } catch (e: Exception) {
+
+        }
+
+
         val request = VideoInfoRequest(url)
         // Before returning the flow, cache the result and return the result from database
         val result = processor.process<VideoInfo>(executor, request)
@@ -31,7 +46,7 @@ class MediaRepositoryImpl @Inject constructor(
             if (res.isSuccessful) {
                 val data = res.data!!
                 cache.saveVideoInfo(data)
-                val videoInfo = cache.getVideoInfoByID(data.id).toDomain()
+                val videoInfo = cache.getVideoInfo(data.id).toDomain()
                 onVideoInfo(DataState.success(videoInfo))
             } else {
                 onVideoInfo(DataState.failure(res.error))
@@ -40,16 +55,32 @@ class MediaRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getYoutubePlaylistInfo(
+    override suspend fun fetchYoutubePlaylistInfo(
         playlistName: String,
         url: String,
         executor: Executor,
         onPlaylistInfo: (DataState<com.example.vidme.domain.pojo.YoutubePlaylistInfo>) -> Unit,
     ) {
+
+        // Checking if there is a playlist saved with the name given or the url
+        try {
+            val cachedPlaylist =
+                cache.getAllPlaylists().find { it.name == playlistName || it.originalUrl == url }
+            cachedPlaylist?.let { foundPlaylist ->
+                onPlaylistInfo(DataState.success(foundPlaylist.toDomain()))
+                return
+            }
+
+        } catch (e: Exception) {
+
+        }
+
+
         if (!url.contains("youtube")) {
             onPlaylistInfo(DataState.failure("url $url is not a youtube playlist url"))
             return
         }
+
         val request = YoutubePlaylistInfoRequest(playlistName, url)
 
         // Before returning the flow, cache the result and return the result from database
@@ -81,7 +112,7 @@ class MediaRepositoryImpl @Inject constructor(
             * Getting the Cached VideoInfo (Data layer) to get the originalUrl of the video
          */
 
-        val cachedVideoInfo = cache.getVideoInfoByID(videoInfo.id)
+        val cachedVideoInfo = cache.getVideoInfo(videoInfo.id)
         val url =
             if (cachedVideoInfo.originalUrl.contains("youtube")) cachedVideoInfo.id else cachedVideoInfo.originalUrl
 
@@ -148,8 +179,27 @@ class MediaRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteVideo(videoInfo: com.example.vidme.domain.pojo.VideoInfo): Boolean {
+        val video = cache.getVideoInfo(videoInfo.id, videoInfo.playlistName ?: "")
+        cache.deleteVideosInfo(listOf(video))
+        return FileUtil.deleteVideoByName(videoName = videoInfo.title)
+    }
+
+    override suspend fun deletePlaylistByName(playlistName: String): Boolean {
+        cache.deletePlaylistByName(playlistName)
+        return FileUtil.deletePlaylistByName(playlistName)
+    }
+
     override suspend fun getStoredYoutubePlaylists(): List<com.example.vidme.domain.pojo.YoutubePlaylistInfo> {
         return cache.getAllPlaylists().map { it.toDomain() }
+    }
+
+    override suspend fun getStoredYoutubePlaylistByName(playlistName: String): YoutubePlaylistWithVideos {
+        return cache.getPlaylistWithVideos(playlistName).toDomain()
+    }
+
+    override suspend fun getStoredVideoByID(id: String): com.example.vidme.domain.pojo.VideoInfo {
+        return cache.getVideoInfo(id).toDomain()
     }
 
     override suspend fun getStoredVideos(): List<com.example.vidme.domain.pojo.VideoInfo> {
