@@ -9,6 +9,7 @@ fun VideoInfo.toDomain(): com.example.vidme.domain.pojo.VideoInfo {
         id,
         title,
         url,
+        duration,
         isAudio,
         isVideo,
         isDownloaded(),

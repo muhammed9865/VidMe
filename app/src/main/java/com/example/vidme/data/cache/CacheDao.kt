@@ -25,8 +25,20 @@ abstract class CacheDao : CacheDatabase {
     }
 
     override suspend fun updatePlaylistInfo(playlistInfo: YoutubePlaylistInfo): YoutubePlaylistInfo {
-        savePlaylistInfo(playlistInfo)
-        return getPlaylistWithVideos(playlistInfo.name).toYoutubePlaylistInfo()
+        /*
+            * Saving the videos first so new ones will be saved and old will remain.
+            * Getting the PlaylistInfo with the Videos
+            * Updating the PlaylistInfo
+            * @Return updatedPlaylist (cachedPlaylist)
+
+         */
+        saveVideosInfo(playlistInfo.videos)
+        var cachedPlaylist = getPlaylistWithVideos(playlistInfo.name)
+        val videos = cachedPlaylist.videos
+        val updatedPlaylistInfo = cachedPlaylist.playlistInfoCache.copy(count = videos.size)
+        savePlaylistInfo(updatedPlaylistInfo)
+        cachedPlaylist = cachedPlaylist.copy(playlistInfoCache = updatedPlaylistInfo)
+        return cachedPlaylist.toYoutubePlaylistInfo()
     }
 
     @Query("SELECT * FROM PLAYLISTS_TABLE WHERE name = :playlistName")

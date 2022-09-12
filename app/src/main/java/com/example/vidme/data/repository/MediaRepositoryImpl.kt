@@ -10,7 +10,6 @@ import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import com.example.vidme.data.request.*
 import com.example.vidme.domain.DataState
 import com.example.vidme.domain.repository.MediaRepository
-import java.io.File
 import java.util.concurrent.Executor
 import javax.inject.Inject
 
@@ -149,6 +148,14 @@ class MediaRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getStoredYoutubePlaylists(): List<com.example.vidme.domain.pojo.YoutubePlaylistInfo> {
+        return cache.getAllPlaylists().map { it.toDomain() }
+    }
+
+    override suspend fun getStoredVideos(): List<com.example.vidme.domain.pojo.VideoInfo> {
+        return cache.getAllVideos().map { it.toDomain() }
+    }
+
     override suspend fun synchronizeYoutubePlaylistInfo(
         playlistInfo: com.example.vidme.domain.pojo.YoutubePlaylistInfo,
         executor: Executor,
@@ -173,7 +180,4 @@ class MediaRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDownloadedPlaylists(file: File) {
-
-    }
 }

@@ -4,7 +4,6 @@ import com.example.vidme.domain.DataState
 import com.example.vidme.domain.pojo.DownloadInfo
 import com.example.vidme.domain.pojo.VideoInfo
 import com.example.vidme.domain.pojo.YoutubePlaylistInfo
-import java.io.File
 import java.util.concurrent.Executor
 
 interface MediaRepository {
@@ -42,7 +41,9 @@ interface MediaRepository {
         onDownloadInfo: (DataState<DownloadInfo>) -> Unit,
     )
 
-    suspend fun getDownloadedPlaylists(file: File)
+    suspend fun getStoredYoutubePlaylists(): List<YoutubePlaylistInfo>
+
+    suspend fun getStoredVideos(): List<VideoInfo>
 
 
 }
