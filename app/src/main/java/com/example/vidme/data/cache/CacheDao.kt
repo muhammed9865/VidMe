@@ -29,6 +29,12 @@ abstract class CacheDao : CacheDatabase {
         return getPlaylistWithVideos(playlistInfo.name).toYoutubePlaylistInfo()
     }
 
+    @Query("SELECT * FROM PLAYLISTS_TABLE WHERE name = :playlistName")
+    abstract override suspend fun getPlaylistInfoByName(playlistName: String): YoutubePlaylistInfoCache
+
+    @Query("SELECT * FROM VIDEOS_TABLE WHERE id = :id")
+    abstract override suspend fun getVideoInfoByID(id: String): VideoInfo
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract override suspend fun saveVideosInfo(videosInfo: List<VideoInfo>)
 

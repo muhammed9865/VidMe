@@ -2,6 +2,8 @@ package com.example.vidme.data.repository
 
 import com.example.vidme.data.cache.CacheDatabase
 import com.example.vidme.data.downloader.DownloadProcessor
+import com.example.vidme.data.mapper.toDomain
+import com.example.vidme.data.mapper.toYoutubePlaylistInfo
 import com.example.vidme.data.pojo.info.DownloadInfo
 import com.example.vidme.data.pojo.info.VideoInfo
 import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
@@ -21,7 +23,7 @@ class MediaRepositoryImpl @Inject constructor(
     override suspend fun getVideoInfo(
         url: String,
         executor: Executor,
-        onVideoInfo: (DataState<VideoInfo>) -> Unit,
+        onVideoInfo: (DataState<com.example.vidme.domain.pojo.VideoInfo>) -> Unit,
     ) {
         val request = VideoInfoRequest(url)
         // Before returning the flow, cache the result and return the result from database
@@ -30,8 +32,12 @@ class MediaRepositoryImpl @Inject constructor(
             if (res.isSuccessful) {
                 val data = res.data!!
                 cache.saveVideoInfo(data)
+                val videoInfo = cache.getVideoInfoByID(data.id).toDomain()
+                onVideoInfo(DataState.success(videoInfo))
+            } else {
+                onVideoInfo(DataState.failure(res.error))
             }
-            onVideoInfo(res)
+
         }
     }
 
@@ -39,7 +45,7 @@ class MediaRepositoryImpl @Inject constructor(
         playlistName: String,
         url: String,
         executor: Executor,
-        onPlaylistInfo: (DataState<YoutubePlaylistInfo>) -> Unit,
+        onPlaylistInfo: (DataState<com.example.vidme.domain.pojo.YoutubePlaylistInfo>) -> Unit,
     ) {
         if (!url.contains("youtube")) {
             onPlaylistInfo(DataState.failure("url $url is not a youtube playlist url"))
@@ -51,74 +57,106 @@ class MediaRepositoryImpl @Inject constructor(
         val result = processor.process<YoutubePlaylistInfo>(executor, request)
         result.collect { res ->
             if (res.isSuccessful) {
-                val data = res.data!!
-                cache.savePlaylistInfo(data)
+                val playlistInfo = res.data!!
+                cache.savePlaylistInfo(playlistInfo)
+                val cachedPlaylistInfo =
+                    cache.getPlaylistWithVideos(playlistName).toYoutubePlaylistInfo().toDomain()
+
+                onPlaylistInfo(DataState.success(cachedPlaylistInfo))
+            } else {
+                onPlaylistInfo(DataState.failure(res.error))
             }
-            onPlaylistInfo(res)
+
         }
     }
 
     override suspend fun downloadVideo(
-        videoInfo: VideoInfo,
+        videoInfo: com.example.vidme.domain.pojo.VideoInfo,
         audioOnly: Boolean,
         executor: Executor,
-        onDownloadInfo: (DataState<DownloadInfo>) -> Unit,
+        onDownloadInfo: (DataState<com.example.vidme.domain.pojo.DownloadInfo>) -> Unit,
     ) {
         /*
             * If the video is part of a playlist then the originalUrl is the playlist Url
-            * and the video id can be downloaded if it's a Youtube video
+            * and the video id can be downloaded if it's a Youtube video.
+            * Getting the Cached VideoInfo (Data layer) to get the originalUrl of the video
          */
+
+        val cachedVideoInfo = cache.getVideoInfoByID(videoInfo.id)
         val url =
-            if (videoInfo.originalUrl.contains("youtube")) videoInfo.id else videoInfo.originalUrl
+            if (cachedVideoInfo.originalUrl.contains("youtube")) cachedVideoInfo.id else cachedVideoInfo.originalUrl
 
         val request = VideoDownloadRequest(url, audioOnly)
         val result = processor.process<DownloadInfo>(executor = executor, request = request)
         result.collect { res ->
+
             if (res.isSuccessful) {
                 val data = res.data!!
-                val updatedVideoInfo = videoInfo.copy(storageUrl = data.storageLocation,
+                val updatedVideoInfo = cachedVideoInfo.copy(
+                    storageUrl = data.storageLocation,
                     isAudio = audioOnly,
                     isVideo = !audioOnly)
+
                 cache.saveVideoInfo(updatedVideoInfo)
+
+                // Mapped to the Domain layer
+                val downloadInfo = data.toDomain()
+                onDownloadInfo(DataState.success(downloadInfo))
+
+            } else {
+                onDownloadInfo(DataState.failure(res.error))
             }
-            onDownloadInfo(res)
+
+
         }
     }
 
     override suspend fun downloadPlaylist(
-        playlistInfo: YoutubePlaylistInfo,
+        playlistInfo: com.example.vidme.domain.pojo.YoutubePlaylistInfo,
         audioOnly: Boolean,
         executor: Executor,
-        onDownloadInfo: (DataState<DownloadInfo>) -> Unit,
+        onDownloadInfo: (DataState<com.example.vidme.domain.pojo.DownloadInfo>) -> Unit,
     ) {
+        val cachedPlaylistInfo =
+            cache.getPlaylistWithVideos(playlistInfo.name).toYoutubePlaylistInfo()
+
         val request =
-            YoutubePlaylistDownloadRequest(playlistInfo, playlistInfo.originalUrl, audioOnly)
+            YoutubePlaylistDownloadRequest(cachedPlaylistInfo, playlistInfo.originalUrl, audioOnly)
 
         val result = processor.process<DownloadInfo>(executor, request)
 
         result.collect { res ->
+
             if (res.isSuccessful) {
                 val data = res.data!!
                 if (data.currentVideoIndex != -1) {
+                    // Mapping the info to domain layer
+                    val downloadInfo = data.toDomain()
+                    onDownloadInfo(DataState.success(downloadInfo))
+
                     // Updating the videoInfo being downloaded with the new storageLocation on device
                     val updatedVideoInfo =
-                        playlistInfo.videos[data.currentVideoIndex].copy(storageUrl = data.storageLocation,
+                        cachedPlaylistInfo.videos[data.currentVideoIndex].copy(storageUrl = data.storageLocation,
                             isAudio = audioOnly,
                             isVideo = !audioOnly)
 
                     cache.saveVideoInfo(updatedVideoInfo)
                 }
+            } else {
+                onDownloadInfo(DataState.failure(res.error))
             }
-            onDownloadInfo(res)
+
         }
     }
 
     override suspend fun synchronizeYoutubePlaylistInfo(
-        playlistInfo: YoutubePlaylistInfo,
+        playlistInfo: com.example.vidme.domain.pojo.YoutubePlaylistInfo,
         executor: Executor,
-        onPlaylistInfo: (DataState<YoutubePlaylistInfo>) -> Unit,
+        onPlaylistInfo: (DataState<com.example.vidme.domain.pojo.YoutubePlaylistInfo>) -> Unit,
     ) {
-        val request = SynchronizePlaylistRequest(playlistInfo)
+        val cachedPlaylistInfo =
+            cache.getPlaylistWithVideos(playlistInfo.name).toYoutubePlaylistInfo()
+        val request = SynchronizePlaylistRequest(cachedPlaylistInfo)
 
         // Before returning the flow, cache the result and return the result from database
         val result = processor.process<YoutubePlaylistInfo>(executor, request)
@@ -126,7 +164,7 @@ class MediaRepositoryImpl @Inject constructor(
             if (res.isSuccessful) {
                 val data = res.data!!
                 if (data.count > 0) {
-                    val updatedPlaylistInfo = cache.updatePlaylistInfo(data)
+                    val updatedPlaylistInfo = cache.updatePlaylistInfo(data).toDomain()
                     onPlaylistInfo(DataState.success(updatedPlaylistInfo))
                 } else {
                     onPlaylistInfo(DataState.failure("Playlist is UP-TO-DATE"))

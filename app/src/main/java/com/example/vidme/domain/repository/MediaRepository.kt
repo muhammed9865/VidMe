@@ -1,9 +1,9 @@
 package com.example.vidme.domain.repository
 
-import com.example.vidme.data.pojo.info.DownloadInfo
-import com.example.vidme.data.pojo.info.VideoInfo
-import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import com.example.vidme.domain.DataState
+import com.example.vidme.domain.pojo.DownloadInfo
+import com.example.vidme.domain.pojo.VideoInfo
+import com.example.vidme.domain.pojo.YoutubePlaylistInfo
 import java.io.File
 import java.util.concurrent.Executor
 

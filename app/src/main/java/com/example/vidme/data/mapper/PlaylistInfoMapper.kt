@@ -18,3 +18,12 @@ fun PlaylistWithVideos.toYoutubePlaylistInfo(): YoutubePlaylistInfo {
         videos = videos
     )
 }
+
+fun YoutubePlaylistInfo.toDomain(): com.example.vidme.domain.pojo.YoutubePlaylistInfo {
+    return com.example.vidme.domain.pojo.YoutubePlaylistInfo(
+        name,
+        count,
+        videos.map { it.toDomain() },
+        originalUrl
+    )
+}

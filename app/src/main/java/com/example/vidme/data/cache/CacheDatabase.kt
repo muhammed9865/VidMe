@@ -22,6 +22,10 @@ interface CacheDatabase {
 
     suspend fun getAllPlaylists(): List<YoutubePlaylistInfoCache>
 
+    suspend fun getPlaylistInfoByName(playlistName: String): YoutubePlaylistInfoCache
+
+    suspend fun getVideoInfoByID(id: String): VideoInfo
+
     suspend fun getPlaylistWithVideos(playlistName: String): PlaylistWithVideos
 
 }
