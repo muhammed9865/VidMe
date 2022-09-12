@@ -1,8 +1,8 @@
 package com.example.vidme.domain.usecase
 
 import com.example.vidme.VidApplication
-import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import com.example.vidme.domain.DataState
+import com.example.vidme.domain.pojo.YoutubePlaylistInfo
 import com.example.vidme.domain.repository.MediaRepository
 import javax.inject.Inject
 
