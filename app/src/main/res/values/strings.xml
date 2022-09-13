@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">VidMe</string>
     <string name="time_remaining">Time remaining: %ss</string>
+    <string name="current_video_downloading">Downloading %d of %d</string>
+    <string name="add">add</string>
+    <string name="playlists">Playlists</string>
+    <string name="singles">Singles</string>
 </resources>

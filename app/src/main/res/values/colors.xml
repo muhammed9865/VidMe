@@ -7,7 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="surfaceColor">#6F716D</color>
-    <color name="snackBar_success">#1EC51E</color>
-    <color name="primary_color">#06F406</color>
+
+    <color name="toolbarColor">#3E3FBA</color>
+    <color name="background_color">#F3EEF2</color>
+    <color name="items_color">#265E84</color>
+    <color name="icons_color">#F3EEF2</color>
+    <color name="textOnBackground">#1E1E1E</color>
+    <color name="primaryTextOnSurface">#FFFFFF</color>
+    <color name="secondaryTextOnSurface">#E3E3E3</color>
+    <color name="clickable_color">#DFF04D</color>
+    <color name="onClickable_color">#101010</color>
+    <color name="border_color">#265E84</color>
 </resources>
