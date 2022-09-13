@@ -48,7 +48,7 @@ interface MediaRepository {
 
     suspend fun getStoredYoutubePlaylistByName(playlistName: String): YoutubePlaylistWithVideos
 
-    suspend fun getStoredVideoByID(id: String): VideoInfo
+    suspend fun getStoredVideo(id: String, playlistName: String = ""): VideoInfo
 
     suspend fun deleteVideo(videoInfo: VideoInfo): Boolean
 

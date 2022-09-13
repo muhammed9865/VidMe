@@ -4,10 +4,14 @@ import com.example.vidme.data.cache.relation.PlaylistWithVideos
 import com.example.vidme.data.pojo.cache.YoutubePlaylistInfoCache
 import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import com.example.vidme.domain.pojo.YoutubePlaylistWithVideos
+import java.text.SimpleDateFormat
+import java.util.*
 
 fun YoutubePlaylistInfo.toCache(): YoutubePlaylistInfoCache {
+    val date = SimpleDateFormat("dd/mm/yyyy hh:ss a",
+        Locale.getDefault()).format(Date(System.currentTimeMillis()))
     return YoutubePlaylistInfoCache(
-        name, originalUrl, count
+        name, originalUrl, count, date
     )
 }
 
@@ -15,7 +19,8 @@ fun YoutubePlaylistInfoCache.toDomain(): com.example.vidme.domain.pojo.YoutubePl
     return com.example.vidme.domain.pojo.YoutubePlaylistInfo(
         name,
         count,
-        originalUrl
+        originalUrl,
+        lastSynced
     )
 }
 
@@ -28,18 +33,11 @@ fun PlaylistWithVideos.toYoutubePlaylistInfo(): YoutubePlaylistInfo {
     )
 }
 
-fun YoutubePlaylistInfo.toDomain(): com.example.vidme.domain.pojo.YoutubePlaylistInfo {
-    return com.example.vidme.domain.pojo.YoutubePlaylistInfo(
-        name,
-        count,
-        originalUrl
-    )
-}
+
 
 fun PlaylistWithVideos.toDomain(): YoutubePlaylistWithVideos {
-    val playlistInfo = toYoutubePlaylistInfo()
     return YoutubePlaylistWithVideos(
-        playlistInfo = playlistInfo.toDomain(),
+        playlistInfo = playlistInfoCache.toDomain(),
         videos = videos.map { it.toDomain() }
     )
 }

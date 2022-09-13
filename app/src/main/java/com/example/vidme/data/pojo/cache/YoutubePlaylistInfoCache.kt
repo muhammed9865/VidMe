@@ -12,4 +12,5 @@ data class YoutubePlaylistInfoCache(
     val name: String = "",
     val originalUrl: String = "",
     val count: Int = -1,
+    val lastSynced: String = "",
 )

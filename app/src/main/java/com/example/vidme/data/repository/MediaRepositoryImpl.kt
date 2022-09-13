@@ -83,14 +83,14 @@ class MediaRepositoryImpl @Inject constructor(
 
         val request = YoutubePlaylistInfoRequest(playlistName, url)
 
-        // Before returning the flow, cache the result and return the result from database
+        // cache the result and return the result from database
         val result = processor.process<YoutubePlaylistInfo>(executor, request)
         result.collect { res ->
             if (res.isSuccessful) {
                 val playlistInfo = res.data!!
                 cache.savePlaylistInfo(playlistInfo)
                 val cachedPlaylistInfo =
-                    cache.getPlaylistWithVideos(playlistName).toYoutubePlaylistInfo().toDomain()
+                    cache.getPlaylistWithVideos(playlistName).playlistInfoCache.toDomain()
 
                 onPlaylistInfo(DataState.success(cachedPlaylistInfo))
             } else {
@@ -198,8 +198,11 @@ class MediaRepositoryImpl @Inject constructor(
         return cache.getPlaylistWithVideos(playlistName).toDomain()
     }
 
-    override suspend fun getStoredVideoByID(id: String): com.example.vidme.domain.pojo.VideoInfo {
-        return cache.getVideoInfo(id).toDomain()
+    override suspend fun getStoredVideo(
+        id: String,
+        playlistName: String,
+    ): com.example.vidme.domain.pojo.VideoInfo {
+        return cache.getVideoInfo(id, playlistName).toDomain()
     }
 
     override suspend fun getStoredVideos(): List<com.example.vidme.domain.pojo.VideoInfo> {
@@ -221,7 +224,9 @@ class MediaRepositoryImpl @Inject constructor(
             if (res.isSuccessful) {
                 val data = res.data!!
                 if (data.count > 0) {
-                    val updatedPlaylistInfo = cache.updatePlaylistInfo(data).toDomain()
+                    cache.updatePlaylistInfo(data)
+                    val updatedPlaylistInfo =
+                        cache.getPlaylistWithVideos(playlistInfo.name).playlistInfoCache.toDomain()
                     onPlaylistInfo(DataState.success(updatedPlaylistInfo))
                 } else {
                     onPlaylistInfo(DataState.failure("Playlist is UP-TO-DATE"))
