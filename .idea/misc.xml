@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/drawable/edittext_stroke_state_color.xml" value="0.2095" />
+        <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/drawable/ic_list_options.xml" value="0.2545" />
+        <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/drawable/ic_search.xml" value="0.2545" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/drawable/ic_single_add.xml" value="0.2095" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/drawable/ic_sync.xml" value="0.2095" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/drawable/ic_video.xml" value="0.2095" />
@@ -12,6 +14,7 @@
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/fragment_playlists.xml" value="0.41041666666666665" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/fragment_singles.xml" value="0.41041666666666665" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/view_floating_button.xml" value="0.41041666666666665" />
+        <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/menu/main_activity_menu.xml" value="0.25" />
       </map>
     </option>
   </component>

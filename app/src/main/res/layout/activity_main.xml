@@ -6,10 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".presentation.MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:menu="@menu/main_activity_menu"
         android:background="@color/toolbarColor"
         app:layout_constraintTop_toTopOf="parent"
         app:titleTextColor="@color/primaryTextOnSurface" />
