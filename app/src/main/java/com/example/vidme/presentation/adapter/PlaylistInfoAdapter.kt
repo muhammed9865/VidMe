@@ -8,6 +8,7 @@ import com.example.vidme.databinding.ListItemPlaylistInfoBinding
 import com.example.vidme.domain.pojo.YoutubePlaylistInfo
 import com.example.vidme.presentation.viewholder.PlaylistInfoListener
 import com.example.vidme.presentation.viewholder.PlaylistInfoViewHolder
+import timber.log.Timber
 
 class PlaylistInfoAdapter :
     ListAdapter<YoutubePlaylistInfo, PlaylistInfoViewHolder>(PlaylistInfoDiffUtil()) {
@@ -24,6 +25,11 @@ class PlaylistInfoAdapter :
     override fun onBindViewHolder(holder: PlaylistInfoViewHolder, position: Int) {
         holder.bind(getItem(position), syncListener, itemClickedListener)
 
+    }
+
+    override fun submitList(list: List<YoutubePlaylistInfo>?) {
+        super.submitList(list)
+        Timber.d(list.toString())
     }
 
 

@@ -11,10 +11,10 @@ import javax.inject.Inject
 @HiltViewModel
 open class BaseViewModel @Inject constructor() : ViewModel() {
 
-    protected fun tryAsync(
+    protected inline fun tryAsync(
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
-        onError: (e: Exception) -> Unit = {},
-        action: suspend () -> Unit,
+        crossinline onError: (e: Exception) -> Unit = {},
+        crossinline action: suspend () -> Unit,
     ) {
         viewModelScope.launch(dispatcher) {
             try {

@@ -5,4 +5,5 @@ data class MainState(
     val deleting: Boolean = false,
     val downloading: Boolean = false,
     val error: String? = null,
+    val simpleMessage: String? = null,
 )

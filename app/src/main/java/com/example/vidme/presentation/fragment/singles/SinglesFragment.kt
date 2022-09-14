@@ -17,7 +17,6 @@ class SinglesFragment : Fragment() {
     ): View {
         _binding = FragmentSinglesBinding.inflate(layoutInflater)
 
-
         return binding.root
     }
 }

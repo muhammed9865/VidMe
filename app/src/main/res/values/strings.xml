@@ -9,4 +9,6 @@
     <string name="search">Search</string>
     <string name="files_count">%d Media files</string>
     <string name="last_synced">Last synced: %s</string>
+    <string name="add_playlist">add_playlist</string>
+    <string name="sync_all">Sync All</string>
 </resources>

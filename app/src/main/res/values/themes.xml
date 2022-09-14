@@ -4,7 +4,7 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/toolbarColor</item>
         <item name="colorPrimaryVariant">#223981</item>
-        <item name="colorOnPrimary">@color/primaryTextOnSurface</item>
+        <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/clickable_color</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>

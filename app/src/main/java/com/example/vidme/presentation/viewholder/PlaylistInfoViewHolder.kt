@@ -24,11 +24,17 @@ class PlaylistInfoViewHolder(private val binding: ListItemPlaylistInfoBinding) :
 
         if (!playlistInfo.isSyncing) {
             syncBtn.clearAnimation()
+        } else {
+            syncBtn.isEnabled = false
+            animateSyncBtn(syncBtn)
         }
+
 
         syncBtn.setOnClickListener {
             animateSyncBtn(it)
-            syncListener?.invoke(playlistInfo.copy(isSyncing = true))
+            playlistInfo.isSyncing = true
+            syncBtn.isEnabled = false
+            syncListener?.invoke(playlistInfo)
         }
 
         playlistItem.setOnClickListener {
@@ -43,6 +49,8 @@ class PlaylistInfoViewHolder(private val binding: ListItemPlaylistInfoBinding) :
             0.5f,
             Animation.RELATIVE_TO_SELF,
             0.5f)
+        animation.repeatCount = Animation.INFINITE
+        animation.duration = 1000
         btn.startAnimation(animation)
     }
 }

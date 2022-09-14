@@ -1,12 +1,9 @@
 package com.example.vidme.presentation.activity.main
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
@@ -14,8 +11,9 @@ import androidx.lifecycle.lifecycleScope
 import com.example.vidme.R
 import com.example.vidme.databinding.ActivityMainBinding
 import com.example.vidme.presentation.fragment.FragmentAdapter
+import com.example.vidme.presentation.fragment.common.PopupMenu
 import com.example.vidme.presentation.util.showErrorSnackBar
-import com.example.vidme.presentation.util.showWarningSnackBar
+import com.example.vidme.presentation.util.showSimpleSnackBar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,22 +24,12 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity @Inject constructor() : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private val mainViewModel by viewModels<MainViewModel>()
 
     // Used to set Menu options based on each Fragment
     private var currFragmentPosition = MutableStateFlow(0)
 
-    private val storagePermission =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perms ->
-            val containsAll = permissions.all { perms.containsKey(it) }
-            if (!containsAll) {
-                Toast.makeText(this,
-                    "All permissions must be allowed to work properly",
-                    Toast.LENGTH_LONG).show()
-            }
-        }
-
+    private val popupMenu: PopupMenu by lazy { PopupMenu(findViewById(R.id.action_options)) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +38,7 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         setSupportActionBar(binding.mainToolbar)
         setUpViewPager()
         setUpTabsLayout()
+        doOnStateChange()
 
         currFragmentPosition.onEach {
             updateUI(currFragmentPosition = it)
@@ -82,17 +71,42 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_options -> {
                 doOnSinglesFragment {
-                    showWarningSnackBar(binding.root, "I'm on Singles Fragment")
+
                 }
 
                 doOnPlaylistsFragment {
-                    showErrorSnackBar(binding.root, "I'm on Playlist Fragment")
+                    popupMenu.setMenuRes(R.menu.playlist_screen_options)
+                    popupMenu.setOnMenuItemClickListener { menuItem ->
+                        if (menuItem.itemId == R.id.action_sync_all) {
+                            mainViewModel.synchronizeAllPlaylists()
+                            showSimpleSnackBar(binding.root, "Testing")
+                            true
+                        } else
+                            false
+                    }
+                    popupMenu.show()
                 }
 
                 true
             }
             else -> false
         }
+    }
+
+    private fun doOnStateChange() {
+        mainViewModel.state.onEach { state ->
+            state.simpleMessage?.let {
+                showSimpleSnackBar(binding.root, it)
+            }
+
+            state.error?.let {
+                showErrorSnackBar(binding.root, it)
+            }
+
+            if (state.syncing) {
+                showSimpleSnackBar(binding.root, "Syncing..")
+            }
+        }.launchIn(lifecycleScope)
     }
 
     private fun doOnSinglesFragment(action: () -> Unit) {
@@ -143,9 +157,6 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         }
     }
 
-
-    private fun storagePermissionGranted() =
-        permissions.all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
 
     companion object {
         private const val FRAGMENT_PLAYLISTS = 0
