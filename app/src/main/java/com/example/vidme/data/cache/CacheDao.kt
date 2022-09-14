@@ -52,7 +52,8 @@ abstract class CacheDao : CacheDatabase {
         saveVideosInfo(playlistInfo.videos)
         var cachedPlaylist = getPlaylistWithVideos(playlistInfo.name)
         val videos = cachedPlaylist.videos
-        val updatedPlaylistInfo = cachedPlaylist.playlistInfoCache.copy(count = videos.size)
+        val updatedPlaylistInfo =
+            cachedPlaylist.toYoutubePlaylistInfo().toCache().copy(count = videos.size)
         savePlaylistInfo(updatedPlaylistInfo)
         cachedPlaylist = cachedPlaylist.copy(playlistInfoCache = updatedPlaylistInfo)
         return cachedPlaylist.toYoutubePlaylistInfo()
