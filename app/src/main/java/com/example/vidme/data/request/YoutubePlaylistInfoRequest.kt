@@ -20,6 +20,7 @@ open class YoutubePlaylistInfoRequest @Inject constructor(
             "--get-url" to null,
             "--get-id" to null,
             "--get-duration" to null,
+            "--ignore-errors" to null,
             "-f" to "best"
         )
     }
