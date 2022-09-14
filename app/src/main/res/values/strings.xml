@@ -7,4 +7,6 @@
     <string name="singles">Singles</string>
     <string name="options">options</string>
     <string name="search">Search</string>
+    <string name="files_count">%d Media files</string>
+    <string name="last_synced">Last synced: %s</string>
 </resources>

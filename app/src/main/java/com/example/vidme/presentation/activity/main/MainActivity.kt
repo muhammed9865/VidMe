@@ -59,8 +59,8 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_activity_menu, menu)
+        // Initializing the TopBar search button to be a searchView
         val searchView = menu?.findItem(R.id.action_search)?.actionView as? SearchView
-
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
 

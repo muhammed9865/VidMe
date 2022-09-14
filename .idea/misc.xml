@@ -14,6 +14,7 @@
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/activity_main.xml" value="0.4114583333333333" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/fragment_playlists.xml" value="0.41041666666666665" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/fragment_singles.xml" value="0.41041666666666665" />
+        <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/list_item_playlist_info.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/view_floating_button.xml" value="0.41041666666666665" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/menu/main_activity_menu.xml" value="0.25" />
       </map>
@@ -24,5 +25,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.22" />
+      </ProjectState>
+    </option>
   </component>
 </project>

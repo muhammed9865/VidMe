@@ -10,12 +10,14 @@
 
     <color name="toolbarColor">#3E3FBA</color>
     <color name="background_color">#F3EEF2</color>
-    <color name="items_color">#265E84</color>
+    <color name="items_color">#D2DDDF</color>
     <color name="icons_color">#F3EEF2</color>
+    <color name="iconsOnItems_color">#1E1E1E</color>
     <color name="textOnBackground">#1E1E1E</color>
-    <color name="primaryTextOnSurface">#FFFFFF</color>
-    <color name="secondaryTextOnSurface">#E3E3E3</color>
+    <color name="primaryTextOnSurface">#101010</color>
+    <color name="secondaryTextOnSurface">#1E1E1E</color>
     <color name="clickable_color">#DFF04D</color>
+    <color name="clickableOnItems_color">#3E3FBA</color>
     <color name="onClickable_color">#101010</color>
     <color name="border_color">#265E84</color>
 </resources>
