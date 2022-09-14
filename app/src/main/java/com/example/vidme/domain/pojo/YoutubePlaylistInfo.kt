@@ -5,4 +5,5 @@ data class YoutubePlaylistInfo(
     val count: Int,
     val originalUrl: String,
     val lastSynced: String,
+    val isSyncing: Boolean = false,
 )

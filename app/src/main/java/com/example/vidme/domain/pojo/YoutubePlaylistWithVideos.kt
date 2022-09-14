@@ -1,6 +1,7 @@
 package com.example.vidme.domain.pojo
 
 import com.example.vidme.domain.util.StringUtil
+import com.example.vidme.domain.util.StringUtil.durationAsString
 
 data class YoutubePlaylistWithVideos(
     val playlistInfo: YoutubePlaylistInfo,
@@ -37,17 +38,4 @@ data class YoutubePlaylistWithVideos(
     }
 
 
-    private fun durationAsString(duration: Int): String {
-        val hours = duration / 3600
-        val minutes = (duration - 3600 * hours) / 60
-        val seconds = (duration - 3600 * hours - 60 * minutes)
-        return buildString {
-            if (hours > 0) append("$hours:")
-            append("$minutes:")
-            if (seconds < 10) {
-                append("0$seconds")
-            } else
-                append(seconds)
-        }
-    }
 }

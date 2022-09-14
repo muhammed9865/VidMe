@@ -9,4 +9,5 @@ data class VideoInfo(
     val isVideo: Boolean,
     val isDownloaded: Boolean,
     val playlistName: String?,
+    val isDownloading: Boolean = false,
 )
