@@ -1,4 +1,4 @@
-package com.example.vidme.presentation
+package com.example.vidme.presentation.activity.main
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.vidme.R
 import com.example.vidme.databinding.ActivityMainBinding
 import com.example.vidme.presentation.fragment.FragmentAdapter
-import com.example.vidme.presentation.util.showSimpleSnackBar
+import com.example.vidme.presentation.util.showErrorSnackBar
 import com.example.vidme.presentation.util.showWarningSnackBar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -86,7 +86,7 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
                 }
 
                 doOnPlaylistsFragment {
-                    showSimpleSnackBar(binding.root, "I'm on Playlist Fragment")
+                    showErrorSnackBar(binding.root, "I'm on Playlist Fragment")
                 }
 
                 true
