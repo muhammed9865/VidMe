@@ -122,16 +122,17 @@ class MediaRepositoryImpl @Inject constructor(
 
             if (res.isSuccessful) {
                 val data = res.data!!
-                val updatedVideoInfo = cachedVideoInfo.copy(
-                    storageUrl = data.storageLocation,
-                    isAudio = audioOnly,
-                    isVideo = !audioOnly)
+                if (data.isFinished) {
+                    val updatedVideoInfo = cachedVideoInfo.copy(
+                        storageUrl = data.storageLocation,
+                        isAudio = audioOnly,
+                        isVideo = !audioOnly)
 
-                cache.saveVideoInfo(updatedVideoInfo)
-
-                // Mapped to the Domain layer
-                val downloadInfo = data.toDomain()
-                onDownloadInfo(DataState.success(downloadInfo))
+                    cache.saveVideoInfo(updatedVideoInfo)
+                    // Mapped to the Domain layer
+                    val downloadInfo = data.toDomain(videoInfo = updatedVideoInfo.toDomain())
+                    onDownloadInfo(DataState.success(downloadInfo))
+                }
 
             } else {
                 onDownloadInfo(DataState.failure(res.error))

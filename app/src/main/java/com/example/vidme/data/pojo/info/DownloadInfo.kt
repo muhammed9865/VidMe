@@ -8,4 +8,5 @@ data class DownloadInfo(
     var timeRemaining: Long = 0,
     val currentVideoIndex: Int = -1,
     val storageLocation: String = "",
+    val isFinished: Boolean = false,
 ) : Info

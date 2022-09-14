@@ -37,6 +37,7 @@ class DownloadProcessor @Inject constructor(
                     val lines = mutableMapOf<Int, String>()
                     var count = 0
 
+                    var lastProgress: Float
                     ytInstance.execute(_request) { progress: Float, timeRemaining: Long, line: String ->
                         lines[count] = line
                         count++
@@ -44,14 +45,17 @@ class DownloadProcessor @Inject constructor(
                             val result = (extractor as DownloadInfoExtractor).extract(
                                 progress,
                                 timeRemaining,
-                                lines
+                                lines,
                             )
+                            lastProgress = progress
                             // Casting to DataState<T> to escape a compiler error.
                             trySendBlocking(
-                                DataState.success(data = result) as DataState<T>
+                                DataState.success(data = result.copy(isFinished = lastProgress > 0 && progress == -1f)) as DataState<T>
                             )
                         }
                     }
+
+
 
                     logger.log(lines)
 
