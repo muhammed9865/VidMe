@@ -7,12 +7,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.vidme.R
 import com.example.vidme.databinding.FragmentPlaylistsBinding
+import com.example.vidme.domain.pojo.YoutubePlaylistInfo
 import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.adapter.PlaylistInfoAdapter
 import com.example.vidme.presentation.fragment.playlist_add.PlaylistAddFragment
+import com.example.vidme.presentation.util.DialogsUtil
 import com.example.vidme.presentation.util.RecyclerViewUtil
 import com.example.vidme.presentation.util.RecyclerViewUtil.Companion.setSwipeToDelete
+import com.example.vidme.presentation.util.showSimpleSnackBar
 import com.example.vidme.presentation.util.visibility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -83,8 +87,23 @@ class PlaylistsFragment : Fragment() {
 
     private fun enableSwipeToDelete() {
         binding.playlistsRv.setSwipeToDelete(RecyclerViewUtil.LEFT) { _, position ->
-
+            val playlist = mAdapter.currentList[position]
+            deletePlaylist(playlist, playlist.name)
         }
+    }
+
+    private fun deletePlaylist(playlistInfo: YoutubePlaylistInfo, playlistName: String) {
+        val title = getString(R.string.deleting, playlistName)
+        val content = getString(R.string.confirm_deleting, playlistName)
+        DialogsUtil.showChoiceDialog(
+            requireContext(),
+            title,
+            content,
+            onOKPressed = {
+                mainViewModel.deletePlaylist(playlistInfo)
+                showSimpleSnackBar(binding.root, "Deleting $playlistName")
+            }
+        )
     }
 
 }

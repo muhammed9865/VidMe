@@ -17,9 +17,15 @@ abstract class RecyclerViewUtil {
             swipeDirection: Int,
             onDelete: (viewHolder: RecyclerView.ViewHolder, position: Int) -> Unit,
         ) {
-            val swipeToDeleteCallback = SwipeToDeleteCallback(context, swipeDirection, onDelete)
-            val itemTouch = ItemTouchHelper(swipeToDeleteCallback)
-            itemTouch.attachToRecyclerView(this)
+            var itemTouchHelper: ItemTouchHelper? = null
+            val swipeToDeleteCallback =
+                SwipeToDeleteCallback(context, swipeDirection) { v, position ->
+                    onDelete(v, position)
+                    itemTouchHelper?.attachToRecyclerView(null)
+                    itemTouchHelper?.attachToRecyclerView(this)
+                }
+            itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
+            itemTouchHelper.attachToRecyclerView(this)
         }
 
         const val LEFT = ItemTouchHelper.LEFT
@@ -50,6 +56,7 @@ private class SwipeToDeleteCallback(
     private val cornersRadius = 25f
     private val intrinsicHeight by lazy { deleteDrawable?.intrinsicHeight }
     private val intrinsicWidth by lazy { deleteDrawable?.intrinsicWidth }
+    private var canvas: Canvas? = null
 
 
     override fun getMovementFlags(
@@ -84,7 +91,7 @@ private class SwipeToDeleteCallback(
             return
         }
 
-
+        canvas = c
         c.drawRoundRect(
             itemView.left + dX + 10,
             (itemView.top + 5).toFloat(),
@@ -108,6 +115,7 @@ private class SwipeToDeleteCallback(
     }
 
 
+
     override fun onMove(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
@@ -124,6 +132,8 @@ private class SwipeToDeleteCallback(
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         onDelete(viewHolder, viewHolder.adapterPosition)
+
     }
+
 
 }

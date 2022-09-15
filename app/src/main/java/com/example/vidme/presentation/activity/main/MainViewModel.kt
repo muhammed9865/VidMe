@@ -192,9 +192,7 @@ class MainViewModel @Inject constructor(
             }
         ) {
             deletePlaylist(playlistInfo.name)
-            _playlists.update { list ->
-                list.filter { it.name != playlistInfo.name }
-            }
+            loadPlaylists()
         }
     }
 
