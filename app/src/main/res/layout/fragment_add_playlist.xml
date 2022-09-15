@@ -208,5 +208,15 @@
         app:constraint_referenced_ids="fetching_pb, fetching_state_txt"
         tools:visibility="visible" />
 
+    <CheckBox
+        android:id="@+id/add_new_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add New"
+        android:translationX="500dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline10"
+        app:layout_constraintTop_toBottomOf="@+id/url_layout"
+        tools:translationX="0dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

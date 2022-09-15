@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -24,6 +25,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 @AndroidEntryPoint
@@ -33,6 +35,19 @@ class PlaylistAddFragment : Fragment() {
 
     private val mainViewModel by activityViewModels<MainViewModel>()
     private val viewModel by viewModels<PlaylistAddViewModel>()
+
+    companion object {
+        private const val AFTER_FINISH_DELAY = 3000L
+        private const val FETCHING_STATE_SECOND_DELAY = 10000L
+        private const val FETCHING_STATE_THIRD_DELAY = 30000L
+    }
+
+    // Views that will be animated  during fragment lifecycle
+    private val nameViews by lazy { listOf(binding.nameLayout, binding.textView4) }
+    private val fetchingViews by lazy { listOf(binding.fetchingStateTxt, binding.fetchingPb) }
+    private val urlViews by lazy { listOf(binding.textView5, binding.textView6, binding.urlLayout) }
+    private val addViews by lazy { listOf(binding.addBtn) }
+    private val addNewView by lazy { listOf(binding.addNewCb) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,9 +71,11 @@ class PlaylistAddFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         doOnStateChange()
 
-        val nameViews = listOf(binding.nameLayout, binding.textView4)
+        binding.addNewCb.setOnCheckedChangeListener { _, b ->
+            viewModel.setAddNew(b)
+        }
 
-        animateViews(nameViews)
+        animateShowViews(nameViews)
 
         binding.playlistNameEt.onNext {
             viewModel.setPlaylistName(binding.playlistNameEt.text.toString())
@@ -71,26 +88,26 @@ class PlaylistAddFragment : Fragment() {
         }
 
         binding.addBtn.setOnClickListener {
-            addPlaylist()
+            viewModel.validate()
         }
-
 
     }
 
     private fun addPlaylist() = with(binding) {
         // Handling Views
         fetching.visibility = View.VISIBLE
-        val fetchingViews = listOf(fetchingStateTxt, fetchingPb)
-        animateViews(fetchingViews)
+        animateShowViews(fetchingViews)
         val name = playlistNameEt.text.toString()
         val url = urlEt.text.toString()
 
-
+        // Actual adding
         mainViewModel.addPlaylist(name, url)
+
+        // Changing state text over time
         lifecycleScope.launch(Dispatchers.Main) {
-            delay(5000)
+            delay(FETCHING_STATE_SECOND_DELAY)
             fetchingStateTxt.text = getString(R.string.fetching_state_second)
-            delay(15000)
+            delay(FETCHING_STATE_THIRD_DELAY)
             fetchingStateTxt.text = getString(R.string.fetching_state_third)
         }
 
@@ -98,24 +115,35 @@ class PlaylistAddFragment : Fragment() {
 
     private fun doOnStateChange() {
 
-        val urlViews = listOf(binding.textView5, binding.textView6, binding.urlLayout)
-        val addViews = listOf(binding.addBtn)
+        mainViewModel.state.onEach { state ->
+            if (state.fetched) {
+                Timber.d(state.toString())
+                if (state.playlistWasCached && !viewModel.addNew) {
+                    vibrateView(binding.urlEt)
+                    binding.urlEt.error = "Playlist with same URL is added already"
+                    animateShowViews(fetchingViews, reverse = true)
+                    animateShowViews(addNewView)
+                    mainViewModel.resetStateAfterAdding()
 
-        mainViewModel.state.onEach {
-            if (it.fetched) {
-                lifecycleScope.launch(Dispatchers.Main) {
-                    binding.fetchingStateTxt.apply {
-                        val color = requireContext().getColor(R.color.fetching_finished)
-                        setTextColor(color)
-                        text = getString(R.string.fetching_finished)
+                } else {
+                    lifecycleScope.launch(Dispatchers.Main) {
+
+                        binding.fetchingStateTxt.apply {
+                            val color = requireContext().getColor(R.color.fetching_finished)
+                            setTextColor(color)
+                            text = getString(R.string.fetching_finished)
+                        }
+                        delay(AFTER_FINISH_DELAY)
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                        mainViewModel.resetStateAfterAdding()
+
                     }
-                    delay(1000)
-                    requireActivity().onBackPressedDispatcher.onBackPressed()
                 }
             }
         }.launchIn(lifecycleScope)
 
         viewModel.state.onEach { state ->
+
             state.playlistNameError?.let {
                 binding.playlistNameEt.error = it
             }
@@ -126,27 +154,40 @@ class PlaylistAddFragment : Fragment() {
 
             if (state.validPlaylistName) {
                 binding.playlistNameEt.error = null
-                animateViews(urlViews)
+                animateShowViews(urlViews)
             }
 
             if (state.validUrl) {
                 binding.urlEt.error = null
-                animateViews(addViews)
+                animateShowViews(addViews)
+
+            }
+
+            if (state.success) {
+                addPlaylist()
             }
 
         }.launchIn(lifecycleScope)
     }
 
-    private fun animateViews(views: List<View>) {
+    private fun animateShowViews(views: List<View>, reverse: Boolean = false) {
+        val (translationX, alpha) = if (reverse) {
+            -500f to 0f
+        } else 0f to 1f
         lifecycleScope.launch {
             views.forEach {
                 it.animate()
-                    .alpha(1f)
-                    .translationX(0f)
+                    .alpha(alpha)
+                    .translationX(translationX)
                     .setDuration(1000)
                     .start()
                 delay(200)
             }
         }
+    }
+
+    private fun vibrateView(view: View) {
+        val anim = AnimationUtils.loadAnimation(view.context, R.anim.vibrate)
+        view.startAnimation(anim)
     }
 }

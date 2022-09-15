@@ -21,15 +21,20 @@ class PlaylistAddViewModel @Inject constructor(
     private val _state = MutableStateFlow(PlaylistAddState())
     val state get() = _state.asStateFlow()
 
+    private var playlistName = ""
+    private var url = ""
+    var addNew = false
+        private set
 
     fun setPlaylistName(name: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val validationResult = validatePlaylistNameUseCase(name)
             _state.update {
                 if (validationResult.isSuccessful) {
+                    playlistName = name
                     it.copy(validPlaylistName = true)
                 } else {
-                    it.copy(playlistNameError = validationResult.error)
+                    it.copy(playlistNameError = validationResult.error, validPlaylistName = false)
                 }
             }
 
@@ -37,17 +42,32 @@ class PlaylistAddViewModel @Inject constructor(
         }
     }
 
+    fun setAddNew(add: Boolean) {
+        addNew = add
+    }
 
     fun setUrl(url: String) {
         val validationResult = validatePlaylistUrlUseCase(url)
 
         _state.update {
             if (validationResult.isSuccessful) {
+                this.url = url
                 it.copy(validUrl = true)
             } else {
-                it.copy(urlError = validationResult.error)
+                it.copy(urlError = validationResult.error, validUrl = false)
             }
         }
 
+    }
+
+    fun validate() {
+        setPlaylistName(playlistName)
+        setUrl(url)
+        val valid = listOf(state.value.validPlaylistName, state.value.validUrl).all { it }
+        if (valid) {
+            _state.update {
+                it.copy(success = true)
+            }
+        }
     }
 }

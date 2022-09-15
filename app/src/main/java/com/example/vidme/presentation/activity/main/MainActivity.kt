@@ -55,7 +55,7 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 doOnPlaylistsFragment {
-
+                    mainViewModel.searchPlaylists(newText)
                 }
 
                 doOnSinglesFragment {

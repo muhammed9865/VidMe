@@ -22,4 +22,5 @@
     <string name="fetching_state_second">Almost..</string>
     <string name="fetching_state_third">Looks like playlist is too large.. Patience</string>
     <string name="fetching_finished">Finally! Your playlist is ready!</string>
+    <string name="playlist_cached">A playlist with the same URL is found on your playlists</string>
 </resources>

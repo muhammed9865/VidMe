@@ -66,6 +66,7 @@ class MainViewModel @Inject constructor(
     private var cachedPlaylists = _playlists.value
     private var isNotSearchingPlaylists = true
     fun searchPlaylists(query: String?) {
+        Timber.d(query)
         // Saving an instance of the entire playlist before searching
         if (isNotSearchingPlaylists) {
             cachedPlaylists = _playlists.value
@@ -74,8 +75,8 @@ class MainViewModel @Inject constructor(
         // setting the playlist elements that match the query if query isNotEmpty
         if (query?.isNotEmpty() == true) {
             isNotSearchingPlaylists = false
-            _playlists.update { list ->
-                list.filter { it.name == query }
+            _playlists.update {
+                cachedPlaylists.filter { query.lowercase() in it.name.lowercase() }
             }
         } else {
             // if query is empty, returning back the saved instance
@@ -98,7 +99,7 @@ class MainViewModel @Inject constructor(
         if (query?.isNotEmpty() == true) {
             isNotSearchingSingles = false
             _singles.update { list ->
-                list.filter { it.title == query }
+                list.filter { query.lowercase() in it.title.lowercase() }
             }
         } else {
             // if query is empty, returning back the saved instance
@@ -151,6 +152,7 @@ class MainViewModel @Inject constructor(
             it.mapIndexed { index, youtubePlaylistInfo -> if (index == itemIndex) update else youtubePlaylistInfo }
         }
     }
+
 
     fun downloadSingle(
         videoInfo: VideoInfo,
@@ -216,13 +218,20 @@ class MainViewModel @Inject constructor(
                 if (it.isSuccessful) {
                     tryAsync {
                         loadPlaylists()
-                        setState(_state.value.copy(fetched = true))
+                        setState(_state.value.copy(fetched = true, playlistWasCached = it.cached))
                     }
                 } else {
                     setState(_state.value.copy(error = it.error))
                 }
             }
         }
+    }
+
+    fun resetStateAfterAdding() {
+        setState(_state.value.copy(
+            playlistWasCached = false,
+            fetched = false,
+        ))
     }
 
 

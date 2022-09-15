@@ -61,6 +61,7 @@ dependencies {
     def fragment_version = "1.5.2"
     def lifecycle_version = "2.6.0-alpha01"
     def room_version = "2.4.3"
+    def lottieVersion = "5.2.0"
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
@@ -91,6 +92,9 @@ dependencies {
     // SSP for responsive textsizes
     implementation 'com.intuit.ssp:ssp-android:1.1.0'
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
+
+
+    implementation "com.airbnb.android:lottie:$lottieVersion"
 
     // Local Unit Tests
     testImplementation "com.google.truth:truth:1.1.3"
