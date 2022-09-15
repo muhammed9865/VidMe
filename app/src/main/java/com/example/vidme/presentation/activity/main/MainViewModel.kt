@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -26,6 +26,7 @@ class MainViewModel @Inject constructor(
     private val downloadVideo: DownloadVideoUseCase,
     private val deleteVideo: DeleteVideoUseCase,
     private val deletePlaylist: DeletePlaylistUseCase,
+    private val addPlaylist: FetchYoutubePlaylistInfoUseCase,
 ) : ViewModel() {
 
 
@@ -36,7 +37,7 @@ class MainViewModel @Inject constructor(
     val singles: StateFlow<List<VideoInfo>> = _singles
 
     private val _state = MutableStateFlow(MainState())
-    val state get() = _state.asStateFlow()
+    val state get() = _state.asSharedFlow()
 
     init {
         loadPlaylists()
@@ -208,6 +209,22 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    fun addPlaylist(name: String, url: String) {
+        tryAsync {
+            addPlaylist(name, url) {
+                if (it.isSuccessful) {
+                    tryAsync {
+                        loadPlaylists()
+                        setState(_state.value.copy(fetched = true))
+                    }
+                } else {
+                    setState(_state.value.copy(error = it.error))
+                }
+            }
+        }
+    }
+
 
     private fun setState(state: MainState) {
         _state.value = state

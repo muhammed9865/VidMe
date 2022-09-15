@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="PlaylistAddTextInputLayout">
+        <item name="boxBackgroundMode">outline</item>
+        <item name="hintTextColor">@color/white</item>
+        <item name="alpha">0</item>
+        <item name="android:translationX">-500dp</item>
+        <item name="boxCornerRadiusTopStart">@dimen/defaultCornerRadius</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/defaultCornerRadius</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/defaultCornerRadius</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/defaultCornerRadius</item>
+        <item name="android:layout_marginTop">@dimen/_5sdp</item>
+        <item name="boxStrokeColor">@color/clickable_color</item>
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+    </style>
+
+</resources>

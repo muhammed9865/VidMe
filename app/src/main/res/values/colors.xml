@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -20,4 +20,7 @@
     <color name="clickableOnItems_color">#3E3FBA</color>
     <color name="onClickable_color">#101010</color>
     <color name="border_color">#265E84</color>
+    <color name="fetching_finished">#00FF00</color>
+
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/white</color>
 </resources>

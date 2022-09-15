@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.vidme.databinding.FragmentPlaylistsBinding
 import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.adapter.PlaylistInfoAdapter
-import com.example.vidme.presentation.fragment.singles.SinglesFragment
+import com.example.vidme.presentation.fragment.playlist_add.PlaylistAddFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -36,7 +36,7 @@ class PlaylistsFragment : Fragment() {
                 /* TODO Implement adding new Playlist
                 *   Create AddPlaylistFragment and  replace val fragment  initialization */
 
-                val fragment: Fragment = SinglesFragment()
+                val fragment: Fragment = PlaylistAddFragment()
                 parentFragmentManager.beginTransaction()
                     .replace(binding.root.id, fragment, "adding_playlist")
                     .setReorderingAllowed(true)

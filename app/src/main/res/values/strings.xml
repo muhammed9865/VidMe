@@ -2,7 +2,7 @@
     <string name="app_name">VidMe</string>
     <string name="time_remaining">Time remaining: %ss</string>
     <string name="current_video_downloading">Downloading %d of %d</string>
-    <string name="add">add</string>
+    <string name="add">Add</string>
     <string name="playlists">Playlists</string>
     <string name="singles">Singles</string>
     <string name="options">options</string>
@@ -11,4 +11,15 @@
     <string name="last_synced">Last synced: %s</string>
     <string name="add_playlist">add_playlist</string>
     <string name="sync_all">Sync All</string>
+    <string name="adding_a_new_playlist">Adding a new playlist?</string>
+    <string name="add_playlist_secondary_txt">Don\'t worry I got you!</string>
+    <string name="start_by_choosing_your_playlist_name">Start by choosing your playlist name</string>
+    <string name="name">Name</string>
+    <string name="url">URL</string>
+    <string name="enter_url">Now enter the playlist URL</string>
+    <string name="youtube_playlist_only">Youtube playlists only</string>
+    <string name="fetching_state_first">Fetching now.. This may take a while</string>
+    <string name="fetching_state_second">Almost..</string>
+    <string name="fetching_state_third">Looks like playlist is too large.. Patience</string>
+    <string name="fetching_finished">Finally! Your playlist is ready!</string>
 </resources>
