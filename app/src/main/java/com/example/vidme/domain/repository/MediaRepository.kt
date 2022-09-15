@@ -46,7 +46,7 @@ interface MediaRepository {
 
     suspend fun getStoredVideos(): List<VideoInfo>
 
-    suspend fun getStoredYoutubePlaylistByName(playlistName: String): YoutubePlaylistWithVideos
+    suspend fun getStoredYoutubePlaylistByName(playlistName: String): YoutubePlaylistWithVideos?
 
     suspend fun getStoredVideo(id: String, playlistName: String = ""): VideoInfo
 

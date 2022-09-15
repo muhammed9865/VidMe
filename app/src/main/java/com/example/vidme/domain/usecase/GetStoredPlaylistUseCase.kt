@@ -7,6 +7,6 @@ import javax.inject.Inject
 class GetStoredPlaylistUseCase @Inject constructor() : BaseUseCase() {
 
     suspend operator fun invoke(playlistName: String): YoutubePlaylistWithVideos {
-        return repository.getStoredYoutubePlaylistByName(playlistName)
+        return repository.getStoredYoutubePlaylistByName(playlistName)!!
     }
 }

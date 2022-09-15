@@ -8,8 +8,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 fun YoutubePlaylistInfo.toCache(): YoutubePlaylistInfoCache {
-    val date = SimpleDateFormat("dd/mm/yyyy hh:ss a",
-        Locale.getDefault()).format(Date(System.currentTimeMillis()))
+    val date = SimpleDateFormat("dd/MM/yyyy hh:mm a",
+        Locale.getDefault()).format(System.currentTimeMillis())
     return YoutubePlaylistInfoCache(
         name, originalUrl, count, date
     )

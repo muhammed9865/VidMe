@@ -90,7 +90,7 @@ class MediaRepositoryImpl @Inject constructor(
                 val playlistInfo = res.data!!
                 cache.savePlaylistInfo(playlistInfo)
                 val cachedPlaylistInfo =
-                    cache.getPlaylistWithVideos(playlistName).playlistInfoCache.toDomain()
+                    cache.getPlaylistWithVideos(playlistName)!!.playlistInfoCache.toDomain()
 
                 onPlaylistInfo(DataState.success(cachedPlaylistInfo))
             } else {
@@ -149,7 +149,7 @@ class MediaRepositoryImpl @Inject constructor(
         onDownloadInfo: (DataState<com.example.vidme.domain.pojo.DownloadInfo>) -> Unit,
     ) {
         val cachedPlaylistInfo =
-            cache.getPlaylistWithVideos(playlistInfo.name).toYoutubePlaylistInfo()
+            cache.getPlaylistWithVideos(playlistInfo.name)!!.toYoutubePlaylistInfo()
 
         val request =
             YoutubePlaylistDownloadRequest(cachedPlaylistInfo, playlistInfo.originalUrl, audioOnly)
@@ -195,8 +195,8 @@ class MediaRepositoryImpl @Inject constructor(
         return cache.getAllPlaylists().map { it.toDomain() }
     }
 
-    override suspend fun getStoredYoutubePlaylistByName(playlistName: String): YoutubePlaylistWithVideos {
-        return cache.getPlaylistWithVideos(playlistName).toDomain()
+    override suspend fun getStoredYoutubePlaylistByName(playlistName: String): YoutubePlaylistWithVideos? {
+        return cache.getPlaylistWithVideos(playlistName)?.toDomain()
     }
 
     override suspend fun getStoredVideo(
@@ -216,7 +216,7 @@ class MediaRepositoryImpl @Inject constructor(
         onPlaylistInfo: (DataState<com.example.vidme.domain.pojo.YoutubePlaylistInfo>) -> Unit,
     ) {
         val cachedPlaylistInfo =
-            cache.getPlaylistWithVideos(playlistInfo.name).toYoutubePlaylistInfo()
+            cache.getPlaylistWithVideos(playlistInfo.name)!!.toYoutubePlaylistInfo()
         val request = SynchronizePlaylistRequest(cachedPlaylistInfo)
 
         // Before returning the flow, cache the result and return the result from database
@@ -227,10 +227,11 @@ class MediaRepositoryImpl @Inject constructor(
 
                 cache.updatePlaylistInfo(data)
                 val updatedPlaylistInfo =
-                    cache.getPlaylistWithVideos(playlistInfo.name).playlistInfoCache.toDomain()
+                    cache.getPlaylistWithVideos(playlistInfo.name)!!.playlistInfoCache.toDomain()
                 onPlaylistInfo(DataState.success(updatedPlaylistInfo))
 
-
+            } else {
+                onPlaylistInfo(DataState.failure(res.error))
             }
         }
     }

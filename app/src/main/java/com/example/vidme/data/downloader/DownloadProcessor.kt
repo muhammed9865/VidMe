@@ -12,6 +12,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import java.util.concurrent.CancellationException
 import java.util.concurrent.Executor
 import javax.inject.Inject
 
@@ -74,6 +75,8 @@ class DownloadProcessor @Inject constructor(
                         DataState.failure(error = e.message)
                     )
                     cancel(e.message.toString())
+                } catch (e: CancellationException) {
+
                 }
             }
             awaitClose {
