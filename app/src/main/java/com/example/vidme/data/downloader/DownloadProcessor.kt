@@ -12,6 +12,8 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 import java.util.concurrent.CancellationException
 import java.util.concurrent.Executor
@@ -27,12 +29,18 @@ class DownloadProcessor @Inject constructor(
         set(value) {
             if (value != -1f) field = value
         }
+    private var executor: Executor? = null
+    private var request: DownloadRequest? = null
+    private var timeoutCount = 0
+    private val retryCount = 2
 
     @Suppress("unchecked_cast", "unused", "LocalVariableName")
     fun <T : Info> process(
         executor: Executor,
         request: DownloadRequest,
     ): Flow<DataState<T>> {
+        this.executor = executor
+        this.request = request
         return callbackFlow {
             executor.execute {
                 logger.log(mapOf(0 to "DownloadProcessor: Starting Process..."))
@@ -43,7 +51,7 @@ class DownloadProcessor @Inject constructor(
                     val extractor: InfoExtractor = request.getExtractor()
                     val lines = mutableMapOf<Int, String>()
                     var count = 0
-                    Timber.d(_request.buildCommand().toString())
+
 
                     ytInstance.execute(_request) { progress: Float, timeRemaining: Long, line: String ->
                         lines[count] = line
@@ -64,8 +72,7 @@ class DownloadProcessor @Inject constructor(
                         }
                     }
 
-
-                    // logger.log(lines)
+                    logger.log(lines)
 
                     if (!isDownloading) {
                         val result =
@@ -78,11 +85,18 @@ class DownloadProcessor @Inject constructor(
                     close()
 
                 } catch (e: YoutubeDLException) {
-                    trySendBlocking(
-                        DataState.failure("Something went wrong")
-                    )
-                    e.printStackTrace()
-                    cancel()
+                    timeoutCount++
+                    if (timeoutCount < retryCount) {
+                        process<T>(executor, request).onEach {
+                            trySend(it)
+                        }.launchIn(this)
+                    } else {
+                        trySendBlocking(
+                            DataState.failure("Something went wrong")
+                        )
+                        e.printStackTrace()
+                        cancel()
+                    }
                 } catch (e: CancellationException) {
 
                 }
