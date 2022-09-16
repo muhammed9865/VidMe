@@ -37,9 +37,10 @@ class PlaylistAddFragment : Fragment() {
     private val viewModel by viewModels<PlaylistAddViewModel>()
 
     companion object {
-        private const val AFTER_FINISH_DELAY = 3000L
+        private const val AFTER_FINISH_DELAY = 2000L
         private const val FETCHING_STATE_SECOND_DELAY = 10000L
         private const val FETCHING_STATE_THIRD_DELAY = 30000L
+        private const val VIEW_ANIMATION_DELAY = 100L
     }
 
     // Views that will be animated  during fragment lifecycle
@@ -134,11 +135,15 @@ class PlaylistAddFragment : Fragment() {
                             text = getString(R.string.fetching_finished)
                         }
                         delay(AFTER_FINISH_DELAY)
-                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                        navigateUp()
                         mainViewModel.resetStateAfterAdding()
 
                     }
                 }
+            }
+
+            state.error?.let {
+                navigateUp()
             }
         }.launchIn(lifecycleScope)
 
@@ -181,7 +186,7 @@ class PlaylistAddFragment : Fragment() {
                     .translationX(translationX)
                     .setDuration(1000)
                     .start()
-                delay(200)
+                delay(VIEW_ANIMATION_DELAY)
             }
         }
     }
@@ -189,5 +194,9 @@ class PlaylistAddFragment : Fragment() {
     private fun vibrateView(view: View) {
         val anim = AnimationUtils.loadAnimation(view.context, R.anim.vibrate)
         view.startAnimation(anim)
+    }
+
+    private fun navigateUp() {
+        requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 }

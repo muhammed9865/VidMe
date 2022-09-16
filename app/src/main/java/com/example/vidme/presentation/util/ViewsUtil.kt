@@ -5,6 +5,9 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.example.vidme.R
 
 fun EditText.onDone(callback: (view: View) -> Unit) {
     setOnEditorActionListener { _, actionId, _ ->
@@ -39,4 +42,11 @@ fun View.hideKeyboard() {
 
 fun View.visibility(visible: Boolean) {
     visibility = if (visible) View.VISIBLE else View.GONE
+}
+
+fun ImageView.loadImage(url: String) {
+    Glide.with(this)
+        .load(url)
+        .error(R.drawable.ic_no_image)
+        .into(this)
 }

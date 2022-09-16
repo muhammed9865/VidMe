@@ -59,7 +59,7 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
                 }
 
                 doOnSinglesFragment {
-
+                    mainViewModel.searchSingles(newText)
                 }
                 return true
             }

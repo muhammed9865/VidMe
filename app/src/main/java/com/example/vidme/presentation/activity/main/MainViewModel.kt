@@ -7,6 +7,7 @@ import com.example.vidme.domain.pojo.YoutubePlaylistInfo
 import com.example.vidme.domain.usecase.*
 import com.example.vidme.domain.util.StringUtil
 import com.example.vidme.presentation.callback.SingleDownloadState
+import com.example.vidme.presentation.fragment.singles.SingleFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -39,6 +40,11 @@ class MainViewModel @Inject constructor(
     private val _state = MutableStateFlow(MainState())
     val state get() = _state.asSharedFlow()
 
+    private lateinit var cachedSingles: List<VideoInfo>
+    private lateinit var cachedPlaylist: List<YoutubePlaylistInfo>
+    private val singleFilters =
+        hashMapOf<String, SingleFilter?>().also { it["filter"] = SingleFilter.All }
+
     init {
         loadPlaylists()
         loadSingles()
@@ -46,69 +52,75 @@ class MainViewModel @Inject constructor(
 
     private fun loadPlaylists() {
         tryAsync {
-            _playlists.update { getPlaylists().toMutableList() }
+            _playlists.update {
+                getPlaylists().also {
+                    cachedPlaylist = it
+                }
+            }
         }
     }
 
     private fun loadSingles() {
-        tryAsync(
-            onError = {
-                Timber.d(it)
-                setState(_state.value.copy(error = it.message))
-            }
-        ) {
+        tryAsync {
             _singles.update {
-                getSingles()
+                getSingles().also {
+                    cachedSingles = it
+                }
             }
         }
     }
 
-    private var cachedPlaylists = _playlists.value
-    private var isNotSearchingPlaylists = true
-    fun searchPlaylists(query: String?) {
-        Timber.d(query)
-        // Saving an instance of the entire playlist before searching
-        if (isNotSearchingPlaylists) {
-            cachedPlaylists = _playlists.value
-        }
 
+    fun searchPlaylists(query: String?) {
         // setting the playlist elements that match the query if query isNotEmpty
         if (query?.isNotEmpty() == true) {
-            isNotSearchingPlaylists = false
             _playlists.update {
-                cachedPlaylists.filter { query.lowercase() in it.name.lowercase() }
+                cachedPlaylist.filter { query.lowercase() in it.name.lowercase() }
             }
         } else {
             // if query is empty, returning back the saved instance
-            isNotSearchingPlaylists = true
             _playlists.update {
-                cachedPlaylists
+                cachedPlaylist
             }
         }
     }
 
-    private var cachedSingles = _singles.value
-    private var isNotSearchingSingles = true
-    fun searchSingles(query: String?) {
-        // Saving an instance of the entire singles list before searching
-        if (isNotSearchingSingles) {
-            cachedSingles = _singles.value
-        }
 
+    fun searchSingles(query: String?) {
         // setting the singles elements that match the query if query isNotEmpty
         if (query?.isNotEmpty() == true) {
-            isNotSearchingSingles = false
-            _singles.update { list ->
-                list.filter { query.lowercase() in it.title.lowercase() }
+            _singles.update { _ ->
+                cachedSingles.filter { query.lowercase() in it.title.lowercase() }
             }
         } else {
             // if query is empty, returning back the saved instance
-            isNotSearchingSingles = true
             _singles.update {
                 cachedSingles
             }
         }
     }
+
+
+    fun addSinglesFilter(filter: SingleFilter) {
+        if (filter is SingleFilter.DownloadedOnly) {
+            if (singleFilters["download"] != null) {
+                singleFilters["download"] = null
+            } else singleFilters["download"] = filter
+        } else {
+            singleFilters["filter"] = filter
+        }
+        filterSingles()
+    }
+
+
+    private fun filterSingles() {
+        singleFilters.values.filterNotNull().forEach { fil ->
+            _singles.update {
+                fil.filter(cachedSingles)
+            }
+        }
+    }
+
 
     fun synchronizePlaylist(youtubePlaylistInfo: YoutubePlaylistInfo) {
         tryAsync {
@@ -204,9 +216,7 @@ class MainViewModel @Inject constructor(
             }
         ) {
             deleteVideo(videoInfo)
-            _singles.update { list ->
-                list.filter { it.id != videoInfo.id }
-            }
+            loadSingles()
         }
     }
 

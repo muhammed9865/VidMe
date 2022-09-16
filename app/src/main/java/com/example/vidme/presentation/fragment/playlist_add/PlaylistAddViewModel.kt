@@ -18,7 +18,7 @@ class PlaylistAddViewModel @Inject constructor(
     private val validatePlaylistUrlUseCase: ValidatePlaylistUrlUseCase,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(PlaylistAddState())
+    private val _state = MutableStateFlow<PlaylistAddState>(PlaylistAddState())
     val state get() = _state.asStateFlow()
 
     private var playlistName = ""
@@ -37,7 +37,7 @@ class PlaylistAddViewModel @Inject constructor(
                     it.copy(playlistNameError = validationResult.error, validPlaylistName = false)
                 }
             }
-
+            resetState()
 
         }
     }
@@ -57,6 +57,7 @@ class PlaylistAddViewModel @Inject constructor(
                 it.copy(urlError = validationResult.error, validUrl = false)
             }
         }
+        resetState()
 
     }
 
@@ -68,6 +69,11 @@ class PlaylistAddViewModel @Inject constructor(
             _state.update {
                 it.copy(success = true)
             }
+            resetState()
         }
+    }
+
+    private fun resetState() {
+
     }
 }
