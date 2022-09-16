@@ -25,4 +25,9 @@
     <string name="playlist_cached">A playlist with the same URL is found on your playlists</string>
     <string name="deleting">Deleting %s</string>
     <string name="confirm_deleting">Are you sure you want to delete %s?</string>
+    <string name="all">All</string>
+    <string name="video">Video</string>
+    <string name="audio">Audio</string>
+    <string name="downloaded_only">Downloaded only</string>
+    <string name="permissions_required">\"Storage permissions are required by the app to function in downloading.. By pressing OK you will be taken to App Settings to enable it if you wish\"</string>
 </resources>

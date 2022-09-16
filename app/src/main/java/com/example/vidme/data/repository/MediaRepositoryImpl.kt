@@ -12,6 +12,7 @@ import com.example.vidme.domain.DataState
 import com.example.vidme.domain.pojo.YoutubePlaylistWithVideos
 import com.example.vidme.domain.repository.MediaRepository
 import com.example.vidme.domain.util.FileUtil
+import timber.log.Timber
 import java.util.concurrent.Executor
 import javax.inject.Inject
 
@@ -31,7 +32,7 @@ class MediaRepositoryImpl @Inject constructor(
         try {
             val cachedVideo = cache.getAllVideos().find { it.originalUrl == url }
             cachedVideo?.let { foundVideo ->
-                onVideoInfo(DataState.success(foundVideo.toDomain()))
+                onVideoInfo(DataState.success(foundVideo.toDomain(), cached = true))
                 return
             }
         } catch (e: Exception) {
@@ -67,7 +68,7 @@ class MediaRepositoryImpl @Inject constructor(
             val cachedPlaylist =
                 cache.getAllPlaylists().find { it.name == playlistName || it.originalUrl == url }
             cachedPlaylist?.let { foundPlaylist ->
-                onPlaylistInfo(DataState.success(foundPlaylist.toDomain()))
+                onPlaylistInfo(DataState.success(foundPlaylist.toDomain(), cached = true))
                 return
             }
 
@@ -85,6 +86,7 @@ class MediaRepositoryImpl @Inject constructor(
 
         // cache the result and return the result from database
         val result = processor.process<YoutubePlaylistInfo>(executor, request)
+
         result.collect { res ->
             if (res.isSuccessful) {
                 val playlistInfo = res.data!!
@@ -112,16 +114,18 @@ class MediaRepositoryImpl @Inject constructor(
             * Getting the Cached VideoInfo (Data layer) to get the originalUrl of the video
          */
 
-        val cachedVideoInfo = cache.getVideoInfo(videoInfo.id)
+        val cachedVideoInfo =
+            cache.getVideoInfo(videoInfo.id, playlistName = videoInfo.playlistName ?: "")
         val url =
             if (cachedVideoInfo.originalUrl.contains("youtube")) cachedVideoInfo.id else cachedVideoInfo.originalUrl
 
         val request = VideoDownloadRequest(url, audioOnly)
         val result = processor.process<DownloadInfo>(executor = executor, request = request)
-        result.collect { res ->
 
+        result.collect { res ->
             if (res.isSuccessful) {
                 val data = res.data!!
+                Timber.d("${data.progress} : ${data.isFinished}")
                 if (data.isFinished) {
                     val updatedVideoInfo = cachedVideoInfo.copy(
                         storageUrl = data.storageLocation,
@@ -132,7 +136,9 @@ class MediaRepositoryImpl @Inject constructor(
                     // Mapped to the Domain layer
                     val downloadInfo = data.toDomain(videoInfo = updatedVideoInfo.toDomain())
                     onDownloadInfo(DataState.success(downloadInfo))
+
                 }
+                onDownloadInfo(DataState.success(data.toDomain(videoInfo = videoInfo)))
 
             } else {
                 onDownloadInfo(DataState.failure(res.error))

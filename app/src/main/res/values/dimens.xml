@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="defaultCornerRadius">10dp</dimen>
+    <dimen name="defaultCornerRadius">@dimen/_8sdp</dimen>
 </resources>

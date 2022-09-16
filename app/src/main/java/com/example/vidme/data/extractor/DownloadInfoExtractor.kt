@@ -10,12 +10,20 @@ class DownloadInfoExtractor @Inject constructor() : InfoExtractor {
 
         try {
             lines.values.first { line -> line.contains("Destination") }.let {
+                //   Timber.d(it)
                 info = info.copy(storageLocation = getStorageLocation(it))
             }
 
             lines.values.last { line -> line.contains("Downloading video") }.let {
+                //  Timber.d(it)
                 info = info.copy(currentVideoIndex = getCurrentVideoIndexFromLine(it))
             }
+
+            lines.values.first { line -> line.contains("100%") }.let {
+                //  Timber.d(it)
+                info = info.copy(isFinished = true)
+            }
+
         } catch (e: Exception) {
 
         }
