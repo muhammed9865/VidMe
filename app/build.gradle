@@ -84,7 +84,7 @@ dependencies {
 
 
     // Youtube-DL used for downloading videos
-    implementation 'com.github.yausername.youtubedl-android:library:0.13.2'
+    implementation 'com.github.yausername.youtubedl-android:library:42c7dfcee1'
 
     // Timber for Logging on Debug mode
     implementation 'com.jakewharton.timber:timber:5.0.1'

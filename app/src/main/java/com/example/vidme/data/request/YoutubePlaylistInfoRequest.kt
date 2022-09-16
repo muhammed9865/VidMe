@@ -15,12 +15,12 @@ open class YoutubePlaylistInfoRequest @Inject constructor(
 
     override fun getOptions(): Map<String, String?> {
         return mapOf(
+            "--no-warnings" to null,
             "--get-title" to null,
             "--get-thumbnail" to null,
             "--get-url" to null,
             "--get-id" to null,
             "--get-duration" to null,
-            "--ignore-errors" to null,
             "-f" to "best"
         )
     }
