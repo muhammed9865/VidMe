@@ -41,7 +41,7 @@ class MainViewModel @Inject constructor(
 
     private val _selectedSingle = MutableStateFlow<VideoInfo?>(null)
     val selectedSingle get() = _selectedSingle
-    private var currentSingleDownloadingID: String = ""
+    private var currentSinglesDownloadingIDs: MutableList<String> = mutableListOf()
 
     private val _state = MutableStateFlow(MainState())
     val state get() = _state.asSharedFlow()
@@ -134,7 +134,7 @@ class MainViewModel @Inject constructor(
     private fun filterSingles() {
         singleFilters.values.filterNotNull().forEach { fil ->
             _singles.update {
-                fil.filter(cachedSingles, currentSingleDownloadingID)
+                fil.filter(cachedSingles, currentSinglesDownloadingIDs)
             }
         }
     }
@@ -182,7 +182,7 @@ class MainViewModel @Inject constructor(
         downloadCallback: SingleDownloadState,
     ) {
         tryAsync {
-            currentSingleDownloadingID = videoRequest.videoInfo?.id ?: ""
+            videoRequest.videoInfo?.id?.let { currentSinglesDownloadingIDs.add(it) }
             setState(_state.value.copy(downloading = true))
             downloadVideo(videoRequest) {
                 if (it.isSuccessful) {
