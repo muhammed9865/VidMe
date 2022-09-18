@@ -1,7 +1,7 @@
 package com.example.vidme.data.repository
 
 import com.example.vidme.data.cache.CacheDatabase
-import com.example.vidme.data.downloader.DownloadProcessor
+import com.example.vidme.data.downloader.Processor
 import com.example.vidme.data.mapper.toDomain
 import com.example.vidme.data.mapper.toYoutubePlaylistInfo
 import com.example.vidme.data.pojo.info.DownloadInfo
@@ -9,6 +9,7 @@ import com.example.vidme.data.pojo.info.VideoInfo
 import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import com.example.vidme.data.request.*
 import com.example.vidme.domain.DataState
+import com.example.vidme.domain.pojo.VideoRequest
 import com.example.vidme.domain.pojo.YoutubePlaylistWithVideos
 import com.example.vidme.domain.repository.MediaRepository
 import com.example.vidme.domain.util.FileUtil
@@ -17,7 +18,7 @@ import java.util.concurrent.Executor
 import javax.inject.Inject
 
 class MediaRepositoryImpl @Inject constructor(
-    private val processor: DownloadProcessor,
+    private val processor: Processor,
     private val cache: CacheDatabase,
 ) :
     MediaRepository {
@@ -103,8 +104,7 @@ class MediaRepositoryImpl @Inject constructor(
     }
 
     override suspend fun downloadVideo(
-        videoInfo: com.example.vidme.domain.pojo.VideoInfo,
-        audioOnly: Boolean,
+        videoRequest: VideoRequest,
         executor: Executor,
         onDownloadInfo: (DataState<com.example.vidme.domain.pojo.DownloadInfo>) -> Unit,
     ) {
@@ -115,17 +115,24 @@ class MediaRepositoryImpl @Inject constructor(
          */
 
         val cachedVideoInfo =
-            cache.getVideoInfo(videoInfo.id, playlistName = videoInfo.playlistName ?: "")
+            cache.getVideoInfo(videoRequest.videoInfo?.id ?: error("VideoInfo can't be null"),
+                playlistName = videoRequest.videoInfo.playlistName ?: "")
         val url =
             if (cachedVideoInfo.originalUrl.contains("youtube")) cachedVideoInfo.id else cachedVideoInfo.originalUrl
 
-        val request = VideoDownloadRequest(url, audioOnly)
+        val audioOnly = videoRequest.type == VideoRequest.TYPE_AUDIO
+
+        val request = VideoDownloadRequest(url, videoRequest)
         val result = processor.process<DownloadInfo>(executor = executor, request = request)
 
         result.collect { res ->
             if (res.isSuccessful) {
                 val data = res.data!!
                 Timber.d("${data.progress} : ${data.isFinished}")
+                /*
+                    * if download is finished, cache the new video with the storageUrl
+                    * Else just send the current downloadInfo
+                 */
                 if (data.isFinished) {
                     val updatedVideoInfo = cachedVideoInfo.copy(
                         storageUrl = data.storageLocation,
@@ -138,7 +145,7 @@ class MediaRepositoryImpl @Inject constructor(
                     onDownloadInfo(DataState.success(downloadInfo))
 
                 }
-                onDownloadInfo(DataState.success(data.toDomain(videoInfo = videoInfo)))
+                onDownloadInfo(DataState.success(data.toDomain(videoInfo = videoRequest.videoInfo)))
 
             } else {
                 onDownloadInfo(DataState.failure(res.error))
@@ -189,7 +196,9 @@ class MediaRepositoryImpl @Inject constructor(
     override suspend fun deleteVideo(videoInfo: com.example.vidme.domain.pojo.VideoInfo): Boolean {
         val video = cache.getVideoInfo(videoInfo.id, videoInfo.playlistName ?: "")
         cache.deleteVideosInfo(listOf(video))
-        return FileUtil.deleteVideoByName(videoName = videoInfo.title)
+        return FileUtil.deleteVideoByName(location = video.storageUrl).also {
+            Timber.d("File deleted: $it")
+        }
     }
 
     override suspend fun deletePlaylistByName(playlistName: String): Boolean {

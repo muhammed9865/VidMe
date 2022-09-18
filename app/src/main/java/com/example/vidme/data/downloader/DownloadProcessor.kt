@@ -23,7 +23,7 @@ import javax.inject.Inject
 class DownloadProcessor @Inject constructor(
     private val ytInstance: YoutubeDL,
     private val logger: DownloadLogger,
-) {
+) : Processor {
 
     private var lastProgress = -1f
         set(value) {
@@ -35,7 +35,7 @@ class DownloadProcessor @Inject constructor(
     private val retryCount = 2
 
     @Suppress("unchecked_cast", "unused", "LocalVariableName")
-    fun <T : Info> process(
+    override fun <T : Info> process(
         executor: Executor,
         request: DownloadRequest,
     ): Flow<DataState<T>> {
@@ -46,6 +46,8 @@ class DownloadProcessor @Inject constructor(
                 logger.log(mapOf(0 to "DownloadProcessor: Starting Process..."))
                 try {
                     val _request = request.getRequest()
+                    Timber.d(_request.buildCommand().toString())
+
                     // Handling the case that actually downloading the request
                     val isDownloading = request.getExtractor() is DownloadInfoExtractor
                     val extractor: InfoExtractor = request.getExtractor()
@@ -62,12 +64,12 @@ class DownloadProcessor @Inject constructor(
                                 timeRemaining,
                                 lines,
                             )
-                            Timber.d("$progress : $lastProgress")
                             lastProgress = progress
 
                             // Casting to DataState<T> to escape a compiler error.
                             trySend(
-                                DataState.success(data = result.copy(isFinished = progress == -1f && lastProgress != -1f)) as DataState<T>
+                                DataState.success(data = result.copy(isFinished = checkIfIsFinished(
+                                    progress))) as DataState<T>
                             )
                         }
                     }
@@ -105,6 +107,12 @@ class DownloadProcessor @Inject constructor(
 
             }
         }
+    }
+
+    private fun checkIfIsFinished(progress: Float): Boolean {
+        return if (progress == 100f) {
+            true
+        } else lastProgress > 0 && progress == -1f
     }
 
 

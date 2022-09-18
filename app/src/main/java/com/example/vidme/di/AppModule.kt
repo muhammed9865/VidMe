@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.example.vidme.data.cache.CacheDao
 import com.example.vidme.data.cache.CacheDatabase
 import com.example.vidme.data.cache.RoomDatabase
+import com.example.vidme.data.downloader.DownloadProcessor
+import com.example.vidme.data.downloader.Processor
 import com.example.vidme.data.repository.MediaRepositoryImpl
 import com.example.vidme.domain.repository.MediaRepository
 import com.yausername.youtubedl_android.YoutubeDL
@@ -43,4 +45,8 @@ class AppModule {
     @Provides
     @Singleton
     fun provideYTDL(): YoutubeDL = YoutubeDL.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideProcessor(downloadProcessor: DownloadProcessor): Processor = downloadProcessor
 }
