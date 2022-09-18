@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/_10sdp">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/download_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/primaryTextOnSurface"
+        android:textSize="@dimen/_13ssp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/single_thumbnail"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_no_image"
+        android:theme="@style/CircularImage"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline15"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.65" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/download_btn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/download"
+        android:textAllCaps="false"
+        android:textColor="@color/primaryTextOnSurface"
+        app:backgroundTint="@color/clickable_color"
+        app:cornerRadius="@dimen/defaultCornerRadius"
+        app:layout_constraintBottom_toBottomOf="@+id/quality_group"
+        app:layout_constraintDimensionRatio="2:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline16" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.35" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/materialTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:text="@string/download_as"
+        android:textColor="@color/primaryTextOnSurface"
+
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline17" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/type_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:checkedChip="@id/type_video"
+        app:layout_constraintStart_toStartOf="@+id/materialTextView"
+        app:layout_constraintTop_toBottomOf="@+id/materialTextView"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/type_video"
+            style="@style/Widget.MaterialComponents.Chip.Choice.Custom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/video" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/type_audio"
+            style="@style/Widget.MaterialComponents.Chip.Choice.Custom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/audio" />
+    </com.google.android.material.chip.ChipGroup>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/materialTextView2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:text="@string/quality"
+        android:textColor="@color/primaryTextOnSurface"
+
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/type_group" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/quality_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:checkedChip="@id/quality_best"
+        app:layout_constraintStart_toStartOf="@+id/materialTextView2"
+        app:layout_constraintTop_toBottomOf="@+id/materialTextView2"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/quality_best"
+            style="@style/Widget.MaterialComponents.Chip.Choice.Custom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/best" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/quality_worst"
+            style="@style/Widget.MaterialComponents.Chip.Choice.Custom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/worst" />
+    </com.google.android.material.chip.ChipGroup>
+</androidx.constraintlayout.widget.ConstraintLayout>

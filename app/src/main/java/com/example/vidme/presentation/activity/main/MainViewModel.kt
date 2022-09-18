@@ -3,18 +3,15 @@ package com.example.vidme.presentation.activity.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vidme.domain.pojo.VideoInfo
+import com.example.vidme.domain.pojo.VideoRequest
 import com.example.vidme.domain.pojo.YoutubePlaylistInfo
 import com.example.vidme.domain.usecase.*
-import com.example.vidme.domain.util.StringUtil
 import com.example.vidme.presentation.callback.SingleDownloadState
-import com.example.vidme.presentation.fragment.singles.SingleFilter
+import com.example.vidme.presentation.fragment.single.singles_home.SingleFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -28,14 +25,22 @@ class MainViewModel @Inject constructor(
     private val deleteVideo: DeleteVideoUseCase,
     private val deletePlaylist: DeletePlaylistUseCase,
     private val addPlaylist: FetchYoutubePlaylistInfoUseCase,
+    private val addVideo: FetchVideoInfoUseCase,
 ) : ViewModel() {
 
 
     private val _playlists = MutableStateFlow<List<YoutubePlaylistInfo>>(mutableListOf())
     val playlists: StateFlow<List<YoutubePlaylistInfo>> = _playlists
 
-    private val _singles = MutableStateFlow<List<VideoInfo>>(mutableListOf())
-    val singles: StateFlow<List<VideoInfo>> = _singles
+    private val _selectedPlaylist = MutableStateFlow<YoutubePlaylistInfo?>(null)
+    val selectedPlaylist get() = _selectedPlaylist
+
+    private val _singles = MutableStateFlow<List<VideoInfo>>(emptyList())
+    val singles = _singles.asStateFlow()
+
+    private val _selectedSingle = MutableStateFlow<VideoInfo?>(null)
+    val selectedSingle get() = _selectedSingle
+    private var currentSingleDownloadingID: String = ""
 
     private val _state = MutableStateFlow(MainState())
     val state get() = _state.asSharedFlow()
@@ -49,6 +54,7 @@ class MainViewModel @Inject constructor(
         loadPlaylists()
         loadSingles()
     }
+
 
     private fun loadPlaylists() {
         tryAsync {
@@ -70,6 +76,17 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun setSelectedPlaylist(playlist: YoutubePlaylistInfo?) {
+        _selectedPlaylist.update {
+            playlist
+        }
+    }
+
+    fun setSelectedSingle(single: VideoInfo?) {
+        _selectedSingle.update {
+            single
+        }
+    }
 
     fun searchPlaylists(query: String?) {
         // setting the playlist elements that match the query if query isNotEmpty
@@ -116,7 +133,7 @@ class MainViewModel @Inject constructor(
     private fun filterSingles() {
         singleFilters.values.filterNotNull().forEach { fil ->
             _singles.update {
-                fil.filter(cachedSingles)
+                fil.filter(cachedSingles, currentSingleDownloadingID)
             }
         }
     }
@@ -158,39 +175,29 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun updatePlaylistAItem(item: YoutubePlaylistInfo, update: YoutubePlaylistInfo) {
-        val itemIndex = _playlists.value.indexOf(item)
-        _playlists.update {
-            it.mapIndexed { index, youtubePlaylistInfo -> if (index == itemIndex) update else youtubePlaylistInfo }
-        }
-    }
-
 
     fun downloadSingle(
-        videoInfo: VideoInfo,
-        audioOnly: Boolean = false,
-        singleDownloadState: SingleDownloadState,
+        videoRequest: VideoRequest,
+        downloadCallback: SingleDownloadState,
     ) {
-        val videoIndex = _singles.value.indexOf(videoInfo)
-
         tryAsync {
+            currentSingleDownloadingID = videoRequest.videoInfo?.id ?: ""
             setState(_state.value.copy(downloading = true))
-            downloadVideo(videoInfo, audioOnly) {
+            downloadVideo(videoRequest) {
                 if (it.isSuccessful) {
                     val data = it.data!!
-                    if (data.isFinished) {
-
-                        _singles.update { singles ->
-                            singles.mapIndexed { index, videoInfo -> if (videoIndex == index) data.videoInfo!! else videoInfo }
+                    viewModelScope.launch(Dispatchers.Main) {
+                        if (data.isFinished) {
+                            downloadCallback.onFinished(data.videoInfo!!)
+                            loadSingles()
+                            setState(_state.value.copy(downloading = false))
+                        } else {
+                            downloadCallback.onDownloading(data)
                         }
-
-                        singleDownloadState.onFinished(data.videoInfo!!)
-                        setState(_state.value.copy(downloading = false))
-                    } else {
-                        singleDownloadState.onDownloading(videoInfo,
-                            data.progress,
-                            StringUtil.durationAsString(data.timeRemaining.toInt()))
                     }
+                } else {
+                    loadSingles()
+                    setState(_state.value.copy(error = "Couldn't download single"))
                 }
             }
         }
@@ -226,8 +233,22 @@ class MainViewModel @Inject constructor(
                 if (it.isSuccessful) {
                     tryAsync {
                         loadPlaylists()
-                        setState(_state.value.copy(fetched = true, playlistWasCached = it.cached))
+                        setState(_state.value.copy(fetchedPlaylist = true,
+                            playlistWasCached = it.cached))
                     }
+                } else {
+                    setState(_state.value.copy(error = it.error))
+                }
+            }
+        }
+    }
+
+    fun addSingle(url: String) {
+        tryAsync {
+            addVideo(url) {
+                if (it.isSuccessful) {
+                    loadSingles()
+                    setState(_state.value.copy(fetchedVideo = true))
                 } else {
                     setState(_state.value.copy(error = it.error))
                 }
@@ -238,8 +259,23 @@ class MainViewModel @Inject constructor(
     fun resetStateAfterAdding() {
         setState(_state.value.copy(
             playlistWasCached = false,
-            fetched = false,
+            fetchedPlaylist = false,
+            fetchedVideo = false
         ))
+    }
+
+    private fun updatePlaylistAItem(item: YoutubePlaylistInfo, update: YoutubePlaylistInfo) {
+        val itemIndex = _playlists.value.indexOf(item)
+        _playlists.update {
+            it.mapIndexed { index, youtubePlaylistInfo -> if (index == itemIndex) update else youtubePlaylistInfo }
+        }
+    }
+
+    private fun updateSingleAtItem(item: VideoInfo, update: VideoInfo) {
+        val itemIndex = _singles.value.indexOf(item)
+        _singles.update {
+            it.mapIndexed { index, youtubePlaylistInfo -> if (index == itemIndex) update else youtubePlaylistInfo }
+        }
     }
 
 

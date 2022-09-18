@@ -20,4 +20,27 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="Widget.MaterialComponents.Chip.Choice.Custom" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/chip_background_state</item>
+        <item name="android:textColor">@color/chip_text_state</item>
+        <item name="chipStrokeColor">@color/toolbarColor</item>
+        <item name="chipStrokeWidth">@dimen/_1sdp</item>
+    </style>
+
+    <style name="CustomBottomSheetDialog" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheet</item>
+    </style>
+
+    <style name="CustomBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
+        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearanceBottomSheetDialog</item>
+    </style>
+
+    <style name="CustomShapeAppearanceBottomSheetDialog" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">@dimen/defaultCornerRadius</item>
+        <item name="cornerSizeTopLeft">@dimen/defaultCornerRadius</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
+
 </resources>

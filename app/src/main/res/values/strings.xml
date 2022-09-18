@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">VidMe</string>
-    <string name="time_remaining">Time remaining: %ss</string>
+    <string name="time_remaining">Time remaining: %s</string>
     <string name="current_video_downloading">Downloading %d of %d</string>
     <string name="add">Add</string>
     <string name="playlists">Playlists</string>
@@ -16,12 +16,14 @@
     <string name="start_by_choosing_your_playlist_name">Start by choosing your playlist name</string>
     <string name="name">Name</string>
     <string name="url">URL</string>
-    <string name="enter_url">Now enter the playlist URL</string>
+    <string name="enter_url">Now enter URL</string>
     <string name="youtube_playlist_only">Youtube playlists only</string>
     <string name="fetching_state_first">Fetching now.. This may take a while</string>
     <string name="fetching_state_second">Almost..</string>
-    <string name="fetching_state_third">Looks like playlist is too large.. Patience</string>
-    <string name="fetching_finished">Finally! Your playlist is ready!</string>
+    <string name="fetching_state_third_playlist">Looks like playlist is too large… Please wait</string>
+    <string name="fetching_state_third_single">Looks like single is too large… Please wait</string>
+    <string name="fetching_playlist_finished">Finally! Your playlist is ready!</string>
+    <string name="fetching_single_finished">Finally! Your video is ready!</string>
     <string name="playlist_cached">A playlist with the same URL is found on your playlists</string>
     <string name="deleting">Deleting %s</string>
     <string name="confirm_deleting">Are you sure you want to delete %s?</string>
@@ -30,4 +32,10 @@
     <string name="audio">Audio</string>
     <string name="downloaded_only">Downloaded only</string>
     <string name="permissions_required">\"Storage permissions are required by the app to function in downloading.. By pressing OK you will be taken to App Settings to enable it if you wish\"</string>
+    <string name="download">Download</string>
+    <string name="download_as">Download as</string>
+    <string name="quality">Quality</string>
+    <string name="best">Best</string>
+    <string name="worst">Worst</string>
+    <string name="add_new">Add New</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.vidme.presentation.fragment.singles
+package com.example.vidme.presentation.fragment.single.singles_home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,11 +12,10 @@ import com.example.vidme.databinding.FragmentSinglesBinding
 import com.example.vidme.domain.pojo.VideoInfo
 import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.adapter.SingleAdapter
-import com.example.vidme.presentation.util.DialogsUtil
-import com.example.vidme.presentation.util.RecyclerViewUtil
+import com.example.vidme.presentation.fragment.single.single_add.VideoAddFragment
+import com.example.vidme.presentation.fragment.single.single_download.SingleDownloadFragment
+import com.example.vidme.presentation.util.*
 import com.example.vidme.presentation.util.RecyclerViewUtil.Companion.setSwipeToDelete
-import com.example.vidme.presentation.util.showSimpleSnackBar
-import com.example.vidme.presentation.util.visibility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -27,6 +26,8 @@ class SinglesFragment : Fragment() {
     private val binding get() = _binding!!
     private val mainViewModel by activityViewModels<MainViewModel>()
     private val mAdapter by lazy { SingleAdapter() }
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,6 +36,7 @@ class SinglesFragment : Fragment() {
         _binding = FragmentSinglesBinding.inflate(layoutInflater)
         enableSwipeToDelete()
         enableFiltering()
+        setAdapterListeners()
 
         mainViewModel.singles.onEach {
             mAdapter.submitList(it)
@@ -45,6 +47,17 @@ class SinglesFragment : Fragment() {
             singlesRv.adapter = mAdapter
         }
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.addSingleBtn.setOnClickListener {
+            addSingle()
+        }
+    }
+
+    private fun addSingle() {
+        VideoAddFragment().show(parentFragmentManager, null)
     }
 
     private fun enableSwipeToDelete() {
@@ -63,7 +76,7 @@ class SinglesFragment : Fragment() {
             content,
             onOKPressed = {
                 mainViewModel.deleteSingle(single)
-                showSimpleSnackBar(binding.root, "Deleting $videoTitle")
+                showSimpleSnackBar(binding.root, "Deleted $videoTitle")
             }
         )
     }
@@ -82,6 +95,31 @@ class SinglesFragment : Fragment() {
                     else -> error("IllegalState")
                 }
                 mainViewModel.addSinglesFilter(filter)
+            }
+        }
+    }
+
+    private fun setAdapterListeners() {
+        mAdapter.setOnItemClickListener {
+            mainViewModel.setSelectedSingle(it)
+            if (it.isAudio) {
+                // TODO Implement going to PlayAudioFragment
+            }
+            if (it.isVideo) {
+                // TODO Implement going to PlayVideoFragment
+            }
+        }
+
+        mAdapter.setOnDownloadListener { v, listener ->
+            mainViewModel.setSelectedSingle(v)
+
+            val fragment = SingleDownloadFragment()
+            fragment.show(parentFragmentManager, null)
+
+            fragment.setOnDownloadClicked { videoRequest ->
+                mainViewModel.downloadSingle(videoRequest, listener)
+                showWarningSnackBar(binding.root, "Starting the download...")
+                mainViewModel.setSelectedSingle(null)
             }
         }
     }

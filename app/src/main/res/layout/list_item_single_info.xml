@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/_10sdp"
+    android:layout_marginBottom="@dimen/_5sdp"
     app:cardBackgroundColor="@color/items_color"
     app:cardCornerRadius="@dimen/defaultCornerRadius"
     app:cardElevation="0dp">
@@ -12,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/_10sdp"
+
         android:paddingBottom="@dimen/_5sdp">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -26,14 +27,7 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline5"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toTopOf="@+id/guideline2" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.05" />
+            app:layout_constraintTop_toBottomOf="@+id/guideline2" />
 
 
         <androidx.constraintlayout.widget.Guideline
@@ -42,6 +36,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.05" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.2" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline5"
@@ -55,14 +56,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.95" />
+            app:layout_constraintGuide_percent="0.96" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.88" />
+            app:layout_constraintGuide_percent="0.9" />
 
         <TextView
             android:id="@+id/single_name"
@@ -72,10 +73,13 @@
             android:layout_marginEnd="@dimen/_10sdp"
             android:textColor="@color/primaryTextOnSurface"
             android:textSize="@dimen/_12ssp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
             app:layout_constraintEnd_toStartOf="@+id/guideline7"
             app:layout_constraintStart_toEndOf="@+id/single_thumbnail"
             app:layout_constraintTop_toTopOf="@+id/single_thumbnail"
-            tools:text="Playlist title" />
+            tools:text="سيشسيسيبسيبسيبسيبسيبسيبءؤووشسيشسيشسيشسيشسيشسيشسيششسيششسشسيشسشسييشسيشسيششسيشسيضصثضصيلصثقصثق" />
 
         <TextView
             android:id="@+id/single_duration"
@@ -94,48 +98,46 @@
             android:layout_height="0dp"
             android:src="@drawable/ic_download"
             android:tint="@color/clickableOnItems_color"
-            android:visibility="gone"
+            android:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@+id/guideline2"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/guideline6"
             app:layout_constraintStart_toStartOf="@+id/guideline7"
-            app:layout_constraintTop_toTopOf="@+id/guideline2" />
+            tools:visibility="gone" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/single_type_img"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:src="@drawable/ic_video"
-
-            android:visibility="visible"
+            android:visibility="gone"
+            tools:visibility="visible"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/guideline6"
             app:layout_constraintStart_toStartOf="@+id/guideline7"
             app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
+        <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/download_progress_pb"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:max="100"
             android:progress="0"
             app:indicatorSize="@dimen/_35sdp"
-            app:layout_constraintBottom_toBottomOf="@+id/download_btn"
-            app:layout_constraintEnd_toStartOf="@+id/guideline6"
-            app:layout_constraintStart_toStartOf="@+id/guideline7"
-            app:layout_constraintTop_toTopOf="@+id/download_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:trackColor="#707070"
-            app:trackThickness="@dimen/_2sdp" />
+            app:trackThickness="@dimen/_8sdp" />
 
         <TextView
             android:id="@+id/time_remaining_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:textColor="@color/secondaryTextOnSurface"
             android:textSize="@dimen/_8sdp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/download_progress_pb"
-            app:layout_constraintTop_toBottomOf="@+id/download_progress_pb"
+            app:layout_constraintEnd_toStartOf="@+id/guideline6"
             tools:text="Time remaining: 10s" />
 
         <androidx.constraintlayout.widget.Group
@@ -143,7 +145,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="time_remaining_txt, download_progress_pb" />
+            app:constraint_referenced_ids="time_remaining_txt, download_progress_pb"
+            tools:visibility="gone" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

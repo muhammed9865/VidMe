@@ -3,16 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/toolbarColor">
+    android:layout_height="wrap_content"
+    android:background="@color/add_video_background"
+    android:paddingTop="@dimen/_10sdp">
 
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.05" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline9"
@@ -28,78 +22,13 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.9" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.22" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.42" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/adding_a_new_playlist"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_15ssp"
-        app:layout_constraintStart_toStartOf="@+id/guideline9"
-        app:layout_constraintTop_toTopOf="@+id/guideline8" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_playlist_secondary_txt"
-        android:textColor="@color/clickable_color"
-        android:textSize="@dimen/_12ssp"
-        app:layout_constraintStart_toStartOf="@+id/guideline9"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:alpha="0"
-        android:text="@string/start_by_choosing_your_playlist_name"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_11ssp"
-        android:translationX="-500dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline11"
-        app:layout_constraintStart_toStartOf="@+id/guideline9"
-        tools:alpha="1"
-        tools:translationX="0dp" />
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/name_layout"
-        style="@style/PlaylistAddTextInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:hint="@string/name"
-        app:layout_constraintEnd_toStartOf="@+id/guideline10"
-        app:layout_constraintStart_toStartOf="@+id/guideline9"
-        app:layout_constraintTop_toTopOf="@+id/guideline11"
-        tools:alpha="1"
-        tools:translationX="0dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/playlist_name_et"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:imeOptions="actionNext"
-            android:inputType="text"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="@color/white" />
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintGuide_percent="0.07" />
 
 
     <TextView
@@ -137,6 +66,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/url"
+        app:hintTextColor="@color/chip_stroke_state"
         app:layout_constraintEnd_toStartOf="@+id/guideline10"
         app:layout_constraintStart_toStartOf="@+id/guideline9"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
@@ -158,11 +88,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:alpha="0"
-        android:backgroundTint="@color/clickable_color"
+        android:backgroundTint="@color/toolbarColor"
         android:paddingVertical="@dimen/_11sdp"
         android:text="@string/add"
         android:textAllCaps="false"
-        android:textColor="@color/primaryTextOnSurface"
+        android:textColor="@color/white"
         android:textSize="@dimen/_11ssp"
         android:translationX="500dp"
         app:cornerRadius="@dimen/defaultCornerRadius"
@@ -192,7 +122,7 @@
         android:indeterminate="true"
         android:progress="100"
         android:translationX="500dp"
-        app:indicatorColor="@color/clickable_color"
+        app:indicatorColor="@color/white"
         app:indicatorDirectionCircular="counterclockwise"
         app:indicatorSize="@dimen/_20sdp"
         app:layout_constraintEnd_toStartOf="@+id/guideline10"
@@ -212,9 +142,10 @@
         android:id="@+id/add_new_cb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/add_new"
+        android:text="Add New"
         android:textColor="@color/white"
-        android:translationX="500dp"
+        android:translationX="-500dp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/guideline9"
         app:layout_constraintTop_toBottomOf="@+id/url_layout"
         tools:translationX="0dp" />

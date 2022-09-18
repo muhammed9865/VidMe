@@ -22,21 +22,21 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/filter_all"
-                style="@style/Widget.MaterialComponents.Chip.Filter"
+                style="@style/Widget.MaterialComponents.Chip.Choice.Custom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/all" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/filter_video"
-                style="@style/Widget.MaterialComponents.Chip.Filter"
+                style="@style/Widget.MaterialComponents.Chip.Choice.Custom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/video" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/filter_audio"
-                style="@style/Widget.MaterialComponents.Chip.Filter"
+                style="@style/Widget.MaterialComponents.Chip.Choice.Custom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/audio" />
@@ -60,6 +60,7 @@
             android:id="@+id/singles_rv"
             android:layout_width="0dp"
             android:layout_height="0dp"
+
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline14"

@@ -14,5 +14,6 @@
         <!-- Customize your theme here. -->
         <item name="colorControlNormal">@color/icons_color</item>
         <item name="editTextColor">@color/icons_color</item>
+        <item name="bottomSheetDialogTheme">@style/CustomBottomSheetDialog</item>
     </style>
 </resources>
