@@ -24,7 +24,6 @@ class SingleViewHolder(private val binding: ListItemSingleInfoBinding) :
     ) = with(binding) {
         currentSingleID = single.id
 
-        val context = itemView.context
         singleName.text = single.title
         singleThumbnail.loadImage(single.thumbnail)
         val duration = StringUtil.calculateDuration(single.duration)
@@ -57,7 +56,6 @@ class SingleViewHolder(private val binding: ListItemSingleInfoBinding) :
         val typeImgID = if (single.isAudio) R.drawable.ic_audio else R.drawable.ic_video
         singleTypeImg.setImageDrawable(ContextCompat.getDrawable(root.context, typeImgID))
 
-        downloadingViews.visibility(single.downloadInfo != null)
         downloadBtn.visibility(!single.isDownloaded)
         singleTypeImg.visibility(single.isDownloaded)
     }
