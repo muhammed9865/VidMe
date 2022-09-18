@@ -17,11 +17,7 @@ abstract class DownloadRequest(val url: String, private val audioOnly: Boolean =
             }
         }
         request.addOption("--ignore-errors")
-        request.addOption("--dump-json")
-
-        if (audioOnly) {
-            request.addOption("-f", "bestaudio")
-        }
+        request.addOption("--no-warnings")
 
         return request
     }
