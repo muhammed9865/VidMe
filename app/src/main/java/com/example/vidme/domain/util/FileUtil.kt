@@ -3,6 +3,7 @@ package com.example.vidme.domain.util
 import android.net.Uri
 import android.os.Environment
 import kotlinx.coroutines.coroutineScope
+import timber.log.Timber
 import java.io.File
 
 object FileUtil {
@@ -36,12 +37,13 @@ object FileUtil {
         }
     }
 
-    suspend fun deleteVideoByName(videoName: String): Boolean {
+    suspend fun deleteVideoByName(location: String?): Boolean {
         return coroutineScope {
             try {
-                val file = File(getStorageFile(), videoName)
-                file.delete()
+                val file = location?.let { File(it) }
+                file?.delete() ?: false
             } catch (e: Exception) {
+                Timber.d(e)
                 false
             }
         }

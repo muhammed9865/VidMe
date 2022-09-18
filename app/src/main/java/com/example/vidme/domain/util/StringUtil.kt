@@ -25,5 +25,30 @@ object StringUtil {
         }
     }
 
+    fun calculateDuration(duration: String): Int {
+        return if (isDigitsOnly(duration)) {
+            duration.toInt()
+        } else {
+            var durationAsInt = 0
+            val timeSplit = duration.split(":").map { it.toInt() }
+            when (timeSplit.size) {
+                3 -> {
+                    durationAsInt += timeSplit[0] * 3600
+                    durationAsInt += timeSplit[1] * 60
+                    durationAsInt += timeSplit[2]
+                }
+                2 -> {
+                    durationAsInt += timeSplit[0] * 60
+                    durationAsInt += timeSplit[1]
+                }
+                1 -> {
+                    durationAsInt += timeSplit[0]
+                }
+            }
+
+            durationAsInt
+        }
+    }
+
 
 }
