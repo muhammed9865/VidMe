@@ -23,9 +23,8 @@ class DialogsUtil {
         ) {
             val iconUnEdited = ContextCompat.getDrawable(context, R.drawable.ic_warning)
             val icon = DrawableCompat.wrap(iconUnEdited!!)
-            icon.setTint(context.getColor(R.color.clickable_color))
             alertDialog(context, title = title, icon = icon, message = content)
-                .setPositiveButton("Alright"
+                .setPositiveButton("Ok"
                 ) { d, _ ->
                     onOKPressed()
                     d.dismiss()

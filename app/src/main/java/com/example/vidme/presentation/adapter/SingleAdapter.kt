@@ -6,13 +6,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.vidme.databinding.ListItemSingleInfoBinding
 import com.example.vidme.domain.pojo.VideoInfo
+import com.example.vidme.presentation.viewholder.SingleDownloadListener
 import com.example.vidme.presentation.viewholder.SingleListener
 import com.example.vidme.presentation.viewholder.SingleViewHolder
 
 class SingleAdapter :
     ListAdapter<VideoInfo, SingleViewHolder>(SingleDiffUtil()) {
 
-    private var syncListener: SingleListener? = null
+    private var downloadListener: SingleDownloadListener? = null
     private var itemClickedListener: SingleListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SingleViewHolder {
@@ -22,18 +23,22 @@ class SingleAdapter :
     }
 
     override fun onBindViewHolder(holder: SingleViewHolder, position: Int) {
-        holder.bind(getItem(position), syncListener, itemClickedListener)
+        holder.bind(getItem(position), itemClickedListener, downloadListener)
 
     }
 
 
-    fun setOnDownloadListener(listener: SingleListener) {
-        this.syncListener = listener
+    fun setOnDownloadListener(listener: SingleDownloadListener) {
+        this.downloadListener = listener
     }
 
 
     fun setOnItemClickListener(listener: SingleListener) {
         this.itemClickedListener = listener
+    }
+
+    override fun submitList(list: List<VideoInfo>?) {
+        super.submitList(list)
     }
 
     class SingleDiffUtil : DiffUtil.ItemCallback<VideoInfo>() {

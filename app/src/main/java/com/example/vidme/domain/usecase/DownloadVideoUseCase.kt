@@ -2,17 +2,16 @@ package com.example.vidme.domain.usecase
 
 import com.example.vidme.domain.DataState
 import com.example.vidme.domain.pojo.DownloadInfo
-import com.example.vidme.domain.pojo.VideoInfo
+import com.example.vidme.domain.pojo.VideoRequest
 import javax.inject.Inject
 
 class DownloadVideoUseCase @Inject constructor() : BaseUseCase() {
 
     suspend operator fun invoke(
-        videoInfo: VideoInfo,
-        audioOnly: Boolean,
+        videoRequest: VideoRequest,
         onDownloadInfo: (DataState<DownloadInfo>) -> Unit,
     ) {
-        repository.downloadVideo(videoInfo, audioOnly, executor, onDownloadInfo)
+        repository.downloadVideo(videoRequest, executor, onDownloadInfo)
     }
 
 }
