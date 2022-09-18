@@ -7,4 +7,6 @@ interface SingleDownloadState {
     fun onDownloading(downloadInfo: DownloadInfo)
 
     fun onFinished(videoInfo: VideoInfo)
+
+    fun onFailure(videoInfo: VideoInfo)
 }

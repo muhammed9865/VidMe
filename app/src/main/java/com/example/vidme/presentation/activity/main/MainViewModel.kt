@@ -185,9 +185,10 @@ class MainViewModel @Inject constructor(
             videoRequest.videoInfo?.id?.let { currentSinglesDownloadingIDs.add(it) }
             setState(_state.value.copy(downloading = true))
             downloadVideo(videoRequest) {
-                if (it.isSuccessful) {
-                    val data = it.data!!
-                    viewModelScope.launch(Dispatchers.Main) {
+                tryAsync(Dispatchers.Main) {
+
+                    if (it.isSuccessful) {
+                        val data = it.data!!
                         if (data.isFinished) {
                             downloadCallback.onFinished(data.videoInfo!!)
                             loadSingles()
@@ -195,10 +196,12 @@ class MainViewModel @Inject constructor(
                         } else {
                             downloadCallback.onDownloading(data)
                         }
+                    } else {
+                        downloadCallback.onFailure(videoRequest.videoInfo!!.copy(isDownloaded = false,
+                            isDownloading = false))
+                        currentSinglesDownloadingIDs.remove(videoRequest.videoInfo.id)
+                        setState(_state.value.copy(error = "Couldn't download single"))
                     }
-                } else {
-                    loadSingles()
-                    setState(_state.value.copy(error = "Couldn't download single"))
                 }
             }
         }

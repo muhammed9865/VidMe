@@ -77,4 +77,8 @@ class SingleViewHolder(private val binding: ListItemSingleInfoBinding) :
         manageVisibility(videoInfo)
         binding.downloadBtn.isEnabled = true
     }
+
+    override fun onFailure(videoInfo: VideoInfo) {
+        binding.downloadingViews.visibility(false)
+    }
 }
