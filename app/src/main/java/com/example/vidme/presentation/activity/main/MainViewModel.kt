@@ -17,6 +17,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
+@Suppress("unused")
 class MainViewModel @Inject constructor(
     private val getPlaylists: GetStoredPlaylistsUseCase,
     private val getSingles: GetStoredVideosUseCase,
