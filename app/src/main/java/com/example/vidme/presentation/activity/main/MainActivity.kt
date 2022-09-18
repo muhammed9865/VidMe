@@ -1,8 +1,13 @@
 package com.example.vidme.presentation.activity.main
 
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -12,6 +17,7 @@ import com.example.vidme.R
 import com.example.vidme.databinding.ActivityMainBinding
 import com.example.vidme.presentation.fragment.FragmentAdapter
 import com.example.vidme.presentation.fragment.common.PopupMenu
+import com.example.vidme.presentation.util.DialogsUtil
 import com.example.vidme.presentation.util.showErrorSnackBar
 import com.example.vidme.presentation.util.showSimpleSnackBar
 import com.google.android.material.tabs.TabLayoutMediator
@@ -31,6 +37,13 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
 
     private val popupMenu: PopupMenu by lazy { PopupMenu(findViewById(R.id.action_options)) }
 
+    private val storagePermissions =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            if (!isRequiredPermissionsGranted()) {
+                askToEnablePermissions()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -40,9 +53,10 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         setUpTabsLayout()
         doOnStateChange()
 
-        currFragmentPosition.onEach {
-            updateUI(currFragmentPosition = it)
-        }.launchIn(lifecycleScope)
+        if (!isRequiredPermissionsGranted()) {
+            storagePermissions.launch(permissions.toTypedArray())
+        }
+
 
     }
 
@@ -148,19 +162,32 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         }
     }
 
-    private fun updateUI(currFragmentPosition: Int) {
-        when (currFragmentPosition) {
-            FRAGMENT_PLAYLISTS -> { /* Update UI to Playlists Fragment*/
-            }
-            FRAGMENT_SINGLES -> { /* Update UI to Singles Fragment*/
-            }
+    private fun isRequiredPermissionsGranted(): Boolean {
+        return permissions.all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
+    }
+
+    private fun askToEnablePermissions() {
+        DialogsUtil.showWarningDialog(this,
+            "Require Permissions",
+            getString(R.string.permissions_required)) {
+            goToAppSettings()
         }
+    }
+
+    private fun goToAppSettings() {
+        val intent = Intent()
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        val uri: Uri = Uri.fromParts("package", packageName, null)
+        intent.data = uri
+        startActivity(intent)
     }
 
 
     companion object {
         private const val FRAGMENT_PLAYLISTS = 0
         private const val FRAGMENT_SINGLES = 1
+        private val permissions = listOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
     }
 
 }

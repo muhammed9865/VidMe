@@ -1,11 +1,10 @@
-package com.example.vidme.presentation.fragment.playlist_add
+package com.example.vidme.presentation.fragment.playlist.playlist_add
 
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -15,10 +14,7 @@ import androidx.transition.Slide
 import com.example.vidme.R
 import com.example.vidme.databinding.FragmentAddPlaylistBinding
 import com.example.vidme.presentation.activity.main.MainViewModel
-import com.example.vidme.presentation.util.hideKeyboard
-import com.example.vidme.presentation.util.onDone
-import com.example.vidme.presentation.util.onNext
-import com.example.vidme.presentation.util.setImeOption
+import com.example.vidme.presentation.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -76,7 +72,7 @@ class PlaylistAddFragment : Fragment() {
             viewModel.setAddNew(b)
         }
 
-        animateShowViews(nameViews)
+        translateViews(lifecycleScope, nameViews)
 
         binding.playlistNameEt.onNext {
             viewModel.setPlaylistName(binding.playlistNameEt.text.toString())
@@ -97,7 +93,7 @@ class PlaylistAddFragment : Fragment() {
     private fun addPlaylist() = with(binding) {
         // Handling Views
         fetching.visibility = View.VISIBLE
-        animateShowViews(fetchingViews)
+        translateViews(lifecycleScope, fetchingViews)
         val name = playlistNameEt.text.toString()
         val url = urlEt.text.toString()
 
@@ -109,7 +105,7 @@ class PlaylistAddFragment : Fragment() {
             delay(FETCHING_STATE_SECOND_DELAY)
             fetchingStateTxt.text = getString(R.string.fetching_state_second)
             delay(FETCHING_STATE_THIRD_DELAY)
-            fetchingStateTxt.text = getString(R.string.fetching_state_third)
+            fetchingStateTxt.text = getString(R.string.fetching_state_third_playlist)
         }
 
     }
@@ -117,13 +113,13 @@ class PlaylistAddFragment : Fragment() {
     private fun doOnStateChange() {
 
         mainViewModel.state.onEach { state ->
-            if (state.fetched) {
+            if (state.fetchedPlaylist) {
                 Timber.d(state.toString())
                 if (state.playlistWasCached && !viewModel.addNew) {
                     vibrateView(binding.urlEt)
                     binding.urlEt.error = "Playlist with same URL is added already"
-                    animateShowViews(fetchingViews, reverse = true)
-                    animateShowViews(addNewView)
+                    translateViews(lifecycleScope, fetchingViews, reverse = true)
+                    translateViews(lifecycleScope, addNewView)
                     mainViewModel.resetStateAfterAdding()
 
                 } else {
@@ -132,7 +128,7 @@ class PlaylistAddFragment : Fragment() {
                         binding.fetchingStateTxt.apply {
                             val color = requireContext().getColor(R.color.fetching_finished)
                             setTextColor(color)
-                            text = getString(R.string.fetching_finished)
+                            text = getString(R.string.fetching_playlist_finished)
                         }
                         delay(AFTER_FINISH_DELAY)
                         navigateUp()
@@ -159,12 +155,12 @@ class PlaylistAddFragment : Fragment() {
 
             if (state.validPlaylistName) {
                 binding.playlistNameEt.error = null
-                animateShowViews(urlViews)
+                translateViews(lifecycleScope, urlViews)
             }
 
             if (state.validUrl) {
                 binding.urlEt.error = null
-                animateShowViews(addViews)
+                translateViews(lifecycleScope, addViews)
 
             }
 
@@ -175,26 +171,6 @@ class PlaylistAddFragment : Fragment() {
         }.launchIn(lifecycleScope)
     }
 
-    private fun animateShowViews(views: List<View>, reverse: Boolean = false) {
-        val (translationX, alpha) = if (reverse) {
-            -500f to 0f
-        } else 0f to 1f
-        lifecycleScope.launch {
-            views.forEach {
-                it.animate()
-                    .alpha(alpha)
-                    .translationX(translationX)
-                    .setDuration(1000)
-                    .start()
-                delay(VIEW_ANIMATION_DELAY)
-            }
-        }
-    }
-
-    private fun vibrateView(view: View) {
-        val anim = AnimationUtils.loadAnimation(view.context, R.anim.vibrate)
-        view.startAnimation(anim)
-    }
 
     private fun navigateUp() {
         requireActivity().onBackPressedDispatcher.onBackPressed()

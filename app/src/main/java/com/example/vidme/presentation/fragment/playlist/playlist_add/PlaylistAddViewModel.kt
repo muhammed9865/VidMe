@@ -1,4 +1,4 @@
-package com.example.vidme.presentation.fragment.playlist_add
+package com.example.vidme.presentation.fragment.playlist.playlist_add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

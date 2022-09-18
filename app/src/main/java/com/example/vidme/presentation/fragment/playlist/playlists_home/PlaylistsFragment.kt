@@ -1,4 +1,4 @@
-package com.example.vidme.presentation.fragment.playlists
+package com.example.vidme.presentation.fragment.playlist.playlists_home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import com.example.vidme.databinding.FragmentPlaylistsBinding
 import com.example.vidme.domain.pojo.YoutubePlaylistInfo
 import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.adapter.PlaylistInfoAdapter
-import com.example.vidme.presentation.fragment.playlist_add.PlaylistAddFragment
+import com.example.vidme.presentation.fragment.playlist.playlist_add.PlaylistAddFragment
 import com.example.vidme.presentation.util.DialogsUtil
 import com.example.vidme.presentation.util.RecyclerViewUtil
 import com.example.vidme.presentation.util.RecyclerViewUtil.Companion.setSwipeToDelete

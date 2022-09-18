@@ -4,8 +4,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.vidme.presentation.fragment.playlists.PlaylistsFragment
-import com.example.vidme.presentation.fragment.singles.SinglesFragment
+import com.example.vidme.presentation.fragment.playlist.playlists_home.PlaylistsFragment
+import com.example.vidme.presentation.fragment.single.singles_home.SinglesFragment
 
 class FragmentAdapter(
     fragmentManager: FragmentManager,
