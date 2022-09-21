@@ -88,7 +88,7 @@ abstract class CacheDao : CacheDatabase {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract override suspend fun saveVideosInfo(videosInfo: List<VideoInfo>)
 
-    @Query("SELECT * FROM VIDEOS_TABLE")
+    @Query("SELECT * FROM VIDEOS_TABLE WHERE playlistName = '' ")
     abstract override suspend fun getAllVideos(): List<VideoInfo>
 
     @Query("SELECT * FROM PLAYLISTS_TABLE")
