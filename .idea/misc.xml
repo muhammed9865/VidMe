@@ -17,11 +17,14 @@
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/activity_main.xml" value="0.4114583333333333" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/fragment_add_playlist.xml" value="0.5" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/fragment_add_single.xml" value="0.4114583333333333" />
+        <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/fragment_audio_player.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/fragment_download_single.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/fragment_playlists.xml" value="0.41041666666666665" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/fragment_singles.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/list_item_playlist_info.xml" value="0.5" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/list_item_single_info.xml" value="0.5" />
+        <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/notification_custom_media_player.xml" value="0.41041666666666665" />
+        <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/notification_custom_media_player_collapsed.xml" value="0.4114583333333333" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/layout/view_floating_button.xml" value="0.41041666666666665" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/menu/main_activity_menu.xml" value="0.25" />
         <entry key="..\:/AndroidStudioProjects/VidMe/app/src/main/res/menu/playlist_options.xml" value="0.4114583333333333" />

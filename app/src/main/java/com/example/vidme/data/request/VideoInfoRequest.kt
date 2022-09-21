@@ -18,9 +18,20 @@ class VideoInfoRequest(url: String) : DownloadRequest(url) {
     }
 
     override fun getExtractor(): InfoExtractor {
-        return if (url.contains("youtube"))
+        val isYoutube = youtubeReferences.any {
+            url.contains(it)
+        }
+        return if (isYoutube)
             YoutubeVideoInfoExtractor()
         else
             FacebookVideoInfoExtractor()
+    }
+
+    companion object {
+        private val youtubeReferences = listOf(
+            "youtube",
+            "youtu.be",
+            "https://youtu"
+        )
     }
 }
