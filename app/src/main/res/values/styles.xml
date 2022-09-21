@@ -6,6 +6,22 @@
         <item name="hintTextColor">@color/white</item>
         <item name="alpha">0</item>
         <item name="android:translationX">-500dp</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="boxCornerRadiusTopStart">@dimen/defaultCornerRadius</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/defaultCornerRadius</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/defaultCornerRadius</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/defaultCornerRadius</item>
+        <item name="android:layout_marginTop">@dimen/_5sdp</item>
+        <item name="boxStrokeColor">@color/clickable_color</item>
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+    </style>
+
+    <style name="SingleAddTextInputLayout">
+        <item name="boxBackgroundMode">outline</item>
+        <item name="hintTextColor">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="alpha">0</item>
+        <item name="android:translationY">500dp</item>
         <item name="boxCornerRadiusTopStart">@dimen/defaultCornerRadius</item>
         <item name="boxCornerRadiusTopEnd">@dimen/defaultCornerRadius</item>
         <item name="boxCornerRadiusBottomStart">@dimen/defaultCornerRadius</item>
@@ -18,6 +34,12 @@
     <style name="CircularImage">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="NotificationImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeBottomLeft">20%</item>
+        <item name="cornerSizeBottomRight">20%</item>
     </style>
 
     <style name="Widget.MaterialComponents.Chip.Choice.Custom" parent="Widget.MaterialComponents.Chip.Choice">
@@ -42,5 +64,10 @@
         <item name="cornerSizeBottomRight">0dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
+
+    <style name="EditTextHint" parent="TextAppearance.AppCompat">
+
+    </style>
+
 
 </resources>

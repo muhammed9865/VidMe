@@ -17,6 +17,6 @@ class VidApplication  : Application() {
     }
 
     companion object {
-        val executorService: ExecutorService = Executors.newFixedThreadPool(2)
+        val executorService: ExecutorService = Executors.newFixedThreadPool(4)
     }
 }

@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
     android:background="@color/add_video_background"
     android:paddingTop="@dimen/_10sdp">
 
@@ -62,16 +64,15 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/url_layout"
-        style="@style/PlaylistAddTextInputLayout"
+        style="@style/SingleAddTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/url"
-        app:hintTextColor="@color/chip_stroke_state"
         app:layout_constraintEnd_toStartOf="@+id/guideline10"
         app:layout_constraintStart_toStartOf="@+id/guideline9"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
         tools:alpha="1"
-        tools:translationX="0dp">
+        tools:translationY="0dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/url_et"
@@ -105,12 +106,13 @@
 
     <TextView
         android:id="@+id/fetching_state_txt"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/fetching_state_first"
         android:textColor="@color/icons_color"
         android:textSize="@dimen/_10ssp"
         android:translationX="-500dp"
+        app:layout_constraintEnd_toStartOf="@+id/fetching_pb"
         app:layout_constraintStart_toStartOf="@+id/guideline9"
         app:layout_constraintTop_toBottomOf="@+id/add_btn"
         tools:translationX="0dp" />
