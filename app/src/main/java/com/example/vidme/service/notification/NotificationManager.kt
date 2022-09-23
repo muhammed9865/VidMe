@@ -10,6 +10,7 @@ interface NotificationManager {
     fun setPlayingState(playing: Boolean)
     fun show(context: Context)
     fun setCurrentVideoInfo(videoInfo: VideoInfo)
+    fun getCurrentVideo(): VideoInfo
     fun onDestroy()
 
 }

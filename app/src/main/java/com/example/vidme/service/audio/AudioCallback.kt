@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.vidme.service.AudioReceiver
+import com.example.vidme.service.AudioService
 import timber.log.Timber
 
 class AudioCallback(private val context: Context, private val audioManager: AudioManager) :
@@ -12,12 +14,15 @@ class AudioCallback(private val context: Context, private val audioManager: Audi
 
     override fun onSeekTo(pos: Long) {
         super.onSeekTo(pos)
-        audioManager.seekTo(pos.toInt())
+        Timber.d(pos.toString())
+        val intent = Intent(context, AudioService::class.java)
+        intent.action = AudioActions.ACTION_SEEK_TO
+        intent.putExtra(AudioExtras.EXTRA_SEEK_TO_POSITION, pos.toInt())
+        context.startService(intent)
     }
 
     override fun onPause() {
         super.onPause()
-        Timber.d("OnPause")
         val action = AudioActions.ACTION_PAUSE
         val intent = Intent(context, AudioReceiver::class.java)
         intent.action = AudioReceiver.ACTION
@@ -27,12 +32,10 @@ class AudioCallback(private val context: Context, private val audioManager: Audi
 
     override fun onPlay() {
         super.onPlay()
-        Timber.d("OnPlay")
     }
 
     override fun onSkipToNext() {
         super.onSkipToNext()
-        Timber.d("SkipTonEXT")
     }
 
 

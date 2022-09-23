@@ -1,13 +1,18 @@
 package com.example.vidme.presentation.fragment.audio_player
 
-import android.content.*
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.transition.Slide
 import com.example.vidme.R
 import com.example.vidme.databinding.FragmentAudioPlayerBinding
 import com.example.vidme.domain.pojo.VideoInfo
@@ -16,6 +21,7 @@ import com.example.vidme.presentation.util.loadImage
 import com.example.vidme.service.AudioService
 import com.example.vidme.service.audio.AudioActions
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
@@ -37,19 +43,15 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), ServiceConnection {
     ): View {
         _binding = FragmentAudioPlayerBinding.inflate(layoutInflater)
 
-        val transition = Slide(Gravity.BOTTOM)
-        enterTransition = transition
-        exitTransition = transition
+
 
         isCancelable = false
 
 
         dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT)
 
         bindService()
-        // to enable marquee
+        // to enable title marquee if exceeds constraints
         binding.audioTitle.isSelected = true
         return binding.root
     }
@@ -75,54 +77,10 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), ServiceConnection {
         unbindService()
     }
 
-    private fun onDragDown() {
-
-        binding.root.setOnLongClickListener {
-            val clipText = "This shit is dragging holo"
-            val item = ClipData.Item(clipText)
-            val mimeTypes = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
-            val data = ClipData(clipText, mimeTypes, item)
-
-            val dragShadowBuilder = View.DragShadowBuilder(it)
-            it.startDragAndDrop(data, dragShadowBuilder, it, 0)
-
-            true
-        }
-
-        val dragListener = View.OnDragListener { view, dragEvent ->
-            when (dragEvent.action) {
-                DragEvent.ACTION_DRAG_STARTED -> {
-                    dragEvent.clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)
-                }
-                DragEvent.ACTION_DRAG_ENTERED -> {
-                    view.invalidate()
-                    true
-                }
-                DragEvent.ACTION_DRAG_LOCATION -> true
-                DragEvent.ACTION_DRAG_EXITED -> {
-                    view.invalidate()
-                    true
-                }
-                DragEvent.ACTION_DROP -> {
-                    view.invalidate()
-                    navigateUp()
-                    true
-                }
-                DragEvent.ACTION_DRAG_ENDED -> {
-                    view.invalidate()
-                    true
-                }
-                else -> false
-            }
-        }
-
-        binding.root.setOnDragListener(dragListener)
-    }
 
     private fun navigateUp() {
         mainViewModel.isPlaying = false
-
-        parentFragmentManager.popBackStack()
+        dismiss()
 
     }
 
@@ -138,20 +96,21 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), ServiceConnection {
     private fun onStateChanged() {
         with(binding) {
             viewModel.state.onEach { state ->
-
                 state.audioTitle?.let { title ->
                     if (title != audioTitle.text)
                         audioTitle.text = title
                 }
-                //state.audioDuration?.let { duration -> audioDuration.text = duration }
+                state.audioDuration?.let { duration ->
+                    audioDuration.text = duration
+                }
                 state.audioThumbnail?.let { thumbnail ->
                     if (thumbnail != currThumbnailUrl) {
                         audioThumbnail.loadImage(thumbnail)
                         currThumbnailUrl = thumbnail
                     }
                 }
-                // state.audioProgress.let { progress -> audioCurrentProgress.text = progress }
-                //state.audioProgressPercent.let { percent ->  audioProgressSeekbar.value = percent}
+                state.audioProgress.let { progress -> audioCurrentProgress.text = progress }
+                state.audioProgressPercent.let { percent -> audioProgressSeekbar.value = percent }
                 changePlayButtonImage(state.isPlaying)
 
             }.launchIn(lifecycleScope)
@@ -175,15 +134,15 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), ServiceConnection {
 
 
     private fun onSliderProgressUpdate() {
-        /*  binding.audioProgressSeekbar.addOnSliderTouchListener(object :
-              Slider.OnSliderTouchListener {
-              override fun onStartTrackingTouch(slider: Slider) {
-              }
+        binding.audioProgressSeekbar.addOnSliderTouchListener(object :
+            Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+            }
 
-              override fun onStopTrackingTouch(slider: Slider) {
-                  viewModel.setProgressPercent(slider.value)
-              }
-          })*/
+            override fun onStopTrackingTouch(slider: Slider) {
+                viewModel.setProgressPercent(slider.value)
+            }
+        })
     }
 
     private fun startPlayingAudio(videoInfo: VideoInfo) {

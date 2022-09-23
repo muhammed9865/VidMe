@@ -4,6 +4,8 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -11,13 +13,15 @@ import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.media.session.MediaButtonReceiver
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.vidme.R
 import com.example.vidme.di.NotificationModule
 import com.example.vidme.domain.pojo.VideoInfo
 import com.example.vidme.presentation.activity.main.MainActivity
 import com.example.vidme.service.audio.AudioCallback
 import com.example.vidme.service.audio.AudioManager
-import com.example.vidme.service.audio.AudioReceiver
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,18 +29,19 @@ import javax.inject.Inject
 class NotificationManagerImpl @Inject constructor(
     private val notificationManager: NotificationManagerCompat,
     private var audioManager: AudioManager,
+    @ApplicationContext private val mContext: Context,
 ) :
     NotificationManager {
-
-    @Inject
-    @ApplicationContext
-    lateinit var mContext: Context
 
 
     private var isPlaying = true
     private lateinit var currVideoInfo: VideoInfo
     private var requestCode = 0
     private var mediaSessionCompat: MediaSessionCompat? = null
+
+    private val playbackStateBuilder = PlaybackStateCompat.Builder()
+    private val metadataBuilder = MediaMetadataCompat.Builder()
+
 
     private fun getSession(context: Context): MediaSessionCompat {
         return if (mediaSessionCompat == null) {
@@ -50,6 +55,7 @@ class NotificationManagerImpl @Inject constructor(
     private fun notificationBuilder(context: Context): NotificationCompat.Builder =
         NotificationCompat.Builder(context, NotificationModule.AUDIO_PLAYER_CHANNEL_ID).apply {
             val mediaSession = getSession(context)
+
             val style = androidx.media.app.NotificationCompat.MediaStyle().run {
                 setMediaSession(mediaSession.sessionToken)
 
@@ -101,6 +107,10 @@ class NotificationManagerImpl @Inject constructor(
 
         }
 
+    override fun getCurrentVideo(): VideoInfo {
+        return currVideoInfo
+    }
+
 
     private fun generateAction(
         context: Context,
@@ -108,41 +118,65 @@ class NotificationManagerImpl @Inject constructor(
         action: Long,
         title: String? = null,
     ): NotificationCompat.Action {
+
         val pIntent = MediaButtonReceiver.buildMediaButtonPendingIntent(context, action)
-        incrementCode()
-        val intent = Intent(context, AudioReceiver::class.java)
-        intent.action = AudioReceiver.ACTION
-        intent.putExtra(AudioReceiver.ACTION_TYPE, action)
+        incrementRequestCode()
+
         return NotificationCompat.Action.Builder(icon, title, pIntent).build()
     }
 
-    private fun incrementCode() {
+    private fun incrementRequestCode() {
         if (requestCode % 4 > 0 || requestCode == 0) {
             requestCode++
         } else requestCode = 0
     }
 
     private fun setNotificationMetadata(mediaSessionCompat: MediaSessionCompat) {
-        val metadata = MediaMetadataCompat.Builder()
+        metadataBuilder
             .putLong(
                 MediaMetadataCompat.METADATA_KEY_DURATION,
                 audioManager.getVideoDuration()
             )
-            .build()
-        mediaSessionCompat.setMetadata(metadata)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE,
+                audioManager.getAudioData().single.title)
+        mediaSessionCompat.setMetadata(metadataBuilder.build())
     }
 
     private fun setNotificationPlaybackState(mediaSessionCompat: MediaSessionCompat) {
         val state = if (isPlaying) {
             PlaybackStateCompat.STATE_PLAYING
-        } else PlaybackStateCompat.STATE_PAUSED
-        val playbackState = PlaybackStateCompat.Builder()
+        } else {
+            PlaybackStateCompat.STATE_PAUSED
+        }
+
+        val playbackState = playbackStateBuilder
             .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
             .setState(state,
                 audioManager.getCurrentPosition().toLong(),
                 1f)
 
         mediaSessionCompat.setPlaybackState(playbackState.build())
+    }
+
+    private fun getThumbnailBitmap(context: Context, url: String) {
+
+        Glide.with(context)
+            .asBitmap()
+            .load(url)
+            .centerCrop()
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+
+                    //show(context)
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+
+                    //show(context)
+                }
+            })
+
+
     }
 
 
@@ -161,6 +195,7 @@ class NotificationManagerImpl @Inject constructor(
 
     override fun setCurrentVideoInfo(videoInfo: VideoInfo) {
         currVideoInfo = videoInfo
+        getThumbnailBitmap(mContext, videoInfo.thumbnail)
     }
 
 

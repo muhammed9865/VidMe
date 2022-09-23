@@ -20,7 +20,7 @@ interface AudioManager {
     fun onDestroy()
     fun seekTo(pos: Int)
     fun getVideoDuration(): Long
-    fun setOnAudioDataListener(listener: AudioDataListener)
+    fun setOnAudioDataListener(requestCode: Int, listener: AudioDataListener)
     fun getAudioData(): AudioData
 
     data class AudioData(

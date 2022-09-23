@@ -34,13 +34,15 @@ class AudioPlayerViewModel @Inject constructor(
     }
 
     private fun doOnAudioStateChange() {
-        audioManager.setOnAudioDataListener { data ->
+        audioManager.setOnAudioDataListener(requestCode = 1532) { data ->
             updateState(data)
         }
     }
 
     private fun updateState(data: AudioManager.AudioData) {
         _state.update {
+            isPlaying = data.isPlaying
+
             it.copy(isPlaying = data.isPlaying,
                 audioThumbnail = data.single.thumbnail,
                 audioTitle = data.single.title,
@@ -54,7 +56,8 @@ class AudioPlayerViewModel @Inject constructor(
     fun setProgressPercent(percent: Float) {
         val data = audioManager.getAudioData()
         val progress = data.duration * percent
-        audioManager.seekTo(progress.toInt())
+        mService?.seekTo(progress.toInt())
+        updateState(audioManager.getAudioData())
     }
 
     fun nextAudio() {
@@ -70,9 +73,13 @@ class AudioPlayerViewModel @Inject constructor(
     }
 
     fun pauseResume() {
-        if (isPlaying) {
+        isPlaying = if (isPlaying) {
             mService?.pause()
-        } else mService?.resume()
+            false
+        } else {
+            mService?.resume()
+            true
+        }
 
         updateState(audioManager.getAudioData())
     }

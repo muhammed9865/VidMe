@@ -8,5 +8,6 @@ sealed interface AudioActions {
         const val ACTION_NEXT = "next"
         const val ACTION_PREV = "prev"
         const val ACTION_STOP = "stop"
+        const val ACTION_SEEK_TO = "seek_to"
     }
 }

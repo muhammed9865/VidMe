@@ -45,8 +45,9 @@ object NotificationModule {
     fun provideNotificationManagerImpl(
         notificationManagerCompat: NotificationManagerCompat,
         audioManager: AudioManager,
+        @ApplicationContext context: Context,
     ): com.example.vidme.service.notification.NotificationManager {
-        return NotificationManagerImpl(notificationManagerCompat, audioManager)
+        return NotificationManagerImpl(notificationManagerCompat, audioManager, context)
     }
 
     const val AUDIO_PLAYER_CHANNEL_ID = "audio_channel"

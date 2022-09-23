@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class AudioManagerImpl @Inject constructor() : AudioManager, MediaPlayer.OnCompletionListener {
@@ -19,7 +20,7 @@ class AudioManagerImpl @Inject constructor() : AudioManager, MediaPlayer.OnCompl
     private var currentTrackIndex = 0
     private var currentPosition = 0
 
-    private val audioListeners = mutableListOf<AudioDataListener>()
+    private val audioListeners = mutableMapOf<Int, AudioDataListener>()
 
 
     override fun init() {
@@ -81,6 +82,7 @@ class AudioManagerImpl @Inject constructor() : AudioManager, MediaPlayer.OnCompl
             pause()
         } else
             resume()
+        emitAudioData()
     }
 
     override fun resume() {
@@ -107,7 +109,9 @@ class AudioManagerImpl @Inject constructor() : AudioManager, MediaPlayer.OnCompl
     }
 
     override fun seekTo(pos: Int) {
-        mediaPlayer?.seekTo(pos)
+        currentPosition = pos
+        mediaPlayer?.seekTo(currentPosition)
+        Timber.d(mediaPlayer?.currentPosition.toString())
     }
 
     override fun getVideoDuration(): Long {
@@ -132,8 +136,8 @@ class AudioManagerImpl @Inject constructor() : AudioManager, MediaPlayer.OnCompl
 
     private fun isPlaying() = mediaPlayer?.isPlaying
 
-    override fun setOnAudioDataListener(listener: AudioDataListener) {
-        audioListeners.add(listener)
+    override fun setOnAudioDataListener(requestCode: Int, listener: AudioDataListener) {
+        audioListeners[requestCode] = listener
     }
 
     private fun sendAudioData() {
@@ -141,12 +145,16 @@ class AudioManagerImpl @Inject constructor() : AudioManager, MediaPlayer.OnCompl
         if (audioListeners.isNotEmpty()) {
             CoroutineScope(Dispatchers.Main).launch {
                 while (isPlaying() == true) {
-                    audioListeners.forEach {
-                        it.invoke(getAudioData())
-                    }
+                    emitAudioData()
                     delay(1000)
                 }
             }
+        }
+    }
+
+    private fun emitAudioData() {
+        audioListeners.values.forEach {
+            it.invoke(getAudioData())
         }
     }
 

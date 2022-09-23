@@ -1,10 +1,10 @@
-package com.example.vidme.service.audio
+package com.example.vidme.service
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.view.KeyEvent
-import com.example.vidme.service.AudioService
+import com.example.vidme.service.audio.AudioActions
 import timber.log.Timber
 
 class AudioReceiver : BroadcastReceiver() {
@@ -20,13 +20,18 @@ class AudioReceiver : BroadcastReceiver() {
                 KeyEvent.KEYCODE_MEDIA_PREVIOUS -> sendIntent(context, AudioActions.ACTION_PREV)
                 KeyEvent.KEYCODE_MEDIA_STOP -> sendIntent(context, AudioActions.ACTION_STOP)
             }
+            if (intent.action == AudioActions.ACTION_SEEK_TO) {
+                sendIntent(context, AudioActions.ACTION_SEEK_TO, intent)
+            }
         }
     }
 
-    private fun sendIntent(context: Context?, action: String) {
-        val newIntent = Intent(context, AudioService::class.java)
-        newIntent.action = action
-        Timber.d(action)
+    private fun sendIntent(context: Context?, action: String, intent: Intent? = null) {
+        val newIntent = intent
+            ?: Intent(context, AudioService::class.java).apply {
+                this.action = action
+            }
+
 
         context?.startService(newIntent) ?: Timber.e("Context is null")
     }

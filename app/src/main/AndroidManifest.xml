@@ -41,7 +41,7 @@
         </service>
 
         <receiver
-            android:name=".service.audio.AudioReceiver"
+            android:name=".service.AudioReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.example.vidme.service.ACTION" />

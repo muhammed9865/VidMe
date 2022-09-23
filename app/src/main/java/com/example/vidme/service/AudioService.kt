@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import com.example.vidme.service.audio.AudioActions
+import com.example.vidme.service.audio.AudioExtras
 import com.example.vidme.service.audio.AudioManager
 import com.example.vidme.service.notification.NotificationManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,6 +37,13 @@ class AudioService : Service() {
     override fun onCreate() {
         super.onCreate()
         audioManager.init()
+        // Changing the notification details when audioManager changes the single on it's own
+        audioManager.setOnAudioDataListener(requestCode = 1010) {
+            if (notificationManager.getCurrentVideo().id != it.single.id) {
+                notificationManager.setCurrentVideoInfo(it.single)
+                notificationManager.show(this)
+            }
+        }
     }
 
     private fun handleIntent(intent: Intent?) {
@@ -78,6 +86,13 @@ class AudioService : Service() {
                 AudioActions.ACTION_RESUME -> {
                     audioManager.pauseResume()
                     notificationManager.setPlayingState(true)
+                    notificationManager.show(this)
+                }
+
+                AudioActions.ACTION_SEEK_TO -> {
+                    val position = intent.getIntExtra(AudioExtras.EXTRA_SEEK_TO_POSITION,
+                        audioManager.getCurrentPosition())
+                    audioManager.seekTo(position)
                     notificationManager.show(this)
                 }
 
@@ -125,6 +140,14 @@ class AudioService : Service() {
     fun close() {
         val intent = Intent(this, this::class.java).apply {
             action = AudioActions.ACTION_STOP
+        }
+        handleIntent(intent)
+    }
+
+    fun seekTo(position: Int) {
+        val intent = Intent(this, this::class.java).apply {
+            action = AudioActions.ACTION_SEEK_TO
+            putExtra(AudioExtras.EXTRA_SEEK_TO_POSITION, position)
         }
         handleIntent(intent)
     }
