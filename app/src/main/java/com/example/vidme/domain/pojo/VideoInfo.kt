@@ -14,6 +14,7 @@ data class VideoInfo(
     val isDownloaded: Boolean,
     val playlistName: String?,
     val isDownloading: Boolean = false,
+    val isSelected: Boolean = false,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
