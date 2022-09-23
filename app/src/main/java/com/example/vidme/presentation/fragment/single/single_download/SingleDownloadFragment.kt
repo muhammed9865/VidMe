@@ -38,7 +38,7 @@ class SingleDownloadFragment : BottomSheetDialogFragment() {
     ): View {
         _binding = FragmentDownloadSingleBinding.inflate(layoutInflater)
 
-        mainViewModel.selectedSingle.onEach {
+        mainViewModel.selectedSingleForDownload.onEach {
             if (it != null) {
                 viewModel.setVideoInfo(it)
                 updateUI(it)

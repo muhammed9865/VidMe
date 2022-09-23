@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.vidme.domain.pojo.VideoInfo
 import com.example.vidme.domain.pojo.VideoRequest
 import com.example.vidme.domain.pojo.YoutubePlaylistInfo
+import com.example.vidme.domain.pojo.YoutubePlaylistWithVideos
 import com.example.vidme.domain.usecase.*
 import com.example.vidme.presentation.callback.SingleDownloadState
 import com.example.vidme.presentation.fragment.single.singles_home.SingleFilter
@@ -20,6 +21,7 @@ import javax.inject.Inject
 @Suppress("unused")
 class MainViewModel @Inject constructor(
     private val getPlaylists: GetStoredPlaylistsUseCase,
+    private val getPlaylistWithVideos: GetStoredPlaylistUseCase,
     private val getSingles: GetStoredVideosUseCase,
     private val synchronizePlaylist: SynchronizePlaylistUseCase,
     private val downloadVideo: DownloadVideoUseCase,
@@ -33,15 +35,21 @@ class MainViewModel @Inject constructor(
     private val _playlists = MutableStateFlow<List<YoutubePlaylistInfo>>(mutableListOf())
     val playlists: StateFlow<List<YoutubePlaylistInfo>> = _playlists
 
-    private val _selectedPlaylist = MutableStateFlow<YoutubePlaylistInfo?>(null)
+    private val _selectedPlaylist = MutableStateFlow<YoutubePlaylistWithVideos?>(null)
     val selectedPlaylist get() = _selectedPlaylist
 
     private val _singles = MutableStateFlow<List<VideoInfo>>(emptyList())
     val singles = _singles.asStateFlow()
 
-    private val _selectedSingle = MutableStateFlow<VideoInfo?>(null)
-    val selectedSingle get() = _selectedSingle
+    private val _selectedSingleForDownload = MutableStateFlow<VideoInfo?>(null)
+    val selectedSingleForDownload get() = _selectedSingleForDownload
+
+    private val _singlePlaying = MutableStateFlow<VideoInfo?>(null)
+    val singlePlaying get() = _singlePlaying
+    var isPlaying = false
+
     private var currentSinglesDownloadingIDs: MutableList<String> = mutableListOf()
+
 
     private val _state = MutableStateFlow(MainState())
     val state get() = _state.asSharedFlow()
@@ -70,23 +78,29 @@ class MainViewModel @Inject constructor(
     private fun loadSingles() {
         tryAsync {
             _singles.update {
-                getSingles().also {
-                    cachedSingles = it
-                }
+                cachedSingles = getSingles().filter { it.id !in currentSinglesDownloadingIDs }
+                cachedSingles
             }
         }
     }
 
     fun setSelectedPlaylist(playlist: YoutubePlaylistInfo?) {
-        _selectedPlaylist.update {
-            playlist
+        tryAsync {
+            _selectedPlaylist.update {
+                playlist?.let { getPlaylistWithVideos(it.name) }
+            }
         }
     }
 
-    fun setSelectedSingle(single: VideoInfo?) {
-        _selectedSingle.update {
-            single
-        }
+    fun setSelectedSingle(single: VideoInfo?, toPlayIt: Boolean = false) {
+        if (toPlayIt) {
+            _singlePlaying.update {
+                single
+            }
+        } else
+            _selectedSingleForDownload.update {
+                single
+            }
     }
 
     fun searchPlaylists(query: String?) {
@@ -127,14 +141,17 @@ class MainViewModel @Inject constructor(
         } else {
             singleFilters["filter"] = filter
         }
+        Timber.d(singleFilters.values.toString())
         filterSingles()
     }
 
 
     private fun filterSingles() {
+        var newValues = cachedSingles
         singleFilters.values.filterNotNull().forEach { fil ->
             _singles.update {
-                fil.filter(cachedSingles, currentSinglesDownloadingIDs)
+                newValues = fil.filter(newValues, currentSinglesDownloadingIDs)
+                newValues
             }
         }
     }
@@ -186,12 +203,11 @@ class MainViewModel @Inject constructor(
             setState(_state.value.copy(downloading = true))
             downloadVideo(videoRequest) {
                 tryAsync(Dispatchers.Main) {
-
                     if (it.isSuccessful) {
                         val data = it.data!!
                         if (data.isFinished) {
                             downloadCallback.onFinished(data.videoInfo!!)
-                            loadSingles()
+                            currentSinglesDownloadingIDs.remove(videoRequest.videoInfo!!.id)
                             setState(_state.value.copy(downloading = false))
                         } else {
                             downloadCallback.onDownloading(data)
@@ -237,6 +253,7 @@ class MainViewModel @Inject constructor(
                 if (it.isSuccessful) {
                     tryAsync {
                         loadPlaylists()
+                        loadSingles()
                         setState(_state.value.copy(fetchedPlaylist = true,
                             playlistWasCached = it.cached))
                     }
@@ -264,8 +281,10 @@ class MainViewModel @Inject constructor(
         setState(_state.value.copy(
             playlistWasCached = false,
             fetchedPlaylist = false,
-            fetchedVideo = false
-        ))
+            fetchedVideo = false,
+            error = null,
+
+            ))
     }
 
     private fun updatePlaylistAItem(item: YoutubePlaylistInfo, update: YoutubePlaylistInfo) {

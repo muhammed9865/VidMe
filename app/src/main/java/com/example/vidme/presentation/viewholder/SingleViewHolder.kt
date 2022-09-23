@@ -17,12 +17,17 @@ class SingleViewHolder(private val binding: ListItemSingleInfoBinding) :
 
     private lateinit var currentSingleID: String
 
+    // The single that will be sent on any button click
+    // Another instance of so it can be updated during the download
+    private lateinit var currSingle: VideoInfo
     fun bind(
         single: VideoInfo,
         clickListener: SingleListener?,
         onDownloadListener: SingleDownloadListener?,
     ) = with(binding) {
         currentSingleID = single.id
+
+        currSingle = single
 
         singleName.text = single.title
         singleThumbnail.loadImage(single.thumbnail)
@@ -34,10 +39,10 @@ class SingleViewHolder(private val binding: ListItemSingleInfoBinding) :
         manageVisibility(single)
 
         // on Item click listener
-        root.setOnClickListener { clickListener?.invoke(single) }
+        root.setOnClickListener { clickListener?.invoke(currSingle) }
 
         downloadBtn.setOnClickListener {
-            onDownloadListener?.invoke(single, this@SingleViewHolder)
+            onDownloadListener?.invoke(currSingle, this@SingleViewHolder)
         }
 
     }
@@ -62,8 +67,9 @@ class SingleViewHolder(private val binding: ListItemSingleInfoBinding) :
 
     override fun onDownloading(downloadInfo: DownloadInfo) {
         if (downloadInfo.videoInfo?.id == currentSingleID) {
+            currSingle = downloadInfo.videoInfo
+
             binding.downloadingViews.visibility(!downloadInfo.isFinished)
-            Timber.d(downloadInfo.progress.toString())
             onDownload(downloadInfo)
             binding.downloadBtn.isEnabled = false
         } else {
@@ -75,6 +81,8 @@ class SingleViewHolder(private val binding: ListItemSingleInfoBinding) :
     override fun onFinished(videoInfo: VideoInfo) {
         Timber.d(videoInfo.toString())
         manageVisibility(videoInfo)
+        currSingle = videoInfo
+        binding.downloadingViews.visibility(false)
         binding.downloadBtn.isEnabled = true
     }
 
