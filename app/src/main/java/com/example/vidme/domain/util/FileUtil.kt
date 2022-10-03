@@ -37,6 +37,18 @@ object FileUtil {
         }
     }
 
+    fun checkIfMediaExists(name: String): Pair<String?, Boolean> {
+        val storedFiles = getStorageFile().listFiles()
+        storedFiles?.forEach { file ->
+            if (file.nameWithoutExtension == name) {
+                Timber.d("${file.nameWithoutExtension} : $name")
+                return file.absolutePath to true
+            }
+        }
+        return null to false
+
+    }
+
     suspend fun deleteVideoByName(location: String?): Boolean {
         return coroutineScope {
             try {
