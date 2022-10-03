@@ -9,7 +9,7 @@ class DownloadInfoExtractor @Inject constructor() : InfoExtractor {
         var info = DownloadInfo()
 
         try {
-            lines.values.first { line -> line.contains("Destination") }.let {
+            lines.values.last { line -> line.contains("Destination") }.let {
                 //   Timber.d(it)
                 info = info.copy(storageLocation = getStorageLocation(it))
             }
@@ -19,10 +19,6 @@ class DownloadInfoExtractor @Inject constructor() : InfoExtractor {
                 info = info.copy(currentVideoIndex = getCurrentVideoIndexFromLine(it))
             }
 
-            lines.values.first { line -> line.contains("100%") }.let {
-                //  Timber.d(it)
-                info = info.copy(isFinished = true)
-            }
 
         } catch (e: Exception) {
 
@@ -38,8 +34,8 @@ class DownloadInfoExtractor @Inject constructor() : InfoExtractor {
 
     private fun getStorageLocation(line: String) = line.substringAfter("Destination: ").trim()
     private fun getCurrentVideoIndexFromLine(line: String): Int {
-        val subString = line.substringAfter("Downloading video ")
+        val subString = line.substringAfter("Downloading video ").split(' ')
         // subtracting 1 because line pattern is not zero-indexed ex: first is "1 of 3"
-        return subString[0].digitToInt() - 1
+        return subString[0].toInt() - 1
     }
 }
