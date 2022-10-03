@@ -10,4 +10,8 @@ class DownloadLogger @Inject constructor() {
             Timber.d("Download $i: $s")
         }
     }
+
+    fun log(string: String) {
+        Timber.tag("DownloadProcessor").d(string)
+    }
 }

@@ -2,12 +2,14 @@ package com.example.vidme.data.downloader
 
 import com.example.vidme.data.extractor.DownloadInfoExtractor
 import com.example.vidme.data.extractor.InfoExtractor
+import com.example.vidme.data.pojo.info.DownloadInfo
 import com.example.vidme.data.pojo.info.Info
 import com.example.vidme.data.request.DownloadRequest
 import com.example.vidme.domain.DataState
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLException
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
@@ -19,22 +21,18 @@ import java.util.concurrent.CancellationException
 import java.util.concurrent.Executor
 import javax.inject.Inject
 
-@Suppress("BlockingMethodInNonBlockingContext")
+@Suppress("BlockingMethodInNonBlockingContext", "unchecked_cast")
 class DownloadProcessor @Inject constructor(
     private val ytInstance: YoutubeDL,
     private val logger: DownloadLogger,
 ) : Processor {
 
-    private var lastProgress = -1f
-        set(value) {
-            if (value != -1f) field = value
-        }
     private var executor: Executor? = null
     private var request: DownloadRequest? = null
     private var timeoutCount = 0
     private val retryCount = 2
 
-    @Suppress("unchecked_cast", "unused", "LocalVariableName")
+    @Suppress("LocalVariableName")
     override fun <T : Info> process(
         executor: Executor,
         request: DownloadRequest,
@@ -43,62 +41,41 @@ class DownloadProcessor @Inject constructor(
         this.request = request
         return callbackFlow {
             executor.execute {
-                logger.log(mapOf(0 to "DownloadProcessor: Starting Process..."))
+                logger.log("DownloadProcessor: Starting Process...")
                 try {
                     val _request = request.getRequest()
-                    Timber.d(_request.buildCommand().toString())
+                    logger.log(_request.buildCommand().toString())
 
                     // Handling the case that actually downloading the request
-                    val isDownloading = request.getExtractor() is DownloadInfoExtractor
+                    val isDownloading = request.isDownloading()
                     val extractor: InfoExtractor = request.getExtractor()
                     val lines = mutableMapOf<Int, String>()
-                    var count = 0
+                    var linesCount = 0
 
+                    var result = DownloadInfo()
+
+                    /*
+                        * execute lambda function isn't a real callback
+                        * Means it will exit the lambda scope when the execute finishes and returns all the output
+                        * Code after the scope will be blocked till the execute finishes
+                     */
 
                     ytInstance.execute(_request) { progress: Float, timeRemaining: Long, line: String ->
-                        lines[count] = line
-                        count++
-                        if (isDownloading) {
-                            val result = (extractor as DownloadInfoExtractor).extract(
-                                progress,
-                                timeRemaining,
-                                lines,
-                            )
-                            lastProgress = progress
-
-                            // Casting to DataState<T> to escape a compiler error.
-                            trySend(
-                                DataState.success(data = result.copy(isFinished = checkIfIsFinished(
-                                    progress))) as DataState<T>
-                            )
-                        }
+                        lines[linesCount] = line
+                        linesCount++
+                        if (isDownloading)
+                            result = onDownloading(extractor, progress, timeRemaining, lines, this)
                     }
 
-                    logger.log(lines)
+                    onFinish(result, isDownloading, extractor, lines, this)
 
-                    if (!isDownloading) {
-                        val result =
-                            extractor.extract(outputLines = lines, originalUrl = request.url)
-
-                        trySendBlocking(
-                            DataState.success(data = result) as DataState<T>
-                        )
-                    }
                     close()
 
                 } catch (e: YoutubeDLException) {
                     timeoutCount++
-                    if (timeoutCount < retryCount) {
-                        process<T>(executor, request).onEach {
-                            trySend(it)
-                        }.launchIn(this)
-                    } else {
-                        trySendBlocking(
-                            DataState.failure("Something went wrong")
-                        )
-                        e.printStackTrace()
-                        cancel()
-                    }
+                    retryProcess(executor, request, this)
+                    e.printStackTrace()
+
                 } catch (e: CancellationException) {
 
                 }
@@ -109,11 +86,70 @@ class DownloadProcessor @Inject constructor(
         }
     }
 
-    private fun checkIfIsFinished(progress: Float): Boolean {
-        return if (progress == 100f) {
-            true
-        } else lastProgress > 0 && progress == -1f
+    private fun <T : Info> retryProcess(
+        executor: Executor,
+        request: DownloadRequest,
+        scope: ProducerScope<DataState<T>>,
+    ) = with(scope) {
+        Timber.i("Retrying Process: $timeoutCount/$retryCount")
+        if (timeoutCount < retryCount) {
+            process<T>(executor, request).onEach {
+                trySend(it)
+            }.launchIn(this)
+        } else {
+            trySendBlocking(
+                DataState.failure("Something went wrong")
+            )
+            cancel()
+        }
     }
 
+    private fun <T : Info> onFinish(
+        result: DownloadInfo,
+        isDownloading: Boolean,
+        extractor: InfoExtractor,
+        lines: Map<Int, String>,
+        scope: ProducerScope<DataState<T>>,
+    ) = with(scope) {
+        logger.log("Processor: Out of execute scope")
+        logger.log(lines)
+
+        if (isDownloading)
+            trySendBlocking(
+                DataState.success(result.copy(isFinished = true)) as DataState<T>
+            )
+
+        if (!isDownloading) {
+            val downloadResult =
+                extractor.extract(outputLines = lines,
+                    originalUrl = request?.url
+                        ?: throw NullPointerException("DownloadRequest cannot be null"))
+
+            trySendBlocking(
+                DataState.success(data = downloadResult) as DataState<T>
+            )
+        }
+    }
+
+    private fun <T : Info> onDownloading(
+        extractor: InfoExtractor,
+        progress: Float,
+        timeRemaining: Long,
+        lines: Map<Int, String>,
+        scope: ProducerScope<DataState<T>>,
+    ): DownloadInfo {
+
+        val result = (extractor as DownloadInfoExtractor).extract(
+            progress,
+            timeRemaining,
+            lines,
+        )
+
+        // Casting to DataState<T> to escape a compiler error.
+        scope.trySendBlocking(
+            DataState.success(data = result) as DataState<T>
+        )
+        return result
+    }
 
 }
