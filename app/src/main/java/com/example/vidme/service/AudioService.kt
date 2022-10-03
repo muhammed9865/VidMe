@@ -36,7 +36,8 @@ class AudioService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        audioManager.init()
+        audioManager.init(this)
+
         // Changing the notification details when audioManager changes the single on it's own
         audioManager.setOnAudioDataListener(requestCode = 1010) {
             if (notificationManager.getCurrentVideo().id != it.single.id) {
@@ -52,8 +53,8 @@ class AudioService : Service() {
             Timber.d(action)
             when (action) {
                 AudioActions.ACTION_PLAY -> {
-                    val videoInfo = audioManager.getCurrentVideoInfo()
                     audioManager.play()
+                    val videoInfo = audioManager.getCurrentVideoInfo()
                     notificationManager.setCurrentVideoInfo(videoInfo)
                     notificationManager.setPlayingState(true)
                     startForeground(1337, notificationManager.buildNotification(this))

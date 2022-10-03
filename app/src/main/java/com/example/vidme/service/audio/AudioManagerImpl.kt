@@ -1,7 +1,10 @@
 package com.example.vidme.service.audio
 
+import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.os.PowerManager
 import com.example.vidme.domain.pojo.VideoInfo
 import com.example.vidme.service.AudioService.Companion.EXTRA_PLAYLIST
 import com.example.vidme.service.AudioService.Companion.EXTRA_VIDEO_INFO
@@ -10,9 +13,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.IOException
 import javax.inject.Inject
 
-class AudioManagerImpl @Inject constructor() : AudioManager, MediaPlayer.OnCompletionListener {
+class AudioManagerImpl @Inject constructor() : AudioManager, MediaPlayer.OnCompletionListener,
+    MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
     private var mediaPlayer: MediaPlayer? = null
 
@@ -22,20 +27,35 @@ class AudioManagerImpl @Inject constructor() : AudioManager, MediaPlayer.OnCompl
 
     private val audioListeners = mutableMapOf<Int, AudioDataListener>()
 
+    // If timeout count reaches trackList last index, then stop the play
+    private var timeoutCount = 0
 
-    override fun init() {
+    override fun init(context: Context) {
         if (mediaPlayer == null)
             mediaPlayer = MediaPlayer().apply {
+                val attrs = AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .build()
+
+                setAudioAttributes(attrs)
                 setOnCompletionListener(this@AudioManagerImpl)
+                setOnPreparedListener(this@AudioManagerImpl)
+                setOnErrorListener(this@AudioManagerImpl)
+                setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
+
             }
     }
 
+
     override fun getFromIntent(intent: Intent?) {
+
         if (intent?.hasExtra(EXTRA_VIDEO_INFO) == true) {
             val videoInfo = intent.extras?.getParcelable<VideoInfo>(EXTRA_VIDEO_INFO)
             videoInfo?.let {
+                Timber.d("single: ${it.title}")
                 addTrack(it)
-                currentTrackIndex = trackList.lastIndex
+
             }
             return
         }
@@ -52,24 +72,34 @@ class AudioManagerImpl @Inject constructor() : AudioManager, MediaPlayer.OnCompl
     }
 
     private fun addTrack(videoInfo: VideoInfo) {
-        if (!trackList.contains(videoInfo)) {
+        currentTrackIndex = if (!trackList.contains(videoInfo)) {
             trackList.add(videoInfo)
+            trackList.lastIndex
         } else {
-            val index = trackList.indexOf(videoInfo)
-            trackList.removeAt(index)
-            trackList.add(videoInfo)
+            trackList.indexOf(videoInfo)
         }
+
+
     }
 
 
     override fun play() {
-        val currAudio = trackList[currentTrackIndex]
-        mediaPlayer?.stop()
-        mediaPlayer?.reset()
-        mediaPlayer?.setDataSource(currAudio.url)
-        mediaPlayer?.prepare()
-        mediaPlayer?.start()
-        sendAudioData()
+        try {
+            Timber.d("Curr index: $currentTrackIndex")
+            val currAudio = trackList[currentTrackIndex]
+            mediaPlayer?.stop()
+            mediaPlayer?.reset()
+            mediaPlayer?.setDataSource(currAudio.url)
+            mediaPlayer?.prepareAsync()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            timeoutCount++
+            if (timeoutCount <= trackList.lastIndex)
+                next()
+            else
+                Timber.e("Couldn't play any track in the track list, timeout:$timeoutCount")
+        }
+
     }
 
     override fun pause() {
@@ -98,10 +128,11 @@ class AudioManagerImpl @Inject constructor() : AudioManager, MediaPlayer.OnCompl
     override fun next() {
         if (currentTrackIndex + 1 > trackList.size - 1) {
             currentTrackIndex = 0
-        } else {
+        } else
             currentTrackIndex++
-        }
+        Timber.d("Next index: $currentTrackIndex")
         play()
+
     }
 
     override fun getCurrentPosition(): Int {
@@ -111,7 +142,6 @@ class AudioManagerImpl @Inject constructor() : AudioManager, MediaPlayer.OnCompl
     override fun seekTo(pos: Int) {
         currentPosition = pos
         mediaPlayer?.seekTo(currentPosition)
-        Timber.d(mediaPlayer?.currentPosition.toString())
     }
 
     override fun getVideoDuration(): Long {
@@ -120,7 +150,7 @@ class AudioManagerImpl @Inject constructor() : AudioManager, MediaPlayer.OnCompl
 
     override fun previous() {
         if (currentTrackIndex - 1 < 0) {
-            currentTrackIndex = trackList.size - 1
+            currentTrackIndex = trackList.lastIndex
         } else {
             currentTrackIndex--
         }
@@ -167,6 +197,17 @@ class AudioManagerImpl @Inject constructor() : AudioManager, MediaPlayer.OnCompl
 
 
     override fun onCompletion(p0: MediaPlayer?) {
+        Timber.d("OnCompletion Called")
         next()
+    }
+
+    override fun onPrepared(mp: MediaPlayer?) {
+        Timber.d("OnPrepared Called")
+        mp?.start()
+        sendAudioData()
+    }
+
+    override fun onError(p0: MediaPlayer?, p1: Int, p2: Int): Boolean {
+        return true
     }
 }

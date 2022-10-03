@@ -1,5 +1,6 @@
 package com.example.vidme.service.audio
 
+import android.content.Context
 import android.content.Intent
 import com.example.vidme.domain.pojo.VideoInfo
 
@@ -7,7 +8,7 @@ typealias AudioDataListener = (audioData: AudioManager.AudioData) -> Unit
 
 interface AudioManager {
 
-    fun init()
+    fun init(context: Context)
     fun getFromIntent(intent: Intent?)
     fun play()
     fun pause()

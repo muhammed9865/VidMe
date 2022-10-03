@@ -46,7 +46,7 @@ class NotificationManagerImpl @Inject constructor(
     private fun getSession(context: Context): MediaSessionCompat {
         return if (mediaSessionCompat == null) {
             mediaSessionCompat = MediaSessionCompat(context, "Audio_player").apply {
-                setCallback(AudioCallback(context, audioManager))
+                setCallback(AudioCallback(context))
             }
             mediaSessionCompat!!
         } else mediaSessionCompat!!
@@ -76,14 +76,7 @@ class NotificationManagerImpl @Inject constructor(
             setShowWhen(false)
             setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
-            val intent = Intent(context, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK + Intent.FLAG_ACTIVITY_NEW_TASK
-            val pIntent =
-                PendingIntent.getActivity(context, 20, intent, PendingIntent.FLAG_IMMUTABLE)
-
-            setContentIntent(pIntent)
-
-            color = context.getColor(R.color.toolbarColor)
+            setContentIntent(getOnNotificationClickIntent(context))
 
             addAction(generateAction(context,
                 R.drawable.ic_previous,
@@ -111,6 +104,16 @@ class NotificationManagerImpl @Inject constructor(
         return currVideoInfo
     }
 
+    private fun getOnNotificationClickIntent(context: Context): PendingIntent {
+        val intent = Intent(context, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.action = MainActivity.INTENT_FROM_NOTIFICATION_ACTION
+        return PendingIntent.getActivity(context,
+            20,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE + PendingIntent.FLAG_CANCEL_CURRENT)
+
+    }
 
     private fun generateAction(
         context: Context,
@@ -139,6 +142,7 @@ class NotificationManagerImpl @Inject constructor(
             )
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE,
                 audioManager.getAudioData().single.title)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON_URI, currVideoInfo.thumbnail)
         mediaSessionCompat.setMetadata(metadataBuilder.build())
     }
 
@@ -150,10 +154,13 @@ class NotificationManagerImpl @Inject constructor(
         }
 
         val playbackState = playbackStateBuilder
-            .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
+            .setActions(PlaybackStateCompat.ACTION_SEEK_TO or PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                    or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or PlaybackStateCompat.ACTION_PAUSE
+            )
             .setState(state,
                 audioManager.getCurrentPosition().toLong(),
                 1f)
+
 
         mediaSessionCompat.setPlaybackState(playbackState.build())
     }
@@ -166,7 +173,8 @@ class NotificationManagerImpl @Inject constructor(
             .centerCrop()
             .into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-
+                    metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON,
+                        resource)
                     //show(context)
                 }
 
@@ -200,6 +208,7 @@ class NotificationManagerImpl @Inject constructor(
 
 
     override fun onDestroy() {
+        mediaSessionCompat?.release()
         Timber.d("Notification Manager Destroyed")
     }
 }
