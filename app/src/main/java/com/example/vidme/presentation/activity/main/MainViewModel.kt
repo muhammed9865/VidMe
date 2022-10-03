@@ -2,11 +2,15 @@ package com.example.vidme.presentation.activity.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vidme.domain.pojo.DownloadInfo
 import com.example.vidme.domain.pojo.VideoInfo
-import com.example.vidme.domain.pojo.VideoRequest
+import com.example.vidme.domain.pojo.request.VideoRequest
 import com.example.vidme.domain.pojo.YoutubePlaylistInfo
 import com.example.vidme.domain.pojo.YoutubePlaylistWithVideos
+import com.example.vidme.domain.pojo.request.PlaylistRequest
 import com.example.vidme.domain.usecase.*
+import com.example.vidme.domain.util.StringUtil
+import com.example.vidme.presentation.callback.PlaylistDownloadState
 import com.example.vidme.presentation.callback.SingleDownloadState
 import com.example.vidme.presentation.fragment.single.singles_home.SingleFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +29,7 @@ class MainViewModel @Inject constructor(
     private val getSingles: GetStoredVideosUseCase,
     private val synchronizePlaylist: SynchronizePlaylistUseCase,
     private val downloadVideo: DownloadVideoUseCase,
+    private val downloadPlaylist: DownloadYoutubePlaylistUseCase,
     private val deleteVideo: DeleteVideoUseCase,
     private val deletePlaylist: DeletePlaylistUseCase,
     private val addPlaylist: FetchYoutubePlaylistInfoUseCase,
@@ -44,9 +49,9 @@ class MainViewModel @Inject constructor(
     private val _selectedSingleForDownload = MutableStateFlow<VideoInfo?>(null)
     val selectedSingleForDownload get() = _selectedSingleForDownload
 
-    private val _singlePlaying = MutableStateFlow<VideoInfo?>(null)
-    val singlePlaying get() = _singlePlaying
-    var isPlaying = false
+    private val _currentPlaying = MutableStateFlow<List<VideoInfo>>(emptyList())
+    val currentPlaying get() = _currentPlaying.asStateFlow()
+    var isPlaying = MutableStateFlow(false)
 
     private var currentSinglesDownloadingIDs: MutableList<String> = mutableListOf()
 
@@ -92,15 +97,18 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun setSelectedSingle(single: VideoInfo?, toPlayIt: Boolean = false) {
-        if (toPlayIt) {
-            _singlePlaying.update {
-                single
-            }
-        } else
-            _selectedSingleForDownload.update {
-                single
-            }
+    fun setCurrentPlaying(single: List<VideoInfo>) {
+        _currentPlaying.update {
+            single
+
+        }
+
+    }
+
+    fun setSelectedSingle(single: VideoInfo?) {
+        _selectedSingleForDownload.update {
+            single
+        }
     }
 
     fun searchPlaylists(query: String?) {
@@ -172,9 +180,11 @@ class MainViewModel @Inject constructor(
                     if (data.count == youtubePlaylistInfo.count) {
                         setState(_state.value.copy(simpleMessage = "${youtubePlaylistInfo.name} is UP-TO-DATE"))
                     }
-
-                    //updatePlaylistAItem(youtubePlaylistInfo, data.copy(isSyncing = false))
-                    loadPlaylists()
+                    if (_selectedPlaylist.value == null)
+                        loadPlaylists()
+                    else {
+                        updateSelectedPlaylist()
+                    }
                 } else {
                     updatePlaylistAItem(youtubePlaylistInfo,
                         youtubePlaylistInfo.copy(isSyncing = false))
@@ -208,6 +218,8 @@ class MainViewModel @Inject constructor(
                         if (data.isFinished) {
                             downloadCallback.onFinished(data.videoInfo!!)
                             currentSinglesDownloadingIDs.remove(videoRequest.videoInfo!!.id)
+                            // Will only update the playlist if there's actually a playlist on foreground
+                            updateSelectedPlaylist()
                             setState(_state.value.copy(downloading = false))
                         } else {
                             downloadCallback.onDownloading(data)
@@ -220,6 +232,42 @@ class MainViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun downloadPlaylist(
+        playlistRequest: PlaylistRequest,
+        downloadCallback: PlaylistDownloadState,
+    ) {
+        tryAsync {
+            downloadPlaylist(playlistRequest) {
+                if (it.isSuccessful) {
+                    val data = it.data!!
+                    val playlistInfo = playlistRequest.playlistInfo!!
+
+                    if (data.isFinished) {
+                        downloadCallback.onFinished()
+                        updateSelectedPlaylist()
+                    } else {
+                        downloadCallback.onDownloading(playlistInfo,
+                            data.currentVideoIndex,
+                            data.progress,
+                            StringUtil.durationAsString(data.timeRemaining.toInt(),
+                                appendUnit = true))
+                    }
+                    debugDownloadInfo("MainViewModel ->", data)
+                } else {
+                    downloadCallback.onError("Couldn't download playlist, check your internet connection")
+                    updateSelectedPlaylist()
+                }
+            }
+        }
+    }
+
+
+    private fun updateSelectedPlaylist() {
+        _selectedPlaylist.value?.let {
+            setSelectedPlaylist(it.playlistInfo)
         }
     }
 
@@ -287,6 +335,12 @@ class MainViewModel @Inject constructor(
             ))
     }
 
+    fun setIsPlaying(isPlaying: Boolean) {
+        this.isPlaying.update {
+            isPlaying
+        }
+    }
+
     private fun updatePlaylistAItem(item: YoutubePlaylistInfo, update: YoutubePlaylistInfo) {
         val itemIndex = _playlists.value.indexOf(item)
         _playlists.update {
@@ -306,6 +360,7 @@ class MainViewModel @Inject constructor(
         _state.value = state
     }
 
+
     private fun tryAsync(
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
         onError: (e: Exception) -> Unit = {},
@@ -319,6 +374,12 @@ class MainViewModel @Inject constructor(
                 // setState(_state.value.copy(error = e.message))
                 onError(e)
             }
+        }
+    }
+
+    companion object {
+        fun debugDownloadInfo(tag: String, downloadInfo: DownloadInfo) {
+            Timber.d("$tag -> progress: ${downloadInfo.progress}, timeRemaining: ${downloadInfo.timeRemaining}, index: ${downloadInfo.currentVideoIndex}, isFinished: ${downloadInfo.isFinished}")
         }
     }
 }
