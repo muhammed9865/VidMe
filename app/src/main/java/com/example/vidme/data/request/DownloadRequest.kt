@@ -1,5 +1,6 @@
 package com.example.vidme.data.request
 
+import com.example.vidme.data.extractor.DownloadInfoExtractor
 import com.example.vidme.data.extractor.InfoExtractor
 import com.yausername.youtubedl_android.YoutubeDLRequest
 
@@ -23,4 +24,6 @@ abstract class DownloadRequest(val url: String, private val audioOnly: Boolean =
     }
 
     abstract fun getExtractor(): InfoExtractor
+
+    fun isDownloading() = getExtractor() is DownloadInfoExtractor
 }
