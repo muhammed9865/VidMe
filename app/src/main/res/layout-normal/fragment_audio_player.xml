@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:background="@color/secondaryTextOnSurface">
 
-
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="0dp"
@@ -38,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.33" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline22"
@@ -53,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_5sdp"
         android:ellipsize="marquee"
+        android:gravity="end"
         android:marqueeRepeatLimit="marquee_forever"
         android:maxLines="1"
         android:scrollHorizontally="true"
@@ -62,27 +62,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline21"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Lil Eazy ft BiGSAM Prod By Vortex and Shiboba lol" />
+        tools:text="يعني يا حبيبي" />
 
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_prev"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_5sdp"
+        android:layout_height="@dimen/_15sdp"
         android:src="@drawable/ic_previous"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_play_pause"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/cardView"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline21"
+        app:layout_constraintTop_toBottomOf="@+id/audio_title"
         app:tint="@color/white" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_play_pause"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:src="@drawable/ic_pause"
         app:layout_constraintBottom_toBottomOf="@+id/btn_prev"
         app:layout_constraintEnd_toStartOf="@+id/btn_next"
@@ -94,7 +93,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_next"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:src="@drawable/ic_next"
         app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause"
         app:layout_constraintEnd_toStartOf="@+id/btn_close"
@@ -106,7 +105,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_close"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:src="@drawable/ic_close"
         app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause"
         app:layout_constraintEnd_toEndOf="parent"
@@ -114,4 +113,67 @@
         app:layout_constraintStart_toEndOf="@+id/btn_next"
         app:layout_constraintTop_toTopOf="@+id/btn_play_pause"
         app:tint="@color/white" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/audio_progress_seekbar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:valueFrom="0"
+        app:layout_constraintBottom_toBottomOf="@+id/cardView"
+        app:layout_constraintEnd_toStartOf="@+id/guideline24"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline21"
+        app:layout_constraintTop_toBottomOf="@+id/audio_title"
+        app:layout_constraintVertical_bias="1.0"
+        app:thumbColor="@color/clickable_color"
+        app:thumbElevation="@dimen/_3sdp"
+        app:thumbRadius="@dimen/_5sdp"
+        app:tickVisible="false"
+        app:trackColorActive="@color/clickable_color"
+        app:trackColorInactive="@color/icons_color"
+        app:trackHeight="@dimen/_5sdp" />
+
+    <TextView
+        android:id="@+id/audio_current_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_8ssp"
+        app:layout_constraintStart_toStartOf="@+id/audio_title"
+        app:layout_constraintTop_toTopOf="@+id/audio_duration"
+        tools:text="0:00" />
+
+    <TextView
+        android:id="@+id/audio_duration"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-4dp"
+        android:ellipsize="marquee"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_8ssp"
+        app:layout_constraintEnd_toEndOf="@+id/audio_progress_seekbar"
+        app:layout_constraintTop_toBottomOf="@+id/audio_progress_seekbar"
+        tools:text="4:35" />
+
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="audio_progress_seekbar, audio_duration, audio_current_progress" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.67" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

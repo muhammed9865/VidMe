@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_info_actions"
+        android:title="@string/actions"
+        android:icon="@drawable/ic_list_options"
+        android:orderInCategory="2"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_info_navigate_up"
+        android:icon="@drawable/ic_arrow_down"
+        android:title="Navigate up"
+        app:showAsAction="ifRoom" />
+</menu>

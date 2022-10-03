@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">VidMe</string>
     <string name="time_remaining">Time remaining: %s</string>
-    <string name="current_video_downloading">Downloading %d of %d</string>
+    <string name="current_video_downloading">Downloading %s</string>
     <string name="add">Add</string>
     <string name="playlists">Playlists</string>
     <string name="singles">Singles</string>
@@ -40,4 +40,8 @@
     <string name="add_new">Add New</string>
     <string name="unknown_error">Something went wrong, Please check your internet connection</string>
     <string name="pause">Pause</string>
+    <string name="play_playlist">play playlist</string>
+    <string name="actions">Actions</string>
+    <string name="sync">Sync</string>
+    <string name="download_all">Download All</string>
 </resources>

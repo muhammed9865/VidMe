@@ -131,14 +131,15 @@ class PlaylistAddFragment : Fragment() {
                             text = getString(R.string.fetching_playlist_finished)
                         }
                         delay(AFTER_FINISH_DELAY)
-                        navigateUp()
                         mainViewModel.resetStateAfterAdding()
+                        navigateUp()
 
                     }
                 }
             }
 
             state.error?.let {
+                mainViewModel.resetStateAfterAdding()
                 navigateUp()
             }
         }.launchIn(lifecycleScope)

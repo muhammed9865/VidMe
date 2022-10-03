@@ -1,7 +1,9 @@
 package com.example.vidme.presentation.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.*
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.vidme.databinding.ListItemSingleInfoBinding
@@ -23,7 +25,24 @@ class SingleAdapter :
     }
 
     override fun onBindViewHolder(holder: SingleViewHolder, position: Int) {
+        if (position == currentList.lastIndex) {
+            setMargins(holder.itemView, b = 100)
+        }
+
         holder.bind(getItem(position), itemClickedListener, downloadListener)
+
+    }
+
+    private fun setMargins(
+        view: View,
+        s: Int = view.marginStart,
+        t: Int = view.marginTop,
+        e: Int = view.marginEnd,
+        b: Int = view.marginBottom,
+    ) {
+        val params = view.layoutParams as ViewGroup.MarginLayoutParams
+        params.setMargins(s, t, e, b)
+        view.layoutParams = params
 
     }
 

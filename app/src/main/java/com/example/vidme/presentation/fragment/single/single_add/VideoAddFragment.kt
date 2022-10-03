@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -116,6 +117,14 @@ class VideoAddFragment : BottomSheetDialogFragment() {
 
             state.error?.let {
                 isCancelable = true
+                binding.fetchingStateTxt.apply {
+                    text = getString(R.string.unknown_error)
+                }
+                lifecycleScope.apply {
+                    delay(1000)
+                    translateViews(this, fetchingViews, true)
+                }
+                mainViewModel.resetStateAfterAdding()
                 viewModel.resetState()
             }
         }.launchIn(lifecycleScope)
@@ -130,7 +139,7 @@ class VideoAddFragment : BottomSheetDialogFragment() {
 
             if (state.validUrl) {
                 binding.urlEt.error = null
-                translateViews(lifecycleScope, addViews)
+                translateViews(lifecycleScope, addViews, false, 100)
 
             }
 

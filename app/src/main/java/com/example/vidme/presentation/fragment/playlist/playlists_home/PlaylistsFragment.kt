@@ -13,6 +13,7 @@ import com.example.vidme.domain.pojo.YoutubePlaylistInfo
 import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.adapter.PlaylistInfoAdapter
 import com.example.vidme.presentation.fragment.playlist.playlist_add.PlaylistAddFragment
+import com.example.vidme.presentation.fragment.playlist.playlist_info.PlaylistInfoFragment
 import com.example.vidme.presentation.util.DialogsUtil
 import com.example.vidme.presentation.util.RecyclerViewUtil
 import com.example.vidme.presentation.util.RecyclerViewUtil.Companion.setSwipeToDelete
@@ -49,6 +50,7 @@ class PlaylistsFragment : Fragment() {
                     .replace(binding.root.id, fragment, "adding_playlist")
                     .setReorderingAllowed(true)
                     .addToBackStack(null)
+                    .hide(this@PlaylistsFragment)
                     .commit()
 
             }
@@ -77,12 +79,23 @@ class PlaylistsFragment : Fragment() {
     private fun setAdapterListeners() {
 
         mAdapter.setOnItemClickListener {
-            /* TODO Implement YoutubePlaylistInfo Screen and Navigate to it */
+            mainViewModel.setSelectedPlaylist(it)
+            navigateToPlaylistInfo()
+
+
         }
 
         mAdapter.setOnSyncPressedListener {
             mainViewModel.synchronizePlaylist(it)
         }
+    }
+
+    private fun navigateToPlaylistInfo() {
+        val fragment = PlaylistInfoFragment()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.full_screen_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun enableSwipeToDelete() {
