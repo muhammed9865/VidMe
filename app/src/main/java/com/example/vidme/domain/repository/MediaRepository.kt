@@ -2,6 +2,8 @@ package com.example.vidme.domain.repository
 
 import com.example.vidme.domain.DataState
 import com.example.vidme.domain.pojo.*
+import com.example.vidme.domain.pojo.request.PlaylistRequest
+import com.example.vidme.domain.pojo.request.VideoRequest
 import java.util.concurrent.Executor
 
 interface MediaRepository {
@@ -32,8 +34,7 @@ interface MediaRepository {
     )
 
     suspend fun downloadPlaylist(
-        playlistInfo: YoutubePlaylistInfo,
-        audioOnly: Boolean,
+        playlistRequest: PlaylistRequest,
         executor: Executor,
         onDownloadInfo: (DataState<DownloadInfo>) -> Unit,
     )

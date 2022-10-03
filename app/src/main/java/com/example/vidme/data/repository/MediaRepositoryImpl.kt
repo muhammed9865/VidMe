@@ -9,8 +9,9 @@ import com.example.vidme.data.pojo.info.VideoInfo
 import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import com.example.vidme.data.request.*
 import com.example.vidme.domain.DataState
-import com.example.vidme.domain.pojo.VideoRequest
+import com.example.vidme.domain.pojo.request.VideoRequest
 import com.example.vidme.domain.pojo.YoutubePlaylistWithVideos
+import com.example.vidme.domain.pojo.request.PlaylistRequest
 import com.example.vidme.domain.repository.MediaRepository
 import com.example.vidme.domain.util.FileUtil
 import timber.log.Timber
@@ -115,12 +116,35 @@ class MediaRepositoryImpl @Inject constructor(
          */
 
         val cachedVideoInfo =
-            cache.getVideoInfo(videoRequest.videoInfo?.id ?: error("VideoInfo can't be null"),
+            cache.getVideoInfo(id = videoRequest.videoInfo?.id ?: error("VideoInfo can't be null"),
                 playlistName = videoRequest.videoInfo.playlistName ?: "")
-        val url =
-            if (cachedVideoInfo.originalUrl.contains("youtube")) cachedVideoInfo.id else cachedVideoInfo.originalUrl
 
-        val audioOnly = videoRequest.type == VideoRequest.TYPE_AUDIO
+        val audioOnly = videoRequest.isAudio()
+
+        // Check if audio/video is already downloaded
+        // @return [DownloadInfo] with updated values
+        getMediaIfDownloaded(cachedVideoInfo.title)?.let { url ->
+            Timber.d(url)
+            val updatedVideoInfo = cachedVideoInfo.copy(
+                storageUrl = url,
+                isAudio = audioOnly,
+                isVideo = !audioOnly)
+
+            cache.saveVideoInfo(updatedVideoInfo)
+
+            val downloadInfo = DownloadInfo(100f,
+                0,
+                -1,
+                url,
+                true).toDomain(videoInfo = updatedVideoInfo.toDomain()
+                .copy(isDownloading = false, isDownloaded = true))
+
+            onDownloadInfo(DataState.success(downloadInfo))
+            return
+        }
+
+        val url = getUrl(cachedVideoInfo)
+
 
         val request = VideoDownloadRequest(url, videoRequest)
         val result = processor.process<DownloadInfo>(executor = executor, request = request)
@@ -137,7 +161,8 @@ class MediaRepositoryImpl @Inject constructor(
                     val updatedVideoInfo = cachedVideoInfo.copy(
                         storageUrl = data.storageLocation,
                         isAudio = audioOnly,
-                        isVideo = !audioOnly)
+                        isVideo = !audioOnly,
+                    )
 
                     cache.saveVideoInfo(updatedVideoInfo)
                     // Mapped to the Domain layer
@@ -159,37 +184,63 @@ class MediaRepositoryImpl @Inject constructor(
         }
     }
 
+    private fun getUrl(videoInfo: VideoInfo): String {
+        return if (videoInfo.playlistName.isNotEmpty()) {
+            videoInfo.id
+        } else videoInfo.originalUrl
+    }
+
+    private fun getMediaIfDownloaded(name: String): String? {
+        val result = FileUtil.checkIfMediaExists(name)
+
+        return result.first
+    }
+
+
+    private var lastPlaylistIndex = -1
+    private var lastStorageLocation = ""
+    private var edited = false
+
     override suspend fun downloadPlaylist(
-        playlistInfo: com.example.vidme.domain.pojo.YoutubePlaylistInfo,
-        audioOnly: Boolean,
+        playlistRequest: PlaylistRequest,
         executor: Executor,
         onDownloadInfo: (DataState<com.example.vidme.domain.pojo.DownloadInfo>) -> Unit,
     ) {
         val cachedPlaylistInfo =
-            cache.getPlaylistWithVideos(playlistInfo.name)!!.toYoutubePlaylistInfo()
+            cache.getPlaylistWithVideos(playlistRequest.playlistInfo!!.name)!!
+                .toYoutubePlaylistInfo()
 
         val request =
-            YoutubePlaylistDownloadRequest(cachedPlaylistInfo, playlistInfo.originalUrl, audioOnly)
+            YoutubePlaylistDownloadRequest(playlistRequest)
 
         val result = processor.process<DownloadInfo>(executor, request)
 
+        // Edited will be used if a video isn't valid so the [lastPlaylistIndex] will be decreased
         result.collect { res ->
-
             if (res.isSuccessful) {
                 val data = res.data!!
                 if (data.currentVideoIndex != -1) {
-                    // Mapping the info to domain layer
-                    val downloadInfo = data.toDomain()
+                    if (lastPlaylistIndex != data.currentVideoIndex && lastStorageLocation != data.storageLocation) {
+                        edited = false
+                        lastPlaylistIndex = data.currentVideoIndex
+                        lastStorageLocation = data.storageLocation
+
+                        Timber.d("Updated : $lastPlaylistIndex : $lastStorageLocation")
+                        // Updating the videoInfo being downloaded with the new storageLocation on device
+                        val updatedVideoInfo =
+                            cachedPlaylistInfo.videos[data.currentVideoIndex].copy(storageUrl = data.storageLocation,
+                                isAudio = playlistRequest.isAudio(),
+                                isVideo = !playlistRequest.isAudio())
+                        cache.saveVideoInfo(updatedVideoInfo)
+
+                    }
+
+                    val downloadInfo =
+                        data.toDomain(cachedPlaylistInfo.videos[lastPlaylistIndex].toDomain())
                     onDownloadInfo(DataState.success(downloadInfo))
-
-                    // Updating the videoInfo being downloaded with the new storageLocation on device
-                    val updatedVideoInfo =
-                        cachedPlaylistInfo.videos[data.currentVideoIndex].copy(storageUrl = data.storageLocation,
-                            isAudio = audioOnly,
-                            isVideo = !audioOnly)
-
-                    cache.saveVideoInfo(updatedVideoInfo)
+                    Timber.i("Out -> ${data.currentVideoIndex} : ${data.storageLocation}, isFinished: ${data.isFinished}")
                 }
+
             } else {
                 onDownloadInfo(DataState.failure(res.error))
             }
