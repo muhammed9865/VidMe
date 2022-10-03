@@ -6,13 +6,16 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.transition.ChangeBounds
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.AnimationUtils
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.viewbinding.ViewBinding
 import com.example.vidme.R
 import com.example.vidme.databinding.FragmentAudioPlayerBinding
 import com.example.vidme.domain.pojo.VideoInfo
@@ -26,15 +29,16 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import timber.log.Timber
 
 @AndroidEntryPoint
-class AudioPlayerFragment : BottomSheetDialogFragment(), ServiceConnection {
+open class AudioPlayerFragment : BottomSheetDialogFragment(), ServiceConnection {
     private var _binding: FragmentAudioPlayerBinding? = null
     private val binding get() = _binding!!
-    private val mainViewModel by activityViewModels<MainViewModel>()
-    private val viewModel by viewModels<AudioPlayerViewModel>()
+    protected val mainViewModel by activityViewModels<MainViewModel>()
+    protected val viewModel by activityViewModels<AudioPlayerViewModel>()
 
-    private var currThumbnailUrl = ""
+    protected var currThumbnailUrl = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,8 +46,6 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), ServiceConnection {
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentAudioPlayerBinding.inflate(layoutInflater)
-
-
 
         isCancelable = false
 
@@ -53,33 +55,39 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), ServiceConnection {
         bindService()
         // to enable title marquee if exceeds constraints
         binding.audioTitle.isSelected = true
+
+        // Expanding Player on specific views click
+        binding.apply {
+            root.setOnClickListener { expandPlayer() }
+            audioThumbnail.setOnClickListener { expandPlayer() }
+        }
+
+
+        sharedElementReturnTransition = ChangeBounds()
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        onSliderProgressUpdate()
+        onSliderProgressUpdate(binding.audioProgressSeekbar)
         onStateChanged()
         handleButtonsActions()
-
-        mainViewModel.singlePlaying.filterNotNull().onEach {
-            startPlayingAudio(videoInfo = it)
-
-        }.launchIn(lifecycleScope)
+        observeCurrentPlaying()
 
     }
 
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mainViewModel.isPlaying = false
+        mainViewModel.setIsPlaying(false)
         _binding = null
         unbindService()
     }
 
 
-    private fun navigateUp() {
-        mainViewModel.isPlaying = false
+    protected fun navigateUp() {
+        mainViewModel.setIsPlaying(false)
         dismiss()
 
     }
@@ -127,14 +135,15 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), ServiceConnection {
         }
     }
 
+
     private fun changePlayButtonImage(isPlaying: Boolean) {
         val imgRes = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
         binding.btnPlayPause.setImageResource(imgRes)
     }
 
 
-    private fun onSliderProgressUpdate() {
-        binding.audioProgressSeekbar.addOnSliderTouchListener(object :
+    protected fun onSliderProgressUpdate(slider: Slider) {
+        slider.addOnSliderTouchListener(object :
             Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {
             }
@@ -145,12 +154,45 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), ServiceConnection {
         })
     }
 
-    private fun startPlayingAudio(videoInfo: VideoInfo) {
-        val intent = Intent(requireContext(), AudioService::class.java).apply {
-            action = AudioActions.ACTION_PLAY
+    private fun observeCurrentPlaying() {
+        lifecycleScope.launchWhenStarted {
+            mainViewModel.currentPlaying.filterNotNull().collect {
+                Timber.d(it.toString())
+                startPlayingAudio(singles = it)
+            }
         }
-        intent.putExtra(AudioService.EXTRA_VIDEO_INFO, videoInfo)
-        requireActivity().startService(intent)
+    }
+
+    private fun expandPlayer() {
+        val fragment = ExpandedPlayerFragment()
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.expanded_player_container, fragment)
+            .addToBackStack("expanded_player")
+//            .addSharedElement(binding.audioThumbnail, "video_thumbnail_expanded_transition")
+            .commit()
+
+    }
+
+    private fun startPlayingAudio(singles: List<VideoInfo>) {
+        if (singles.isNotEmpty()) {
+            val extra =
+                if (singles.size > 1) AudioService.EXTRA_PLAYLIST else AudioService.EXTRA_VIDEO_INFO
+
+            val intent = Intent(requireContext(), AudioService::class.java).apply {
+                action = AudioActions.ACTION_PLAY
+            }
+
+            if (extra == AudioService.EXTRA_VIDEO_INFO) {
+                intent.putExtra(extra, singles[0])
+            } else {
+                val asArrayList = arrayListOf<VideoInfo>()
+                asArrayList.addAll(singles)
+                intent.putParcelableArrayListExtra(extra, asArrayList)
+            }
+
+            requireActivity().startService(intent)
+        }
     }
 
 
