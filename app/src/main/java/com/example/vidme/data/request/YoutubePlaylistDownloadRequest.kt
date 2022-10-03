@@ -2,22 +2,23 @@ package com.example.vidme.data.request
 
 import com.example.vidme.data.extractor.DownloadInfoExtractor
 import com.example.vidme.data.extractor.InfoExtractor
-import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
+import com.example.vidme.domain.pojo.request.PlaylistRequest
 import com.example.vidme.domain.util.FileUtil
 
 open class YoutubePlaylistDownloadRequest constructor(
-    private val playlistInfo: YoutubePlaylistInfo,
-    url: String,
-    audioOnly: Boolean = false,
+    private val playlistRequest: PlaylistRequest,
 ) :
-    DownloadRequest(url, audioOnly) {
+    DownloadRequest(playlistRequest.playlistInfo!!.originalUrl, playlistRequest.isAudio()) {
 
 
     override fun getOptions(): Map<String, String?> {
-
+        val storageLocation =
+            FileUtil.getStorageFileForPlaylist(playlistRequest.playlistInfo!!.name).absolutePath
         return mapOf(
-            "-o" to FileUtil.getStorageFileForPlaylist(playlistInfo.name).absolutePath + "/%(title)s.%(ext)s",
-            "-f" to "best",
+            "-o" to "$storageLocation/%(title)s.%(ext)s",
+            "-f" to playlistRequest.buildType(),
+            "--download-archive" to "$storageLocation/done.txt"
+
         )
     }
 

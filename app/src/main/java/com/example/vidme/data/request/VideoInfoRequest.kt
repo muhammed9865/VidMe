@@ -28,10 +28,10 @@ class VideoInfoRequest(url: String) : DownloadRequest(url) {
     }
 
     companion object {
-        private val youtubeReferences = listOf(
-            "youtube",
-            "youtu.be",
-            "https://youtu"
-        )
+         val youtubeReferences = listOf(
+             "youtube",
+             "youtu.be",
+             "https://youtu"
+         )
     }
 }
