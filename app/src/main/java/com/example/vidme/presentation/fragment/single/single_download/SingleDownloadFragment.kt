@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.vidme.R
 import com.example.vidme.databinding.FragmentDownloadSingleBinding
 import com.example.vidme.domain.pojo.VideoInfo
-import com.example.vidme.domain.pojo.VideoRequest
+import com.example.vidme.domain.pojo.request.Request
 import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.util.loadImage
 import com.example.vidme.presentation.util.showErrorSnackBar
@@ -29,7 +29,7 @@ class SingleDownloadFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentDownloadSingleBinding? = null
     private val binding get() = _binding!!
 
-    private var onDownloadClickListener: ((VideoRequest) -> Unit)? = null
+    private var onDownloadClickListener: ((Request) -> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,10 +69,11 @@ class SingleDownloadFragment : BottomSheetDialogFragment() {
         }
     }
 
-    fun setOnDownloadClicked(listener: (VideoRequest) -> Unit) {
+    fun setOnDownloadClicked(listener: (T: Request) -> Unit) {
         this.onDownloadClickListener = listener
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun doOnStateChanged() {
         viewModel.state.onEach { state ->
             state.error?.let {
@@ -81,7 +82,7 @@ class SingleDownloadFragment : BottomSheetDialogFragment() {
             }
 
             if (state.downloadClicked) {
-                onDownloadClickListener?.invoke(viewModel.getVideoRequest())
+                onDownloadClickListener?.invoke(viewModel.getRequest())
                 dismiss()
             }
         }.launchIn(lifecycleScope)

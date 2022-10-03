@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/iconsOnItems_color"
+    android:fitsSystemWindows="true"
+    android:clickable="true"
+    android:focusable="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapse_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_200sdp"
+            app:collapsedTitleGravity="center_vertical"
+            app:contentScrim="@color/iconsOnItems_color"
+            app:collapsedTitleTextColor="@color/white"
+            app:expandedTitleGravity="center|start"
+            app:expandedTitleMargin="@dimen/_10sdp"
+            app:expandedTitleTextColor="@color/white"
+            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed|snap|exitUntilCollapsed"
+            app:title="Playlist"
+            app:toolbarId="@id/playlist_toolbar">
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/single_thumbnail_playlist"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:alpha="0.8"
+                app:layout_collapseMode="parallax"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/image_test" />
+
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/playlist_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:minHeight="?actionBarSize"
+                app:title="Playlist"
+                app:titleTextColor="@color/white"
+                app:layout_collapseMode="pin"
+                app:menu="@menu/playlist_info_menu"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/play_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:contentDescription="@string/play_playlist"
+                app:layout_collapseMode="parallax"
+                android:elevation="@dimen/_50sdp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_play"
+                android:layout_gravity="bottom|end"
+                app:layout_constraintBaseline_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_30sdp"
+                android:orientation="vertical"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="2"
+                android:layout_gravity="bottom">
+
+                <TextView
+                    android:id="@+id/playlist_singles_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:alpha="0.9"
+                    android:textSize="@dimen/_11ssp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    tools:text="35 Media files" />
+
+                <TextView
+                    android:id="@+id/playlist_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:layout_gravity="bottom"
+                    android:textSize="@dimen/_9ssp"
+                    android:alpha="0.8"
+                    tools:text="Duration: 12:15:03h" />
+
+                <TextView
+                    android:id="@+id/playlist_last_synced"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:layout_gravity="bottom"
+                    android:textSize="@dimen/_8ssp"
+                    android:alpha="0.8"
+                    tools:text="Last synced: 12:15:03h" />
+            </LinearLayout>
+
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="@dimen/_10sdp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/download_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:max="100"
+            android:progress="0"
+            app:indicatorColor="@color/single_stroke_color"
+            app:indicatorSize="@dimen/_35sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:trackColor="#707070"
+            app:trackCornerRadius="@dimen/defaultCornerRadius"
+            app:trackThickness="@dimen/_8sdp" />
+
+        <TextView
+            android:id="@+id/download_index_txt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:ellipsize="end"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toStartOf="@+id/download_time_remaining"
+            app:layout_constraintStart_toStartOf="@+id/download_progress"
+            app:layout_constraintTop_toBottomOf="@+id/download_progress"
+            tools:text="Downloading 10asdasdasdqwe" />
+
+        <TextView
+            android:id="@+id/download_time_remaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:alpha="0.6"
+            android:textSize="@dimen/_10ssp"
+            app:layout_constraintEnd_toEndOf="@+id/download_progress"
+            app:layout_constraintTop_toBottomOf="@+id/download_progress"
+            tools:text="Time remaining: 23:10m" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/downloading_views"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="download_progress, download_index_txt, download_time_remaining" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/playlist_videos_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/iconsOnItems_color"
+
+            android:paddingTop="@dimen/_15sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/download_index_txt"
+            tools:itemCount="7"
+            tools:layout_editor_absoluteX="13dp"
+            tools:listitem="@layout/list_item_single_info" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -8,7 +8,8 @@
     android:layout_marginBottom="@dimen/_5sdp"
     app:cardBackgroundColor="@color/items_color"
     app:cardCornerRadius="@dimen/defaultCornerRadius"
-    app:cardElevation="0dp">
+    app:cardElevation="0dp"
+    app:strokeColor="@color/single_stroke_color">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -71,11 +72,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_5sdp"
             android:layout_marginEnd="@dimen/_10sdp"
-            android:textColor="@color/primaryTextOnSurface"
-            android:textSize="@dimen/_12ssp"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="2"
+            android:textColor="@color/primaryTextOnSurface"
+            android:textSize="@dimen/_12ssp"
             app:layout_constraintEnd_toStartOf="@+id/guideline7"
             app:layout_constraintStart_toEndOf="@+id/single_thumbnail"
             app:layout_constraintTop_toTopOf="@+id/single_thumbnail"
@@ -99,10 +100,10 @@
             android:src="@drawable/ic_download"
             android:tint="@color/clickableOnItems_color"
             android:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@+id/guideline2"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/guideline6"
             app:layout_constraintStart_toStartOf="@+id/guideline7"
+            app:layout_constraintTop_toBottomOf="@+id/guideline2"
             tools:visibility="gone" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -111,11 +112,11 @@
             android:layout_height="0dp"
             android:src="@drawable/ic_video"
             android:visibility="gone"
-            tools:visibility="visible"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/guideline6"
             app:layout_constraintStart_toStartOf="@+id/guideline7"
-            app:layout_constraintTop_toTopOf="@+id/guideline2" />
+            app:layout_constraintTop_toTopOf="@+id/guideline2"
+            tools:visibility="visible" />
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/download_progress_pb"
