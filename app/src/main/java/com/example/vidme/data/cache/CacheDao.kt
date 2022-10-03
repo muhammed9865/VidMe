@@ -7,37 +7,38 @@ import com.example.vidme.data.mapper.toYoutubePlaylistInfo
 import com.example.vidme.data.pojo.cache.YoutubePlaylistInfoCache
 import com.example.vidme.data.pojo.info.VideoInfo
 import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
+import kotlinx.coroutines.coroutineScope
 
 @Dao
 abstract class CacheDao : CacheDatabase {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract override suspend fun saveVideoInfo(videoInfo: VideoInfo)
+    abstract suspend fun saveVideoInfoImpl(videoInfo: VideoInfo)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract override suspend fun savePlaylistInfo(playlistInfoCache: YoutubePlaylistInfoCache)
 
+    override suspend fun saveVideoInfo(videoInfo: VideoInfo) {
+        val cached: VideoInfo? = getVideoInfo(videoInfo.id, videoInfo.playlistName)
+        if (cached == null) {
+            saveVideoInfoImpl(videoInfo)
+            return
+        }
+
+        if (cached.storageUrl == null) {
+            saveVideoInfoImpl(videoInfo)
+        }
+
+    }
+
     @Transaction
     override suspend fun savePlaylistInfo(playlistInfo: YoutubePlaylistInfo) {
-        val currVideos = getAllVideos()
-        val currVideosIDs = playlistInfo.videos.map { it.id }
-        val matchedVideos = currVideos.filter { it.id in currVideosIDs }
 
-        val updatedList = playlistInfo.copy(
-            videos = if (matchedVideos.isNotEmpty()) {
-                playlistInfo.videos.map { update ->
-                    val matchedVideo = matchedVideos.find { match -> match.id == update.id }
-                    matchedVideo?.let {
-                        it.copy(storageUrl = it.storageUrl)
-                    } ?: update
-                }
-            } else playlistInfo.videos
-        )
-
-
-        val playlistCache = updatedList.toCache()
-        val videos = updatedList.videos
-        savePlaylistInfo(playlistCache)
-        saveVideosInfo(videos)
+        coroutineScope {
+            savePlaylistInfo(playlistInfo.toCache())
+        }
+        coroutineScope {
+            saveVideosInfo(playlistInfo.videos)
+        }
 
     }
 
@@ -57,6 +58,13 @@ abstract class CacheDao : CacheDatabase {
         savePlaylistInfo(updatedPlaylistInfo)
         cachedPlaylist = cachedPlaylist.copy(playlistInfoCache = updatedPlaylistInfo)
         return cachedPlaylist.toYoutubePlaylistInfo()
+    }
+
+
+    override suspend fun saveVideosInfo(videosInfo: List<VideoInfo>) {
+        videosInfo.forEach {
+            saveVideoInfo(it)
+        }
     }
 
 
@@ -86,7 +94,7 @@ abstract class CacheDao : CacheDatabase {
     abstract override suspend fun getVideoInfo(id: String, playlistName: String): VideoInfo
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract override suspend fun saveVideosInfo(videosInfo: List<VideoInfo>)
+    abstract suspend fun saveVideosInfoImpl(videosInfo: List<VideoInfo>)
 
     @Query("SELECT * FROM VIDEOS_TABLE WHERE playlistName = '' ")
     abstract override suspend fun getAllVideos(): List<VideoInfo>
