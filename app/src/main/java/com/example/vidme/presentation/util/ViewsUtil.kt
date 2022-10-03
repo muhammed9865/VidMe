@@ -62,15 +62,16 @@ fun translateViews(
     reverse: Boolean = false,
     delayOnEach: Long = 200,
 ) {
-    val (translationX, alpha) = if (reverse) {
-        -500f to 0f
-    } else 0f to 1f
+    val (translationX, translationY, alpha) = if (reverse) {
+        listOf(-500f, 500f, 0f)
+    } else listOf(0f, 0f, 1f)
     coroutineScope.launch(Dispatchers.Main) {
         views.forEach {
             it.animate()
                 .alpha(alpha)
                 .translationX(translationX)
-                .setDuration(1000)
+                .translationY(translationY)
+                .setDuration(500)
                 .start()
             delay(delayOnEach)
         }

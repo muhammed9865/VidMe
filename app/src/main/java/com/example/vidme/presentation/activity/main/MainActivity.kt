@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.vidme.R
 import com.example.vidme.databinding.ActivityMainBinding
 import com.example.vidme.presentation.fragment.FragmentAdapter
+import com.example.vidme.presentation.fragment.audio_player.AudioPlayerFragment
 import com.example.vidme.presentation.fragment.common.PopupMenu
 import com.example.vidme.presentation.util.DialogsUtil
 import com.example.vidme.presentation.util.showErrorSnackBar
@@ -23,8 +24,7 @@ import com.example.vidme.presentation.util.showSimpleSnackBar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -52,12 +52,18 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         setUpViewPager()
         setUpTabsLayout()
         doOnStateChange()
+        startPlayingAudio()
 
         if (!isRequiredPermissionsGranted()) {
             storagePermissions.launch(permissions.toTypedArray())
         }
 
 
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        Timber.i("New intent: ${intent?.action}")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -107,20 +113,44 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         }
     }
 
+
     private fun doOnStateChange() {
-        mainViewModel.state.onEach { state ->
-            state.simpleMessage?.let {
-                showSimpleSnackBar(binding.root, it)
-            }
+        lifecycleScope.launchWhenStarted {
+            mainViewModel.state.collect { state ->
+                state.simpleMessage?.let {
+                    showSimpleSnackBar(binding.root, it)
+                }
 
-            state.error?.let {
-                showErrorSnackBar(binding.root, it)
-            }
+                state.error?.let {
+                    showErrorSnackBar(binding.root, it)
+                }
 
-            if (state.syncing) {
-                showSimpleSnackBar(binding.root, "Syncing..")
+                if (state.syncing) {
+                    showSimpleSnackBar(binding.root, "Syncing..")
+                }
             }
-        }.launchIn(lifecycleScope)
+        }
+    }
+
+    private fun startPlayingAudio() {
+        val intent = intent
+        if (intent.action != null && intent.action == INTENT_FROM_NOTIFICATION_ACTION) {
+            val fragment = AudioPlayerFragment()
+            if (!mainViewModel.isPlaying.value) {
+                if (!supportFragmentManager.fragments.contains(fragment))
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.music_layout, fragment)
+                        .setReorderingAllowed(true)
+                        .commit()
+                mainViewModel.setIsPlaying(true)
+            } else {
+                supportFragmentManager.beginTransaction()
+                    .show(fragment)
+                    .setReorderingAllowed(true)
+                    .commit()
+                mainViewModel.setIsPlaying(true)
+            }
+        }
     }
 
     private fun doOnSinglesFragment(action: () -> Unit) {
@@ -188,6 +218,8 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         private const val FRAGMENT_SINGLES = 1
         private val permissions = listOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+        const val INTENT_FROM_NOTIFICATION_ACTION = "com.example.vidme.MainActivity.Notification"
     }
 
 }

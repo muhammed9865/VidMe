@@ -60,9 +60,13 @@ class SingleViewHolder(private val binding: ListItemSingleInfoBinding) :
     private fun manageVisibility(single: VideoInfo) = with(binding) {
         val typeImgID = if (single.isAudio) R.drawable.ic_audio else R.drawable.ic_video
         singleTypeImg.setImageDrawable(ContextCompat.getDrawable(root.context, typeImgID))
-
         downloadBtn.visibility(!single.isDownloaded)
         singleTypeImg.visibility(single.isDownloaded)
+
+        root.strokeWidth = if (single.isSelected) {
+            5
+        } else 0
+
     }
 
     override fun onDownloading(downloadInfo: DownloadInfo) {
@@ -88,5 +92,6 @@ class SingleViewHolder(private val binding: ListItemSingleInfoBinding) :
 
     override fun onFailure(videoInfo: VideoInfo) {
         binding.downloadingViews.visibility(false)
+        binding.downloadBtn.isEnabled = true
     }
 }
