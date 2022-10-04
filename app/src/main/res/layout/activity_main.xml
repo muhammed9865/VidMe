@@ -63,14 +63,20 @@
                             android:text="@string/singles" />
                     </com.google.android.material.tabs.TabLayout>
 
-                    <androidx.viewpager2.widget.ViewPager2
-                        android:id="@+id/fragments_pager"
+                    <FrameLayout
+                        android:id="@+id/fragments_below_tabs_container"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:background="@color/background_color"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
+                        app:layout_constraintTop_toBottomOf="@+id/tab_layout">
+
+                        <androidx.viewpager2.widget.ViewPager2
+                            android:id="@+id/fragments_pager"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/background_color" />
+                    </FrameLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </FrameLayout>
 

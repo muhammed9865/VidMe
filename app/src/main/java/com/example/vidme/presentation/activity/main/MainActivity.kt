@@ -12,12 +12,14 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.vidme.R
 import com.example.vidme.databinding.ActivityMainBinding
 import com.example.vidme.presentation.fragment.FragmentAdapter
 import com.example.vidme.presentation.fragment.audio_player.AudioPlayerFragment
 import com.example.vidme.presentation.fragment.common.PopupMenu
+import com.example.vidme.presentation.fragment.playlist.playlist_add.PlaylistAddFragment
 import com.example.vidme.presentation.util.DialogsUtil
 import com.example.vidme.presentation.util.showErrorSnackBar
 import com.example.vidme.presentation.util.showSimpleSnackBar
@@ -210,6 +212,16 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         val uri: Uri = Uri.fromParts("package", packageName, null)
         intent.data = uri
         startActivity(intent)
+    }
+
+    fun navigateToPlaylistAdd(from: Fragment) {
+        val fragment: Fragment = PlaylistAddFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(binding.fragmentsBelowTabsContainer.id, fragment, "adding_playlist")
+            .setReorderingAllowed(true)
+            .addToBackStack(null)
+            .hide(from)
+            .commit()
     }
 
 

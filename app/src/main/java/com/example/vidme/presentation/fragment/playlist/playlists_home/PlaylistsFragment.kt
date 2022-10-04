@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.vidme.R
 import com.example.vidme.databinding.FragmentPlaylistsBinding
 import com.example.vidme.domain.pojo.YoutubePlaylistInfo
+import com.example.vidme.presentation.activity.main.MainActivity
 import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.adapter.PlaylistInfoAdapter
 import com.example.vidme.presentation.fragment.playlist.playlist_add.PlaylistAddFragment
@@ -42,14 +43,7 @@ class PlaylistsFragment : Fragment() {
             playlistsRv.adapter = mAdapter
 
             addPlaylistBtn.setOnClickListener {
-                val fragment: Fragment = PlaylistAddFragment()
-                parentFragmentManager.beginTransaction()
-                    .replace(binding.root.id, fragment, "adding_playlist")
-                    .setReorderingAllowed(true)
-                    .addToBackStack(null)
-                    .hide(this@PlaylistsFragment)
-                    .commit()
-
+                (requireActivity() as MainActivity).navigateToPlaylistAdd(this@PlaylistsFragment)
             }
         }
 
