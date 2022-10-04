@@ -20,6 +20,7 @@ import com.example.vidme.presentation.fragment.FragmentAdapter
 import com.example.vidme.presentation.fragment.audio_player.AudioPlayerFragment
 import com.example.vidme.presentation.fragment.common.PopupMenu
 import com.example.vidme.presentation.fragment.playlist.playlist_add.PlaylistAddFragment
+import com.example.vidme.presentation.fragment.playlist.playlist_info.PlaylistInfoFragment
 import com.example.vidme.presentation.util.DialogsUtil
 import com.example.vidme.presentation.util.showErrorSnackBar
 import com.example.vidme.presentation.util.showSimpleSnackBar
@@ -221,6 +222,14 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
             .setReorderingAllowed(true)
             .addToBackStack(null)
             .hide(from)
+            .commit()
+    }
+
+    fun navigateToPlaylistInfo() {
+        val fragment = PlaylistInfoFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.full_screen_container, fragment)
+            .addToBackStack(null)
             .commit()
     }
 

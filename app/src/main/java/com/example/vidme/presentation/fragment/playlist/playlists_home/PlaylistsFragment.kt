@@ -71,7 +71,7 @@ class PlaylistsFragment : Fragment() {
 
         mAdapter.setOnItemClickListener {
             mainViewModel.setSelectedPlaylist(it)
-            navigateToPlaylistInfo()
+            (requireActivity() as MainActivity).navigateToPlaylistInfo()
 
 
         }
@@ -81,13 +81,6 @@ class PlaylistsFragment : Fragment() {
         }
     }
 
-    private fun navigateToPlaylistInfo() {
-        val fragment = PlaylistInfoFragment()
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.full_screen_container, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
 
     private fun enableSwipeToDelete() {
         binding.playlistsRv.setSwipeToDelete(RecyclerViewUtil.LEFT) { _, position ->
