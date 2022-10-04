@@ -43,7 +43,7 @@ fun showSimpleSnackBar(view: View, message: String) {
 
 fun showSuccessSnackBar(view: View, message: String) {
     snackBarBuilder(view, message)
-        .setBackgroundTint(getColor("#FF00FF00"))
+        .setBackgroundTint(getColor("#FF4dc25b"))
         .show()
 }
 
