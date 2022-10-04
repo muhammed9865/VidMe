@@ -105,7 +105,7 @@ class SinglesFragment : Fragment(), FragmentsCommon by FragmentsCommonImpl() {
                 startPlayingAudio()
             }
             if (it.isVideo) {
-                // TODO Implement going to PlayVideoFragment
+                startPlayingVideo(it)
             }
 
         }
@@ -129,6 +129,10 @@ class SinglesFragment : Fragment(), FragmentsCommon by FragmentsCommonImpl() {
 
     private fun startPlayingAudio() {
         (requireActivity() as MainActivity).navigateToAudioPlayer()
+    }
+
+    private fun startPlayingVideo(videoInfo: VideoInfo) {
+        (requireActivity() as MainActivity).navigateToVideoPlayer(videoInfo)
     }
 
     override fun onDestroy() {

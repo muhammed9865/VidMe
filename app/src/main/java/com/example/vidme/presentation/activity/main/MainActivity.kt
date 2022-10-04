@@ -246,6 +246,11 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         MainActivityNavigation.navigateToSingleAdd(supportFragmentManager)
     }
 
+    fun navigateToVideoPlayer(videoInfo: VideoInfo) {
+        mainViewModel.setCurrentPlaying(listOf(videoInfo))
+        MainActivityNavigation.navigateToVideoPlayer(supportFragmentManager)
+    }
+
     fun downloadSingle(
         videoInfo: VideoInfo,
         request: Request,
