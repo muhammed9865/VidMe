@@ -75,6 +75,7 @@
         android:layout_marginBottom="-10dp"
         android:ellipsize="marquee"
         android:maxLines="1"
+        android:gravity="left"
         android:scrollHorizontally="true"
         android:singleLine="true"
         android:textColor="@color/white"
@@ -82,7 +83,7 @@
         app:layout_constraintBottom_toTopOf="@+id/audio_progress_seekbar"
         app:layout_constraintEnd_toStartOf="@+id/guideline21"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
-        tools:text="Lil Eazy ft BiGSAM Prod By Vortex and Shiboba lol" />
+        tools:text="LiL Easy ft Me and YOyo" />
 
     <com.google.android.material.slider.Slider
         android:id="@+id/audio_progress_seekbar"
