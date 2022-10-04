@@ -41,6 +41,12 @@ fun showSimpleSnackBar(view: View, message: String) {
     snackBarBuilder(view, message).show()
 }
 
+fun showSuccessSnackBar(view: View, message: String) {
+    snackBarBuilder(view, message)
+        .setBackgroundTint(getColor("#FF00FF00"))
+        .show()
+}
+
 private fun Snackbar.setIcon(drawable: Drawable, @ColorInt colorTint: Int): Snackbar {
     return this.apply {
         setAction(" ") {}

@@ -14,11 +14,8 @@ import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.adapter.PlaylistInfoAdapter
 import com.example.vidme.presentation.fragment.playlist.playlist_add.PlaylistAddFragment
 import com.example.vidme.presentation.fragment.playlist.playlist_info.PlaylistInfoFragment
-import com.example.vidme.presentation.util.DialogsUtil
-import com.example.vidme.presentation.util.RecyclerViewUtil
+import com.example.vidme.presentation.util.*
 import com.example.vidme.presentation.util.RecyclerViewUtil.Companion.setSwipeToDelete
-import com.example.vidme.presentation.util.showSimpleSnackBar
-import com.example.vidme.presentation.util.visibility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -114,7 +111,7 @@ class PlaylistsFragment : Fragment() {
             content,
             onOKPressed = {
                 mainViewModel.deletePlaylist(playlistInfo)
-                showSimpleSnackBar(binding.root, "Deleting $playlistName")
+                showSuccessSnackBar(binding.root, "Deleting $playlistName")
             }
         )
     }
