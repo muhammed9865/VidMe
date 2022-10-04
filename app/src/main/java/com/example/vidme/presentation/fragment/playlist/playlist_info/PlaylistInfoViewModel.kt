@@ -19,7 +19,7 @@ class PlaylistInfoViewModel @Inject constructor(audioManager: AudioManager) : Vi
     private val _state = MutableStateFlow(PlaylistInfoState())
     val state get() = _state.asStateFlow()
 
-    lateinit var selectedPlaylistWithVideos: YoutubePlaylistWithVideos
+    private lateinit var selectedPlaylistWithVideos: YoutubePlaylistWithVideos
 
     private var selectedSingleID = ""
 
@@ -93,6 +93,7 @@ class PlaylistInfoViewModel @Inject constructor(audioManager: AudioManager) : Vi
 
     fun getVideos() = selectedPlaylistWithVideos.videos
 
+    fun getPlaylistInfo() = selectedPlaylistWithVideos.playlistInfo
 
     private fun getCurrentSingle() =
         selectedPlaylistWithVideos.videos.first { it.id == selectedSingleID }

@@ -121,7 +121,7 @@ class PlaylistInfoFragment
                     true
                 }
                 R.id.option_sync -> {
-                    mainViewModel.synchronizePlaylist(viewModel.selectedPlaylistWithVideos.playlistInfo)
+                    mainViewModel.synchronizePlaylist(viewModel.getPlaylistInfo())
                     true
                 }
                 else -> false
@@ -139,7 +139,7 @@ class PlaylistInfoFragment
         requestFragment.show(parentFragmentManager, null)
         requestFragment.setOnDownloadClicked {
             val playlistRequest = PlaylistRequest(
-                viewModel.selectedPlaylistWithVideos.playlistInfo,
+                viewModel.getPlaylistInfo(),
                 type = it.type,
                 quality = it.quality
             )
