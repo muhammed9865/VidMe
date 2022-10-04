@@ -2,7 +2,9 @@ package com.example.vidme.presentation.activity.main
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.example.vidme.R
+import com.example.vidme.presentation.fragment.audio_player.AudioPlayerFragment
 import com.example.vidme.presentation.fragment.playlist.playlist_add.PlaylistAddFragment
 import com.example.vidme.presentation.fragment.playlist.playlist_info.PlaylistInfoFragment
 
@@ -23,6 +25,16 @@ object MainActivityNavigation {
             .setReorderingAllowed(true)
             .addToBackStack(null)
             .commit()
+    }
+
+    fun navigateToAudioPlayer(fragmentManager: FragmentManager) {
+        val fragment = AudioPlayerFragment()
+        fragmentManager.beginTransaction()
+            .replace(R.id.music_layout, fragment)
+            .setReorderingAllowed(true)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .commit()
+
     }
 
 }

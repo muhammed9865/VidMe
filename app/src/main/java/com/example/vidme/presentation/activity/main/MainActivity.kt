@@ -220,6 +220,13 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         MainActivityNavigation.navigateToPlaylistInfo(supportFragmentManager)
     }
 
+    fun navigateToAudioPlayer() {
+        if (!mainViewModel.isPlaying.value) {
+            MainActivityNavigation.navigateToAudioPlayer(supportFragmentManager)
+            mainViewModel.setIsPlaying(true)
+        }
+    }
+
 
     companion object {
         private const val FRAGMENT_PLAYLISTS = 0

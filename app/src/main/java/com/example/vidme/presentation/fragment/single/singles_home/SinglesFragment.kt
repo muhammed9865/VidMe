@@ -5,16 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.vidme.R
 import com.example.vidme.databinding.FragmentSinglesBinding
 import com.example.vidme.domain.pojo.VideoInfo
 import com.example.vidme.domain.pojo.request.VideoRequest
+import com.example.vidme.presentation.activity.main.MainActivity
 import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.adapter.SingleAdapter
-import com.example.vidme.presentation.fragment.audio_player.AudioPlayerFragment
 import com.example.vidme.presentation.fragment.single.single_add.VideoAddFragment
 import com.example.vidme.presentation.fragment.single.single_download.SingleDownloadFragment
 import com.example.vidme.presentation.util.*
@@ -140,15 +139,7 @@ class SinglesFragment : Fragment() {
     }
 
     private fun startPlayingAudio() {
-        if (!mainViewModel.isPlaying.value) {
-            val fragment = AudioPlayerFragment()
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.music_layout, fragment)
-                .setReorderingAllowed(true)
-                .setTransition(TRANSIT_FRAGMENT_OPEN)
-                .commit()
-            mainViewModel.setIsPlaying(true)
-        }
+        (requireActivity() as MainActivity).navigateToAudioPlayer()
     }
 
     override fun onDestroy() {
