@@ -3,13 +3,15 @@ package com.example.vidme.presentation.fragment.common
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vidme.domain.pojo.VideoInfo
-import com.example.vidme.presentation.adapter.SingleAdapter
+import com.example.vidme.domain.pojo.YoutubePlaylistInfo
+import com.example.vidme.presentation.adapter.CommonAdapter
 
 interface FragmentsCommon {
     fun enableSwipeToDelete(
-        adapter: SingleAdapter,
+        adapter: CommonAdapter,
         recyclerView: RecyclerView,
-        onDelete: (single: VideoInfo) -> Unit,
+        onDeleteSingle: (single: VideoInfo) -> Unit = {},
+        onDeletePlaylist: (playlist: YoutubePlaylistInfo) -> Unit = {},
     )
 
     fun deleteSingle(
@@ -17,6 +19,13 @@ interface FragmentsCommon {
         single: VideoInfo,
         title: String,
         onDelete: (single: VideoInfo) -> Unit,
+    )
+
+    fun deletePlaylist(
+        context: Context,
+        playlist: YoutubePlaylistInfo,
+        title: String,
+        onDelete: (single: YoutubePlaylistInfo) -> Unit,
     )
 
 }

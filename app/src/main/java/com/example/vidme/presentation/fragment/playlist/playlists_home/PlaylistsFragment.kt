@@ -13,16 +13,19 @@ import com.example.vidme.domain.pojo.YoutubePlaylistInfo
 import com.example.vidme.presentation.activity.main.MainActivity
 import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.adapter.PlaylistInfoAdapter
-import com.example.vidme.presentation.fragment.playlist.playlist_add.PlaylistAddFragment
-import com.example.vidme.presentation.fragment.playlist.playlist_info.PlaylistInfoFragment
-import com.example.vidme.presentation.util.*
+import com.example.vidme.presentation.fragment.common.FragmentsCommon
+import com.example.vidme.presentation.fragment.common.FragmentsCommonImpl
+import com.example.vidme.presentation.util.DialogsUtil
+import com.example.vidme.presentation.util.RecyclerViewUtil
 import com.example.vidme.presentation.util.RecyclerViewUtil.Companion.setSwipeToDelete
+import com.example.vidme.presentation.util.showSuccessSnackBar
+import com.example.vidme.presentation.util.visibility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
-class PlaylistsFragment : Fragment() {
+class PlaylistsFragment : Fragment(), FragmentsCommon by FragmentsCommonImpl() {
 
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
@@ -37,7 +40,10 @@ class PlaylistsFragment : Fragment() {
     ): View {
         _binding = FragmentPlaylistsBinding.inflate(layoutInflater)
         setAdapterListeners()
-        enableSwipeToDelete()
+        enableSwipeToDelete(mAdapter, binding.playlistsRv, onDeletePlaylist = {
+            mainViewModel.deletePlaylist(it)
+            showSuccessSnackBar(binding.root, "Deleting ${it.name}")
+        })
 
         with(binding) {
             playlistsRv.adapter = mAdapter

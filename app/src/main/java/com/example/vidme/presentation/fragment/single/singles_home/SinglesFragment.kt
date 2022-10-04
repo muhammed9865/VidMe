@@ -11,15 +11,13 @@ import com.example.vidme.R
 import com.example.vidme.databinding.FragmentSinglesBinding
 import com.example.vidme.domain.pojo.VideoInfo
 import com.example.vidme.domain.pojo.request.Request
-import com.example.vidme.domain.pojo.request.VideoRequest
 import com.example.vidme.presentation.activity.main.MainActivity
 import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.adapter.SingleAdapter
 import com.example.vidme.presentation.callback.SingleDownloadState
-import com.example.vidme.presentation.util.DialogsUtil
-import com.example.vidme.presentation.util.RecyclerViewUtil
-import com.example.vidme.presentation.util.RecyclerViewUtil.Companion.setSwipeToDelete
-import com.example.vidme.presentation.util.showSimpleSnackBar
+import com.example.vidme.presentation.fragment.common.FragmentsCommon
+import com.example.vidme.presentation.fragment.common.FragmentsCommonImpl
+import com.example.vidme.presentation.util.showSuccessSnackBar
 import com.example.vidme.presentation.util.visibility
 import com.example.vidme.service.audio.AudioManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +26,7 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SinglesFragment : Fragment() {
+class SinglesFragment : Fragment(), FragmentsCommon by FragmentsCommonImpl() {
     private var _binding: FragmentSinglesBinding? = null
     private val binding get() = _binding!!
     private val mainViewModel by activityViewModels<MainViewModel>()
@@ -47,7 +45,13 @@ class SinglesFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentSinglesBinding.inflate(layoutInflater)
-        enableSwipeToDelete()
+
+        enableSwipeToDelete(mAdapter, binding.singlesRv, onDeleteSingle = { single ->
+            mainViewModel.deleteSingle(single)
+            showSuccessSnackBar(binding.root, "Deleted ${single.title}")
+        }
+        )
+
         enableFiltering()
         setAdapterListeners()
 
@@ -74,26 +78,6 @@ class SinglesFragment : Fragment() {
         (requireActivity() as MainActivity).navigateToSingleAdd()
     }
 
-    private fun enableSwipeToDelete() {
-        binding.singlesRv.setSwipeToDelete(RecyclerViewUtil.LEFT) { _, position ->
-            val single = mAdapter.currentList[position]
-            deleteSingle(single, single.title)
-        }
-    }
-
-    private fun deleteSingle(single: VideoInfo, videoTitle: String) {
-        val title = getString(R.string.deleting, videoTitle)
-        val content = getString(R.string.confirm_deleting, videoTitle)
-        DialogsUtil.showChoiceDialog(
-            requireContext(),
-            title,
-            content,
-            onOKPressed = {
-                mainViewModel.deleteSingle(single)
-                showSimpleSnackBar(binding.root, "Deleted $videoTitle")
-            }
-        )
-    }
 
     private fun enableFiltering() {
         with(binding) {
