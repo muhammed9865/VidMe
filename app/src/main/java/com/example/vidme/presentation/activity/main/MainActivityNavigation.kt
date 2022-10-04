@@ -9,6 +9,7 @@ import com.example.vidme.presentation.fragment.playlist.playlist_add.PlaylistAdd
 import com.example.vidme.presentation.fragment.playlist.playlist_info.PlaylistInfoFragment
 import com.example.vidme.presentation.fragment.single.single_add.VideoAddFragment
 import com.example.vidme.presentation.fragment.single.single_download.SingleDownloadFragment
+import com.example.vidme.presentation.fragment.video_player.VideoPlayerFragment
 
 object MainActivityNavigation {
 
@@ -50,6 +51,15 @@ object MainActivityNavigation {
 
     fun navigateToSingleAdd(fragmentManager: FragmentManager) {
         VideoAddFragment().show(fragmentManager, null)
+    }
+
+    fun navigateToVideoPlayer(fragmentManager: FragmentManager) {
+        val fragment = VideoPlayerFragment()
+        fragmentManager.beginTransaction()
+            .replace(R.id.full_screen_container, fragment, "adding_playlist")
+            .setReorderingAllowed(true)
+            .addToBackStack(null)
+            .commit()
     }
 
 }
