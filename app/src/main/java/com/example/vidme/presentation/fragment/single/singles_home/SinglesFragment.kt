@@ -10,14 +10,14 @@ import androidx.lifecycle.lifecycleScope
 import com.example.vidme.R
 import com.example.vidme.databinding.FragmentSinglesBinding
 import com.example.vidme.domain.pojo.VideoInfo
-import com.example.vidme.domain.pojo.request.VideoRequest
 import com.example.vidme.presentation.activity.main.MainActivity
 import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.adapter.SingleAdapter
-import com.example.vidme.presentation.fragment.single.single_add.VideoAddFragment
-import com.example.vidme.presentation.fragment.single.single_download.SingleDownloadFragment
-import com.example.vidme.presentation.util.*
+import com.example.vidme.presentation.util.DialogsUtil
+import com.example.vidme.presentation.util.RecyclerViewUtil
 import com.example.vidme.presentation.util.RecyclerViewUtil.Companion.setSwipeToDelete
+import com.example.vidme.presentation.util.showSimpleSnackBar
+import com.example.vidme.presentation.util.visibility
 import com.example.vidme.service.audio.AudioManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -68,7 +68,7 @@ class SinglesFragment : Fragment() {
     }
 
     private fun addSingle() {
-        VideoAddFragment().show(parentFragmentManager, null)
+        (requireActivity() as MainActivity).navigateToSingleAdd()
     }
 
     private fun enableSwipeToDelete() {
@@ -124,17 +124,7 @@ class SinglesFragment : Fragment() {
         }
 
         mAdapter.setOnDownloadListener { v, listener ->
-            mainViewModel.setSelectedSingle(v)
-
-            val fragment = SingleDownloadFragment()
-            fragment.show(parentFragmentManager, null)
-
-            fragment.setOnDownloadClicked { videoRequest ->
-                mainViewModel.downloadSingle((videoRequest as VideoRequest).copy(videoInfo = v),
-                    listener)
-                showWarningSnackBar(binding.root, "Starting the download...")
-                mainViewModel.setSelectedSingle(null)
-            }
+            (requireActivity() as MainActivity).navigateToSingleDownloadAndDownload(v, listener)
         }
     }
 

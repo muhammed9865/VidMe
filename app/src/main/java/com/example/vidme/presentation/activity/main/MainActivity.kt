@@ -15,12 +15,16 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.vidme.R
 import com.example.vidme.databinding.ActivityMainBinding
+import com.example.vidme.domain.pojo.VideoInfo
+import com.example.vidme.domain.pojo.request.VideoRequest
+import com.example.vidme.presentation.callback.SingleDownloadState
 import com.example.vidme.presentation.fragment.FragmentAdapter
 import com.example.vidme.presentation.fragment.audio_player.AudioPlayerFragment
 import com.example.vidme.presentation.fragment.common.PopupMenu
 import com.example.vidme.presentation.util.DialogsUtil
 import com.example.vidme.presentation.util.showErrorSnackBar
 import com.example.vidme.presentation.util.showSimpleSnackBar
+import com.example.vidme.presentation.util.showWarningSnackBar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -225,6 +229,22 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
             MainActivityNavigation.navigateToAudioPlayer(supportFragmentManager)
             mainViewModel.setIsPlaying(true)
         }
+    }
+
+    fun navigateToSingleDownloadAndDownload(videoInfo: VideoInfo, listener: SingleDownloadState) {
+        mainViewModel.setSelectedSingle(videoInfo)
+        val fragment = MainActivityNavigation.navigateToSingleDownload(supportFragmentManager)
+
+        fragment.setOnDownloadClicked { videoRequest ->
+            mainViewModel.downloadSingle((videoRequest as VideoRequest).copy(videoInfo = videoInfo),
+                listener)
+            showWarningSnackBar(binding.root, "Starting the download...")
+            mainViewModel.setSelectedSingle(null)
+        }
+    }
+
+    fun navigateToSingleAdd() {
+        MainActivityNavigation.navigateToSingleAdd(supportFragmentManager)
     }
 
 

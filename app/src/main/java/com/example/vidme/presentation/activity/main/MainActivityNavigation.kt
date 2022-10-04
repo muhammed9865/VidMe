@@ -7,6 +7,8 @@ import com.example.vidme.R
 import com.example.vidme.presentation.fragment.audio_player.AudioPlayerFragment
 import com.example.vidme.presentation.fragment.playlist.playlist_add.PlaylistAddFragment
 import com.example.vidme.presentation.fragment.playlist.playlist_info.PlaylistInfoFragment
+import com.example.vidme.presentation.fragment.single.single_add.VideoAddFragment
+import com.example.vidme.presentation.fragment.single.single_download.SingleDownloadFragment
 
 object MainActivityNavigation {
 
@@ -35,6 +37,19 @@ object MainActivityNavigation {
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .commit()
 
+    }
+
+    /*
+        @return fragment because @link SingleDownloadFragment has methods that's used outside of it
+     */
+    fun navigateToSingleDownload(fragmentManager: FragmentManager): SingleDownloadFragment {
+        val fragment = SingleDownloadFragment()
+        fragment.show(fragmentManager, null)
+        return fragment
+    }
+
+    fun navigateToSingleAdd(fragmentManager: FragmentManager) {
+        VideoAddFragment().show(fragmentManager, null)
     }
 
 }
