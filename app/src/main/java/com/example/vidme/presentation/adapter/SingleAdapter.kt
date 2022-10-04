@@ -17,6 +17,7 @@ class SingleAdapter :
 
     private var downloadListener: SingleDownloadListener? = null
     private var itemClickedListener: SingleListener? = null
+    private var marginsEnabled = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SingleViewHolder {
         val binding =
@@ -25,13 +26,18 @@ class SingleAdapter :
     }
 
     override fun onBindViewHolder(holder: SingleViewHolder, position: Int) {
-        if (position == currentList.lastIndex) {
-            setMargins(holder.itemView, b = 100)
+        if (position == currentList.lastIndex && marginsEnabled) {
+            setMargins(holder.itemView, b = 200)
         }
 
         holder.bind(getItem(position), itemClickedListener, downloadListener)
 
     }
+
+    fun enableMargins(enable: Boolean) {
+        marginsEnabled = enable
+    }
+
 
     private fun setMargins(
         view: View,

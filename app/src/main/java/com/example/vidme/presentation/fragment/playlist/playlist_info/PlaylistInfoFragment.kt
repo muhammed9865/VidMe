@@ -41,7 +41,9 @@ class PlaylistInfoFragment
     private var _binding: FragmentPlaylistInfoBinding? = null
     private val binding get() = _binding!!
     private val mAdapter by lazy {
-        SingleAdapter()
+        SingleAdapter().apply {
+            enableMargins(false)
+        }
     }
 
     override fun onCreateView(
@@ -142,6 +144,8 @@ class PlaylistInfoFragment
                 quality = it.quality
             )
             mainViewModel.downloadPlaylist(playlistRequest, viewModel.onDownloadingPlaylist())
+            showWarningSnackBar(binding.root,
+                "Downloading ${playlistRequest.playlistInfo?.name} as ${it.type} with the ${it.quality} quality is starting")
         }
     }
 

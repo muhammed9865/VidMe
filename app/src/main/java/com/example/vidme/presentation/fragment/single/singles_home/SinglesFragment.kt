@@ -30,7 +30,11 @@ class SinglesFragment : Fragment() {
     private var _binding: FragmentSinglesBinding? = null
     private val binding get() = _binding!!
     private val mainViewModel by activityViewModels<MainViewModel>()
-    private val mAdapter by lazy { SingleAdapter() }
+    private val mAdapter by lazy {
+        SingleAdapter().apply {
+            enableMargins(true)
+        }
+    }
 
     @Inject
     lateinit var audioManager: AudioManager
