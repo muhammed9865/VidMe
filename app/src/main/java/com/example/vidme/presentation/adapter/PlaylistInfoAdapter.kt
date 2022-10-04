@@ -11,7 +11,8 @@ import com.example.vidme.presentation.viewholder.PlaylistInfoViewHolder
 import timber.log.Timber
 
 class PlaylistInfoAdapter :
-    ListAdapter<YoutubePlaylistInfo, PlaylistInfoViewHolder>(PlaylistInfoDiffUtil()) {
+    ListAdapter<YoutubePlaylistInfo, PlaylistInfoViewHolder>(PlaylistInfoDiffUtil()),
+    CommonAdapter {
 
     private var syncListener: PlaylistInfoListener? = null
     private var itemClickedListener: PlaylistInfoListener? = null

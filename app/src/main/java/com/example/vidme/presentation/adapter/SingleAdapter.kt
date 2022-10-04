@@ -13,7 +13,7 @@ import com.example.vidme.presentation.viewholder.SingleListener
 import com.example.vidme.presentation.viewholder.SingleViewHolder
 
 class SingleAdapter :
-    ListAdapter<VideoInfo, SingleViewHolder>(SingleDiffUtil()) {
+    ListAdapter<VideoInfo, SingleViewHolder>(SingleDiffUtil()), CommonAdapter {
 
     private var downloadListener: SingleDownloadListener? = null
     private var itemClickedListener: SingleListener? = null
