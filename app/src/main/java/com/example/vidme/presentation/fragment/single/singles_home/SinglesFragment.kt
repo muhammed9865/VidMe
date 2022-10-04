@@ -10,9 +10,12 @@ import androidx.lifecycle.lifecycleScope
 import com.example.vidme.R
 import com.example.vidme.databinding.FragmentSinglesBinding
 import com.example.vidme.domain.pojo.VideoInfo
+import com.example.vidme.domain.pojo.request.Request
+import com.example.vidme.domain.pojo.request.VideoRequest
 import com.example.vidme.presentation.activity.main.MainActivity
 import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.adapter.SingleAdapter
+import com.example.vidme.presentation.callback.SingleDownloadState
 import com.example.vidme.presentation.util.DialogsUtil
 import com.example.vidme.presentation.util.RecyclerViewUtil
 import com.example.vidme.presentation.util.RecyclerViewUtil.Companion.setSwipeToDelete
@@ -123,9 +126,21 @@ class SinglesFragment : Fragment() {
 
         }
 
-        mAdapter.setOnDownloadListener { v, listener ->
-            (requireActivity() as MainActivity).navigateToSingleDownloadAndDownload(v, listener)
+        mAdapter.setOnDownloadListener { videoInfo, listener ->
+            mainViewModel.setSelectedSingle(videoInfo)
+            (requireActivity() as MainActivity).navigateToDownloadFragment { request ->
+                downloadSingle(videoInfo, request, listener)
+                null
+            }
         }
+    }
+
+    private fun downloadSingle(
+        videoInfo: VideoInfo,
+        request: Request,
+        listener: SingleDownloadState,
+    ) {
+        (requireActivity() as MainActivity).downloadSingle(videoInfo, request, listener)
     }
 
     private fun startPlayingAudio() {

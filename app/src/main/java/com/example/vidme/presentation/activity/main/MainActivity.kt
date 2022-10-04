@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.vidme.R
 import com.example.vidme.databinding.ActivityMainBinding
 import com.example.vidme.domain.pojo.VideoInfo
+import com.example.vidme.domain.pojo.request.Request
 import com.example.vidme.domain.pojo.request.VideoRequest
 import com.example.vidme.presentation.callback.SingleDownloadState
 import com.example.vidme.presentation.fragment.FragmentAdapter
@@ -231,20 +232,27 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         }
     }
 
-    fun navigateToSingleDownloadAndDownload(videoInfo: VideoInfo, listener: SingleDownloadState) {
-        mainViewModel.setSelectedSingle(videoInfo)
-        val fragment = MainActivityNavigation.navigateToSingleDownload(supportFragmentManager)
+    fun navigateToDownloadFragment(onDownloadClick: (request: Request) -> String?) {
 
-        fragment.setOnDownloadClicked { videoRequest ->
-            mainViewModel.downloadSingle((videoRequest as VideoRequest).copy(videoInfo = videoInfo),
-                listener)
-            showWarningSnackBar(binding.root, "Starting the download...")
+        val fragment = MainActivityNavigation.navigateToDownload(supportFragmentManager)
+        fragment.setOnDownloadClicked { request ->
+            val messageToShow = onDownloadClick(request)
+            showWarningSnackBar(binding.root, messageToShow ?: "Starting the download...")
             mainViewModel.setSelectedSingle(null)
         }
     }
 
     fun navigateToSingleAdd() {
         MainActivityNavigation.navigateToSingleAdd(supportFragmentManager)
+    }
+
+    fun downloadSingle(
+        videoInfo: VideoInfo,
+        request: Request,
+        listener: SingleDownloadState,
+    ) {
+        mainViewModel.downloadSingle((request as VideoRequest).copy(videoInfo = videoInfo),
+            listener)
     }
 
 

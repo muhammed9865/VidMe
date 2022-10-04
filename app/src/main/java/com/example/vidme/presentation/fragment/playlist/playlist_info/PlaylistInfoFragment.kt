@@ -16,12 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vidme.R
 import com.example.vidme.databinding.FragmentPlaylistInfoBinding
 import com.example.vidme.domain.pojo.request.PlaylistRequest
-import com.example.vidme.domain.pojo.request.VideoRequest
+import com.example.vidme.presentation.activity.main.MainActivity
 import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.adapter.SingleAdapter
-import com.example.vidme.presentation.fragment.audio_player.AudioPlayerFragment
 import com.example.vidme.presentation.fragment.common.PopupMenu
-import com.example.vidme.presentation.fragment.single.single_download.SingleDownloadFragment
 import com.example.vidme.presentation.util.loadImage
 import com.example.vidme.presentation.util.showWarningSnackBar
 import com.example.vidme.presentation.util.visibility
@@ -135,18 +133,24 @@ class PlaylistInfoFragment
     }
 
     private fun downloadPlaylist() {
-        val requestFragment = SingleDownloadFragment()
-        requestFragment.show(parentFragmentManager, null)
-        requestFragment.setOnDownloadClicked {
+        // Setting SelectedSingle to have an image and title in the @link SingleDownloadFragment
+        // using copy() to change video title to playlist name
+        mainViewModel.setSelectedSingle(viewModel.getVideos().first()
+            .copy(title = viewModel.getPlaylistInfo().name))
+
+        (requireActivity() as MainActivity).navigateToDownloadFragment {
+
             val playlistRequest = PlaylistRequest(
                 viewModel.getPlaylistInfo(),
                 type = it.type,
                 quality = it.quality
             )
             mainViewModel.downloadPlaylist(playlistRequest, viewModel.onDownloadingPlaylist())
-            showWarningSnackBar(binding.root,
-                "Downloading ${playlistRequest.playlistInfo?.name} as ${it.type} with the ${it.quality} quality is starting")
+            "Downloading ${playlistRequest.playlistInfo?.name} as ${it.type} with the ${it.quality} quality is starting"
+
         }
+
+
     }
 
 
@@ -192,28 +196,16 @@ class PlaylistInfoFragment
         }
 
         mAdapter.setOnDownloadListener { v, listener ->
-            mainViewModel.setSelectedSingle(v)
-
-            val fragment = SingleDownloadFragment()
-            fragment.show(parentFragmentManager, null)
-
-            fragment.setOnDownloadClicked { videoRequest ->
-                mainViewModel.downloadSingle(videoRequest as VideoRequest, listener)
-                showWarningSnackBar(binding.root, "Starting the download...")
-                mainViewModel.setSelectedSingle(null)
+            (requireActivity() as MainActivity).navigateToDownloadFragment { request ->
+                (requireActivity() as MainActivity).downloadSingle(v, request, listener)
+                null
             }
         }
     }
 
+
     private fun startPlayingAudio() {
-        if (!mainViewModel.isPlaying.value) {
-            val fragment = AudioPlayerFragment()
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.music_layout, fragment)
-                .setReorderingAllowed(true)
-                .commit()
-            mainViewModel.setIsPlaying(true)
-        }
+        (requireActivity() as MainActivity).navigateToAudioPlayer()
     }
 
 

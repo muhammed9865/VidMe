@@ -42,7 +42,7 @@ object MainActivityNavigation {
     /*
         @return fragment because @link SingleDownloadFragment has methods that's used outside of it
      */
-    fun navigateToSingleDownload(fragmentManager: FragmentManager): SingleDownloadFragment {
+    fun navigateToDownload(fragmentManager: FragmentManager): SingleDownloadFragment {
         val fragment = SingleDownloadFragment()
         fragment.show(fragmentManager, null)
         return fragment
