@@ -73,7 +73,7 @@ class DownloadProcessor @Inject constructor(
 
                 } catch (e: YoutubeDLException) {
                     timeoutCount++
-                    retryProcess(executor, request, this)
+                    retryProcess(executor, request, e, this)
                     e.printStackTrace()
 
                 } catch (e: CancellationException) {
@@ -89,6 +89,7 @@ class DownloadProcessor @Inject constructor(
     private fun <T : Info> retryProcess(
         executor: Executor,
         request: DownloadRequest,
+        exception: Exception,
         scope: ProducerScope<DataState<T>>,
     ) = with(scope) {
         Timber.i("Retrying Process: $timeoutCount/$retryCount")
@@ -97,8 +98,9 @@ class DownloadProcessor @Inject constructor(
                 trySend(it)
             }.launchIn(this)
         } else {
+            val exceptionMessage = ProcessorException.from(exception).message
             trySendBlocking(
-                DataState.failure("Something went wrong")
+                DataState.failure(exceptionMessage)
             )
             cancel()
         }
