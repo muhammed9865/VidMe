@@ -43,7 +43,7 @@ class PlaylistsFragment : Fragment() {
             playlistsRv.adapter = mAdapter
 
             addPlaylistBtn.setOnClickListener {
-                (requireActivity() as MainActivity).navigateToPlaylistAdd(this@PlaylistsFragment)
+                (requireActivity() as MainActivity).navigateToPlaylistAdd()
             }
         }
 
