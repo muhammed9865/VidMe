@@ -55,8 +55,6 @@ class MainViewModel @Inject constructor(
     private val _currentPlayingVideo = MutableStateFlow<VideoInfo?>(null)
     val currentPlayingVideo get() = _currentPlayingVideo.asStateFlow()
 
-    var isPlayingAudio = MutableStateFlow(false)
-
     private var currentSinglesDownloadingIDs: MutableList<String> = mutableListOf()
 
 
@@ -340,15 +338,14 @@ class MainViewModel @Inject constructor(
             fetchedPlaylist = false,
             fetchedVideo = false,
             error = null,
-
-            ))
+        ))
     }
 
     fun setIsPlaying(isPlaying: Boolean) {
-        this.isPlayingAudio.update {
-            isPlaying
-        }
+        setState(_state.value.copy(isPlayingAudio = isPlaying, syncing = false, deleting = false))
     }
+
+    fun isPlayingAudio() = _state.value.isPlayingAudio
 
     private fun updatePlaylistAItem(item: YoutubePlaylistInfo, update: YoutubePlaylistInfo) {
         val itemIndex = _playlists.value.indexOf(item)

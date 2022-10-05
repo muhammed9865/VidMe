@@ -211,7 +211,7 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
     }
 
     fun navigateToAudioPlayer() {
-        if (!mainViewModel.isPlayingAudio.value) {
+        if (!mainViewModel.isPlayingAudio()) {
             MainActivityNavigation.navigateToAudioPlayer(supportFragmentManager)
             mainViewModel.setIsPlaying(true)
         }

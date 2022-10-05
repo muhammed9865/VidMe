@@ -9,4 +9,6 @@ data class MainState(
     val downloading: Boolean = false,
     val error: String? = null,
     val simpleMessage: String? = null,
+    val shouldPause: Boolean = false,
+    val isPlayingAudio: Boolean = false,
 )
