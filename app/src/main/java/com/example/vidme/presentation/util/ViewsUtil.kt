@@ -2,11 +2,16 @@ package com.example.vidme.presentation.util
 
 import android.content.Context
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.core.view.marginBottom
+import androidx.core.view.marginEnd
+import androidx.core.view.marginStart
+import androidx.core.view.marginTop
 import com.bumptech.glide.Glide
 import com.example.vidme.R
 import kotlinx.coroutines.CoroutineScope
@@ -54,6 +59,18 @@ fun ImageView.loadImage(url: String) {
         .load(url)
         .error(R.drawable.ic_no_image)
         .into(this)
+}
+
+fun View.setMargins(
+    s: Int = marginStart,
+    t: Int = marginTop,
+    e: Int = marginEnd,
+    b: Int = marginBottom,
+) {
+    val params = layoutParams as ViewGroup.MarginLayoutParams
+    params.setMargins(s, t, e, b)
+    layoutParams = params
+
 }
 
 fun translateViews(

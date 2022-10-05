@@ -1,13 +1,12 @@
 package com.example.vidme.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.*
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.vidme.databinding.ListItemSingleInfoBinding
 import com.example.vidme.domain.pojo.VideoInfo
+import com.example.vidme.presentation.util.setMargins
 import com.example.vidme.presentation.viewholder.SingleDownloadListener
 import com.example.vidme.presentation.viewholder.SingleListener
 import com.example.vidme.presentation.viewholder.SingleViewHolder
@@ -26,8 +25,14 @@ class SingleAdapter :
     }
 
     override fun onBindViewHolder(holder: SingleViewHolder, position: Int) {
+        val view = holder.itemView
         if (position == currentList.lastIndex && marginsEnabled) {
-            setMargins(holder.itemView, b = 200)
+            view.setMargins(b = 200)
+        } else if (position != currentList.lastIndex && marginsEnabled) {
+            val context = view.context
+            val top = context.resources.getDimension(com.intuit.sdp.R.dimen._10sdp).toInt()
+            val bottom = context.resources.getDimension(com.intuit.sdp.R.dimen._5sdp).toInt()
+            view.setMargins(t = top, b = bottom)
         }
 
         holder.bind(getItem(position), itemClickedListener, downloadListener)
@@ -36,20 +41,6 @@ class SingleAdapter :
 
     fun enableMargins(enable: Boolean) {
         marginsEnabled = enable
-    }
-
-
-    private fun setMargins(
-        view: View,
-        s: Int = view.marginStart,
-        t: Int = view.marginTop,
-        e: Int = view.marginEnd,
-        b: Int = view.marginBottom,
-    ) {
-        val params = view.layoutParams as ViewGroup.MarginLayoutParams
-        params.setMargins(s, t, e, b)
-        view.layoutParams = params
-
     }
 
 
