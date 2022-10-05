@@ -347,6 +347,12 @@ class MainViewModel @Inject constructor(
 
     fun isPlayingAudio() = _state.value.isPlayingAudio
 
+    fun setShouldPause(should: Boolean) {
+        setState(_state.value.copy(
+            shouldPause = should
+        ))
+    }
+
     private fun updatePlaylistAItem(item: YoutubePlaylistInfo, update: YoutubePlaylistInfo) {
         val itemIndex = _playlists.value.indexOf(item)
         _playlists.update {
