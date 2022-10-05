@@ -102,9 +102,14 @@ class MainViewModel @Inject constructor(
     }
 
     fun setCurrentPlaying(single: List<VideoInfo>) {
-        _currentPlayingAudio.update {
-            single
-
+        if (single.size == 1 && single.first().isVideo)
+            _currentPlayingVideo.update {
+                single.first()
+            }
+        else {
+            _currentPlayingAudio.update {
+                single
+            }
         }
 
     }

@@ -1,6 +1,7 @@
 package com.example.vidme.presentation.fragment.video_player
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.transition.Slide
 import com.example.vidme.databinding.FragmentVideoPlayerBinding
 import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.util.visibility
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -34,9 +37,12 @@ class VideoPlayerFragment : Fragment() {
     ): View {
         _binding = FragmentVideoPlayerBinding.inflate(layoutInflater)
 
-        mainViewModel.currentPlaying.onEach {
-            val video = it.first { info -> info.isVideo }
-            viewModel.setVideo(video)
+        val transition = Slide(Gravity.START)
+        enterTransition = transition
+        exitTransition = transition
+
+        mainViewModel.currentPlayingVideo.filterNotNull().onEach {
+            viewModel.setVideo(it)
         }.launchIn(lifecycleScope)
 
         return binding.root
@@ -60,6 +66,11 @@ class VideoPlayerFragment : Fragment() {
         videoView.seekTo(viewModel.getLastPosition())
         if (viewModel.isPlaying())
             videoView.start()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun doOnStateChange() {
