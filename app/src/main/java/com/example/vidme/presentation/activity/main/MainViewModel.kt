@@ -55,7 +55,7 @@ class MainViewModel @Inject constructor(
     private val _currentPlayingVideo = MutableStateFlow<VideoInfo?>(null)
     val currentPlayingVideo get() = _currentPlayingVideo.asStateFlow()
 
-    var isPlaying = MutableStateFlow(false)
+    var isPlayingAudio = MutableStateFlow(false)
 
     private var currentSinglesDownloadingIDs: MutableList<String> = mutableListOf()
 
@@ -340,7 +340,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun setIsPlaying(isPlaying: Boolean) {
-        this.isPlaying.update {
+        this.isPlayingAudio.update {
             isPlaying
         }
     }

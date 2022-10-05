@@ -141,7 +141,7 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         val intent = intent
         if (intent.action != null && intent.action == INTENT_FROM_NOTIFICATION_ACTION) {
             val fragment = AudioPlayerFragment()
-            if (!mainViewModel.isPlaying.value) {
+            if (!mainViewModel.isPlayingAudio.value) {
                 if (!supportFragmentManager.fragments.contains(fragment))
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.music_layout, fragment)
@@ -226,7 +226,7 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
     }
 
     fun navigateToAudioPlayer() {
-        if (!mainViewModel.isPlaying.value) {
+        if (!mainViewModel.isPlayingAudio.value) {
             MainActivityNavigation.navigateToAudioPlayer(supportFragmentManager)
             mainViewModel.setIsPlaying(true)
         }
