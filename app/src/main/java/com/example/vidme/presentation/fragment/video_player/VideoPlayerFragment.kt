@@ -70,6 +70,7 @@ class VideoPlayerFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        mainViewModel.setShouldPause(false)
         _binding = null
     }
 

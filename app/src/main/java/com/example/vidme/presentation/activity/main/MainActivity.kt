@@ -233,6 +233,7 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
 
     fun navigateToVideoPlayer(videoInfo: VideoInfo) {
         mainViewModel.setCurrentPlaying(listOf(videoInfo))
+        mainViewModel.setShouldPause(should = true)
         MainActivityNavigation.navigateToVideoPlayer(supportFragmentManager)
     }
 
