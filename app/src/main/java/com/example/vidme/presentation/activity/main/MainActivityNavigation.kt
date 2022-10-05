@@ -56,7 +56,7 @@ object MainActivityNavigation {
     fun navigateToVideoPlayer(fragmentManager: FragmentManager) {
         val fragment = VideoPlayerFragment()
         fragmentManager.beginTransaction()
-            .replace(R.id.full_screen_container, fragment, "adding_playlist")
+            .replace(R.id.expanded_player_container, fragment, "adding_playlist")
             .setReorderingAllowed(true)
             .addToBackStack(null)
             .commit()
