@@ -11,9 +11,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.vidme.databinding.FragmentVideoPlayerBinding
 import com.example.vidme.presentation.activity.main.MainViewModel
+import com.example.vidme.presentation.util.visibility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import timber.log.Timber
 
 @AndroidEntryPoint
 class VideoPlayerFragment : Fragment() {
@@ -24,6 +26,8 @@ class VideoPlayerFragment : Fragment() {
     private val viewModel by viewModels<VideoPlayerViewModel>()
 
     private val videoView get() = binding.videoView
+    private var mediaController: VideoController? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,6 +47,7 @@ class VideoPlayerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         doOnStateChange()
         doOnNavigateUp()
+        observeControlsVisibility()
     }
 
     override fun onPause() {
@@ -60,6 +65,7 @@ class VideoPlayerFragment : Fragment() {
             state.apply {
                 videoPath?.let { playVideo(it) }
                 setVideoTitle(title)
+                binding.videoToolbar.visibility(showControls)
             }
         }.launchIn(lifecycleScope)
     }
@@ -78,6 +84,12 @@ class VideoPlayerFragment : Fragment() {
         }
     }
 
+    private fun observeControlsVisibility() {
+        mediaController?.controlsVisibility?.onEach {
+            viewModel.setControlsVisibility(it)
+        }?.launchIn(lifecycleScope)
+    }
+
     private fun doOnNavigateUp() {
         binding.videoToolbar.setNavigationOnClickListener {
             requireActivity().onBackPressed()
@@ -85,9 +97,10 @@ class VideoPlayerFragment : Fragment() {
     }
 
     private fun getMediaController(): MediaController {
-        return MediaController(requireContext(), true).apply {
+        return mediaController ?: VideoController(requireContext(), true).apply {
             setAnchorView(binding.root)
-
+        }.also {
+            mediaController = it
         }
     }
 

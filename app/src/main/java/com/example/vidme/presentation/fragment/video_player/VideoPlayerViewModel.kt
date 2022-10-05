@@ -22,6 +22,12 @@ class VideoPlayerViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun setControlsVisibility(visible: Boolean) {
+        _state.update {
+            it.copy(videoPath = null, showControls = visible)
+        }
+    }
+
     fun setVideo(videoInfo: VideoInfo) {
         video = videoInfo
         _state.update {

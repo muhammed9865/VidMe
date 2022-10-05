@@ -4,4 +4,5 @@ data class VideoPlayerState(
     val currentPosition: Int = -1,
     val title: String = "",
     val videoPath: String? = null,
+    val showControls: Boolean = false,
 )
