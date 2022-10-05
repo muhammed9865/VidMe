@@ -32,12 +32,17 @@ object MainActivityNavigation {
 
     fun navigateToAudioPlayer(fragmentManager: FragmentManager) {
         val fragment = AudioPlayerFragment()
-        fragmentManager.beginTransaction()
-            .replace(R.id.music_layout, fragment)
-            .setReorderingAllowed(true)
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .commit()
-
+        if (!fragmentManager.fragments.contains(fragment)) {
+            fragmentManager.beginTransaction()
+                .replace(R.id.music_layout, fragment)
+                .setReorderingAllowed(true)
+                .commit()
+        } else {
+            fragmentManager.beginTransaction()
+                .show(fragment)
+                .setReorderingAllowed(true)
+                .commit()
+        }
     }
 
     /*
