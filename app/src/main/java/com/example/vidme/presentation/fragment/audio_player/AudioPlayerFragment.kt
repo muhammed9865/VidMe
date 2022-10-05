@@ -92,7 +92,7 @@ open class AudioPlayerFragment : BottomSheetDialogFragment(), ServiceConnection 
 
     private fun observeIfShouldPause() {
         mainViewModel.state.onEach {
-            if (it.shouldPause) {
+            if (it.shouldPause and viewModel.isPlaying()) {
                 viewModel.pauseResume()
             }
         }.launchIn(lifecycleScope)

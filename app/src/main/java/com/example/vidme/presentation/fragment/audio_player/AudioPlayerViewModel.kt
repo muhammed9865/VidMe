@@ -84,6 +84,8 @@ class AudioPlayerViewModel @Inject constructor(
         updateState(audioManager.getAudioData())
     }
 
+    fun isPlaying() = isPlaying
+
     fun close() {
         mService?.close()
     }
