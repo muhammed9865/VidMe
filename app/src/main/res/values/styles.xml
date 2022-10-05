@@ -65,8 +65,10 @@
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
 
-    <style name="EditTextHint" parent="TextAppearance.AppCompat">
+    <style name="EditTextHint" parent="TextAppearance.AppCompat"></style>
 
+    <style name="VideoPlayerTitleAppearance">
+        <item name="android:textSize">@dimen/_12ssp</item>
     </style>
 
 

@@ -264,9 +264,10 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
     companion object {
         private const val FRAGMENT_PLAYLISTS = 0
         private const val FRAGMENT_SINGLES = 1
-        private val permissions = listOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-
+        private val permissions = listOf(
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        )
         const val INTENT_FROM_NOTIFICATION_ACTION = "com.example.vidme.MainActivity.Notification"
     }
 

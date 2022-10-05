@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:focusable="true"
+    android:clickable="true"
+    android:background="#151515"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/video_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        app:background="@color/black"
+        app:navigationIcon="@drawable/ic_baseline_arrow_back_ios_24"
+        app:titleTextColor="@color/white"
+        app:titleTextAppearance="@style/VideoPlayerTitleAppearance"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <VideoView
+        android:id="@+id/video_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
