@@ -15,7 +15,6 @@ import com.example.vidme.presentation.util.visibility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import timber.log.Timber
 
 @AndroidEntryPoint
 class VideoPlayerFragment : Fragment() {
@@ -52,12 +51,15 @@ class VideoPlayerFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.setLastPosition(videoView.currentPosition)
+        val isPlaying = videoView.isPlaying
+        viewModel.setPlaybackState(videoView.currentPosition, isPlaying)
     }
 
     override fun onResume() {
         super.onResume()
         videoView.seekTo(viewModel.getLastPosition())
+        if (viewModel.isPlaying())
+            videoView.start()
     }
 
     private fun doOnStateChange() {

@@ -6,7 +6,6 @@ import android.widget.MediaController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import timber.log.Timber
 
 class VideoController : MediaController {
     constructor(context: Context, useFastForward: Boolean = true) : super(context, useFastForward)
@@ -17,7 +16,6 @@ class VideoController : MediaController {
 
     override fun isShown(): Boolean {
         return super.isShown().also { isVisible ->
-            Timber.d(isVisible.toString())
             _visibility.update {
                 isVisible
             }

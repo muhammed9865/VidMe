@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,9 +17,9 @@ class VideoPlayerViewModel @Inject constructor() : ViewModel() {
 
     private lateinit var video: VideoInfo
 
-    fun setLastPosition(position: Int) {
+    fun setPlaybackState(position: Int, isPlaying: Boolean) {
         _state.update {
-            it.copy(currentPosition = position)
+            it.copy(currentPosition = position, isPlaying = isPlaying)
         }
     }
 
@@ -36,5 +37,7 @@ class VideoPlayerViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getLastPosition() = _state.value.currentPosition
+
+    fun isPlaying() = _state.value.isPlaying
 
 }
