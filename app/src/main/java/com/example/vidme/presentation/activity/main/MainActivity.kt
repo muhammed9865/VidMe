@@ -20,7 +20,6 @@ import com.example.vidme.domain.pojo.request.Request
 import com.example.vidme.domain.pojo.request.VideoRequest
 import com.example.vidme.presentation.callback.SingleDownloadState
 import com.example.vidme.presentation.fragment.FragmentAdapter
-import com.example.vidme.presentation.fragment.audio_player.AudioPlayerFragment
 import com.example.vidme.presentation.fragment.common.PopupMenu
 import com.example.vidme.presentation.util.DialogsUtil
 import com.example.vidme.presentation.util.showErrorSnackBar
@@ -140,21 +139,7 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
     private fun startPlayingAudio() {
         val intent = intent
         if (intent.action != null && intent.action == INTENT_FROM_NOTIFICATION_ACTION) {
-            val fragment = AudioPlayerFragment()
-            if (!mainViewModel.isPlayingAudio.value) {
-                if (!supportFragmentManager.fragments.contains(fragment))
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.music_layout, fragment)
-                        .setReorderingAllowed(true)
-                        .commit()
-                mainViewModel.setIsPlaying(true)
-            } else {
-                supportFragmentManager.beginTransaction()
-                    .show(fragment)
-                    .setReorderingAllowed(true)
-                    .commit()
-                mainViewModel.setIsPlaying(true)
-            }
+           navigateToAudioPlayer()
         }
     }
 
