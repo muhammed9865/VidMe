@@ -47,20 +47,6 @@
         tools:alpha="1"
         tools:translationX="0dp" />
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:alpha="0"
-        android:text="@string/youtube_playlist_only"
-        android:textColor="@color/clickable_color"
-        android:textSize="@dimen/_9ssp"
-        android:translationX="-500dp"
-        app:layout_constraintStart_toStartOf="@+id/guideline9"
-        app:layout_constraintTop_toTopOf="@+id/guideline12"
-        tools:alpha="1"
-        tools:translationX="0dp" />
-
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/url_layout"
@@ -70,7 +56,7 @@
         android:hint="@string/url"
         app:layout_constraintEnd_toStartOf="@+id/guideline10"
         app:layout_constraintStart_toStartOf="@+id/guideline9"
-        app:layout_constraintTop_toBottomOf="@+id/textView6"
+        app:layout_constraintTop_toTopOf="@+id/guideline12"
         tools:alpha="1"
         tools:translationY="0dp">
 
