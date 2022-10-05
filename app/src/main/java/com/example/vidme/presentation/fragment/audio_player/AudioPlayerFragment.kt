@@ -11,11 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.animation.AnimationUtils
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.viewbinding.ViewBinding
 import com.example.vidme.R
 import com.example.vidme.databinding.FragmentAudioPlayerBinding
 import com.example.vidme.domain.pojo.VideoInfo
@@ -156,7 +153,7 @@ open class AudioPlayerFragment : BottomSheetDialogFragment(), ServiceConnection 
 
     private fun observeCurrentPlaying() {
         lifecycleScope.launchWhenStarted {
-            mainViewModel.currentPlaying.filterNotNull().collect {
+            mainViewModel.currentPlayingAudio.filterNotNull().collect {
                 Timber.d(it.toString())
                 startPlayingAudio(singles = it)
             }

@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vidme.domain.pojo.DownloadInfo
 import com.example.vidme.domain.pojo.VideoInfo
-import com.example.vidme.domain.pojo.request.VideoRequest
 import com.example.vidme.domain.pojo.YoutubePlaylistInfo
 import com.example.vidme.domain.pojo.YoutubePlaylistWithVideos
 import com.example.vidme.domain.pojo.request.PlaylistRequest
+import com.example.vidme.domain.pojo.request.VideoRequest
 import com.example.vidme.domain.usecase.*
 import com.example.vidme.domain.util.StringUtil
 import com.example.vidme.presentation.callback.PlaylistDownloadState
@@ -49,8 +49,12 @@ class MainViewModel @Inject constructor(
     private val _selectedSingleForDownload = MutableStateFlow<VideoInfo?>(null)
     val selectedSingleForDownload get() = _selectedSingleForDownload
 
-    private val _currentPlaying = MutableStateFlow<List<VideoInfo>>(emptyList())
-    val currentPlaying get() = _currentPlaying.asStateFlow()
+    private val _currentPlayingAudio = MutableStateFlow<List<VideoInfo>>(emptyList())
+    val currentPlayingAudio get() = _currentPlayingAudio.asStateFlow()
+
+    private val _currentPlayingVideo = MutableStateFlow<VideoInfo?>(null)
+    val currentPlayingVideo get() = _currentPlayingVideo.asStateFlow()
+
     var isPlaying = MutableStateFlow(false)
 
     private var currentSinglesDownloadingIDs: MutableList<String> = mutableListOf()
@@ -98,7 +102,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun setCurrentPlaying(single: List<VideoInfo>) {
-        _currentPlaying.update {
+        _currentPlayingAudio.update {
             single
 
         }
