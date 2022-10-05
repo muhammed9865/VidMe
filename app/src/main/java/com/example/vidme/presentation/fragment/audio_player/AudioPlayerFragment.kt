@@ -71,6 +71,7 @@ open class AudioPlayerFragment : BottomSheetDialogFragment(), ServiceConnection 
         onStateChanged()
         handleButtonsActions()
         observeCurrentPlaying()
+        observeIfShouldPause()
 
     }
 
@@ -83,10 +84,18 @@ open class AudioPlayerFragment : BottomSheetDialogFragment(), ServiceConnection 
     }
 
 
-    protected fun navigateUp() {
+    private fun navigateUp() {
         mainViewModel.setIsPlaying(false)
         dismiss()
 
+    }
+
+    private fun observeIfShouldPause() {
+        mainViewModel.state.onEach {
+            if (it.shouldPause) {
+                viewModel.pauseResume()
+            }
+        }.launchIn(lifecycleScope)
     }
 
     private fun bindService() {
