@@ -21,7 +21,6 @@ import com.example.vidme.presentation.activity.main.MainViewModel
 import com.example.vidme.presentation.adapter.SingleAdapter
 import com.example.vidme.presentation.fragment.common.PopupMenu
 import com.example.vidme.presentation.util.loadImage
-import com.example.vidme.presentation.util.showWarningSnackBar
 import com.example.vidme.presentation.util.visibility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterNotNull
@@ -190,7 +189,7 @@ class PlaylistInfoFragment
             }
             if (it.isVideo) {
                 viewModel.setSelectedSingle(it)
-                // TODO Implement going to PlayVideoFragment
+                (requireActivity() as MainActivity).navigateToVideoPlayer(it)
             }
 
         }
