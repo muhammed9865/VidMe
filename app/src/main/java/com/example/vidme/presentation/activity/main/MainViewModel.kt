@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.sin
 
 @HiltViewModel
 @Suppress("unused")
@@ -61,7 +62,7 @@ class MainViewModel @Inject constructor(
     private val _state = MutableStateFlow(MainState())
     val state get() = _state.asSharedFlow()
 
-    private lateinit var cachedSingles: List<VideoInfo>
+    private lateinit var cachedSingles: MutableList<VideoInfo>
     private lateinit var cachedPlaylist: List<YoutubePlaylistInfo>
     private val singleFilters =
         hashMapOf<String, SingleFilter?>().also { it["filter"] = SingleFilter.All }
@@ -85,7 +86,8 @@ class MainViewModel @Inject constructor(
     private fun loadSingles() {
         tryAsync {
             _singles.update {
-                cachedSingles = getSingles().filter { it.id !in currentSinglesDownloadingIDs }
+                cachedSingles =
+                    getSingles().filter { it.id !in currentSinglesDownloadingIDs } as MutableList<VideoInfo>
                 cachedSingles
             }
         }
@@ -162,7 +164,7 @@ class MainViewModel @Inject constructor(
 
 
     private fun filterSingles() {
-        var newValues = cachedSingles
+        var newValues: List<VideoInfo> = cachedSingles
         singleFilters.values.filterNotNull().forEach { fil ->
             _singles.update {
                 newValues = fil.filter(newValues, currentSinglesDownloadingIDs)
@@ -225,6 +227,7 @@ class MainViewModel @Inject constructor(
                         if (data.isFinished) {
                             downloadCallback.onFinished(data.videoInfo!!)
                             currentSinglesDownloadingIDs.remove(videoRequest.videoInfo!!.id)
+                            updateSingle(single = data.videoInfo)
                             // Will only update the playlist if there's actually a playlist on foreground
                             updateSelectedPlaylist()
                             setState(_state.value.copy(downloading = false))
@@ -276,6 +279,11 @@ class MainViewModel @Inject constructor(
         _selectedPlaylist.value?.let {
             setSelectedPlaylist(it.playlistInfo)
         }
+    }
+
+    private fun updateSingle(single: VideoInfo) {
+        val index = cachedSingles.indexOfFirst { it.id == single.id }
+        cachedSingles[index] = single
     }
 
     fun deletePlaylist(playlistInfo: YoutubePlaylistInfo) {
