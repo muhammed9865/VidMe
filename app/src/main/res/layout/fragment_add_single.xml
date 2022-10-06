@@ -82,7 +82,6 @@
         app:iconTint="@color/white"
         app:iconGravity="textEnd"
         android:text=""
-        android:enabled="false"
         app:layout_constraintDimensionRatio="2:2"
         app:layout_constraintBottom_toBottomOf="@+id/url_layout"
         app:layout_constraintEnd_toStartOf="@+id/guideline10"

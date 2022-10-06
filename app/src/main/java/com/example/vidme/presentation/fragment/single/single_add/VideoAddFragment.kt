@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -66,8 +65,6 @@ class VideoAddFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         doOnStateChange()
         translateViews(lifecycleScope, urlViews)
-        doOnTextChanged()
-
         binding.urlEt.onDone {
             onSubmitUrl(it)
         }
@@ -156,13 +153,6 @@ class VideoAddFragment : BottomSheetDialogFragment() {
             }
 
         }.launchIn(lifecycleScope)
-    }
-
-    // EditText (url) text change
-    private fun doOnTextChanged() {
-        binding.urlEt.doOnTextChanged { text, _, _, _ ->
-            binding.enterUrlDoneBtn.isEnabled = text?.isNotEmpty() == true
-        }
     }
 
     private fun onSubmitUrl(view: View) {
