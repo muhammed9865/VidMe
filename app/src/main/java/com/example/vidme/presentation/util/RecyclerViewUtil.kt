@@ -123,7 +123,7 @@ private class SwipeToDeleteCallback(
     ): Boolean = false
 
     override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float {
-        return 0.6f
+        return 0.8f
     }
 
     private fun clearCanvas(c: Canvas, left: Float, top: Float, right: Float, bottom: Float) {

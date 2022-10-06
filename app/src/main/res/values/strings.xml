@@ -26,7 +26,7 @@
     <string name="fetching_single_finished">Finally! Your video is ready!</string>
     <string name="playlist_cached">A playlist with the same URL is found on your playlists</string>
     <string name="deleting">Deleting %s</string>
-    <string name="confirm_deleting">Are you sure you want to delete %s?</string>
+    <string name="confirm_deleting">Are you sure you want to delete %s permanently?</string>
     <string name="all">All</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>
