@@ -17,7 +17,7 @@ class FacebookVideoInfoExtractor @Inject constructor() : InfoExtractor {
                 info.copy(thumbnail = line)
             } else if (line.contains(REMOTE_URL_SLICE)) {
                 info.copy(remoteUrl = line)
-            } else if (StringUtil.isDigitsOnly(line)) {
+            } else if (StringUtil.isDigitsOnly(line) && line.length > 6) {
                 info.copy(id = line)
 
             } else if (StringUtil.containsDuration(line)) {
