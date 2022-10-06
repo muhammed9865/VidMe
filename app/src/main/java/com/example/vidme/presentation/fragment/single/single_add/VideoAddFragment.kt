@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.core.content.ContextCompat
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -41,7 +41,11 @@ class VideoAddFragment : BottomSheetDialogFragment() {
 
     // Views that will be animated  during fragment lifecycle
     private val fetchingViews by lazy { listOf(binding.fetchingStateTxt, binding.fetchingPb) }
-    private val urlViews by lazy { listOf(binding.textView5, binding.textView6, binding.urlLayout) }
+    private val urlViews by lazy {
+        listOf(binding.textView5,
+            binding.urlLayout,
+            binding.enterUrlDoneBtn)
+    }
     private val addViews by lazy { listOf(binding.addBtn) }
 
     override fun onCreateView(
@@ -61,12 +65,15 @@ class VideoAddFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         doOnStateChange()
-
         translateViews(lifecycleScope, urlViews)
+        doOnTextChanged()
 
         binding.urlEt.onDone {
-            viewModel.setUrl(binding.urlEt.text.toString())
-            it.hideKeyboard()
+            onSubmitUrl(it)
+        }
+
+        binding.enterUrlDoneBtn.setOnClickListener {
+            onSubmitUrl(it)
         }
 
         binding.addBtn.setOnClickListener {
@@ -149,6 +156,18 @@ class VideoAddFragment : BottomSheetDialogFragment() {
             }
 
         }.launchIn(lifecycleScope)
+    }
+
+    // EditText (url) text change
+    private fun doOnTextChanged() {
+        binding.urlEt.doOnTextChanged { text, _, _, _ ->
+            binding.enterUrlDoneBtn.isEnabled = text?.isNotEmpty() == true
+        }
+    }
+
+    private fun onSubmitUrl(view: View) {
+        viewModel.setUrl(binding.urlEt.text.toString())
+        view.hideKeyboard()
     }
 
 
