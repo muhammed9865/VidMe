@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/toolbarColor"
     android:clickable="true"
-    android:focusable="true"
-    android:background="@color/toolbarColor">
+    android:focusable="true">
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_5sdp"
         android:hint="@string/name"
-        app:layout_constraintEnd_toStartOf="@+id/guideline10"
+        app:layout_constraintEnd_toStartOf="@+id/enter_name_done_btn"
         app:layout_constraintStart_toStartOf="@+id/guideline9"
         app:layout_constraintTop_toTopOf="@+id/guideline11"
         tools:alpha="1"
@@ -102,6 +102,25 @@
             android:singleLine="true"
             android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/enter_name_done_btn"
+        style="@style/ButtonDone"
+        tools:translationX="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/name_layout"
+        app:layout_constraintDimensionRatio="2:2"
+        app:layout_constraintEnd_toStartOf="@+id/guideline10"
+        app:layout_constraintTop_toTopOf="@+id/name_layout" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/enter_url_done_btn"
+        style="@style/ButtonDone"
+        app:layout_constraintBottom_toBottomOf="@+id/url_layout"
+        app:layout_constraintDimensionRatio="2:2"
+        app:layout_constraintEnd_toStartOf="@+id/guideline10"
+        app:layout_constraintTop_toTopOf="@+id/url_layout"
+        app:strokeColor="@color/clickable_color"
+        tools:translationX="0dp" />
 
 
     <TextView
@@ -139,7 +158,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/url"
-        app:layout_constraintEnd_toStartOf="@+id/guideline10"
+        app:layout_constraintEnd_toStartOf="@+id/enter_url_done_btn"
         app:layout_constraintStart_toStartOf="@+id/guideline9"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
         tools:alpha="1"

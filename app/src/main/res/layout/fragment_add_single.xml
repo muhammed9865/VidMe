@@ -57,7 +57,6 @@
         app:layout_constraintEnd_toStartOf="@+id/enter_url_done_btn"
         app:layout_constraintStart_toStartOf="@+id/guideline9"
         app:layout_constraintTop_toTopOf="@+id/guideline12"
-        android:layout_marginEnd="@dimen/_5sdp"
         tools:alpha="1"
         tools:translationY="0dp">
 
@@ -73,15 +72,8 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/enter_url_done_btn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:icon="@drawable/ic_baseline_done_24"
-        app:iconPadding="0dp"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        app:strokeColor="@color/clickable_color"
-        app:iconTint="@color/white"
-        app:iconGravity="textEnd"
-        android:text=""
+        style="@style/ButtonDone"
+        tools:translationX="0dp"
         app:layout_constraintDimensionRatio="2:2"
         app:layout_constraintBottom_toBottomOf="@+id/url_layout"
         app:layout_constraintEnd_toStartOf="@+id/guideline10"

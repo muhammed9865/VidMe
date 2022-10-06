@@ -5,8 +5,9 @@
         <item name="boxBackgroundMode">outline</item>
         <item name="hintTextColor">@color/white</item>
         <item name="alpha">0</item>
-        <item name="android:translationX">-500dp</item>
+        <item name="android:translationX">-5000dp</item>
         <item name="android:textColorHint">@color/white</item>
+        <item name="android:layout_marginEnd">@dimen/_5sdp</item>
         <item name="boxCornerRadiusTopStart">@dimen/defaultCornerRadius</item>
         <item name="boxCornerRadiusTopEnd">@dimen/defaultCornerRadius</item>
         <item name="boxCornerRadiusBottomStart">@dimen/defaultCornerRadius</item>
@@ -16,24 +17,26 @@
         <item name="boxBackgroundColor">@android:color/transparent</item>
     </style>
 
-    <style name="SingleAddTextInputLayout">
-        <item name="boxBackgroundMode">outline</item>
-        <item name="hintTextColor">@color/white</item>
-        <item name="android:textColorHint">@color/white</item>
-        <item name="alpha">0</item>
-        <item name="android:translationY">500dp</item>
-        <item name="boxCornerRadiusTopStart">@dimen/defaultCornerRadius</item>
-        <item name="boxCornerRadiusTopEnd">@dimen/defaultCornerRadius</item>
-        <item name="boxCornerRadiusBottomStart">@dimen/defaultCornerRadius</item>
-        <item name="boxCornerRadiusBottomEnd">@dimen/defaultCornerRadius</item>
-        <item name="android:layout_marginTop">@dimen/_5sdp</item>
-        <item name="boxStrokeColor">@color/clickable_color</item>
-        <item name="boxBackgroundColor">@android:color/transparent</item>
+    <style name="SingleAddTextInputLayout" parent="PlaylistAddTextInputLayout">
+        <item name="android:translationX">0dp</item>
+        <item name="android:translationY">5000dp</item>
     </style>
 
     <style name="CircularImage">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="ButtonDone" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="icon">@drawable/ic_baseline_done_24</item>
+        <item name="iconPadding">0dp</item>
+        <item name="android:translationX">5000dp</item>
+        <item name="strokeColor">@color/clickable_color</item>
+        <item name="iconTint">@color/white</item>
+        <item name="iconGravity">textStart</item>
+        <item name="android:text">""</item>
     </style>
 
     <style name="NotificationImage">
