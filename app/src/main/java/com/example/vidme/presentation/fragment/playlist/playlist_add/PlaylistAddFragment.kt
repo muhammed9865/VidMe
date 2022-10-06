@@ -40,9 +40,18 @@ class PlaylistAddFragment : Fragment() {
     }
 
     // Views that will be animated  during fragment lifecycle
-    private val nameViews by lazy { listOf(binding.nameLayout, binding.textView4) }
+    private val nameViews by lazy {
+        listOf(binding.nameLayout,
+            binding.textView4,
+            binding.enterNameDoneBtn)
+    }
     private val fetchingViews by lazy { listOf(binding.fetchingStateTxt, binding.fetchingPb) }
-    private val urlViews by lazy { listOf(binding.textView5, binding.textView6, binding.urlLayout) }
+    private val urlViews by lazy {
+        listOf(binding.textView5,
+            binding.textView6,
+            binding.urlLayout,
+            binding.enterUrlDoneBtn)
+    }
     private val addViews by lazy { listOf(binding.addBtn) }
     private val addNewView by lazy { listOf(binding.addNewCb) }
 
@@ -68,24 +77,33 @@ class PlaylistAddFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         doOnStateChange()
 
-        binding.addNewCb.setOnCheckedChangeListener { _, b ->
-            viewModel.setAddNew(b)
-        }
+        with(binding) {
+            addNewCb.setOnCheckedChangeListener { _, b ->
+                viewModel.setAddNew(b)
+            }
 
-        translateViews(lifecycleScope, nameViews)
+            translateViews(lifecycleScope, nameViews)
 
-        binding.playlistNameEt.onNext {
-            viewModel.setPlaylistName(binding.playlistNameEt.text.toString())
-            binding.urlEt.requestFocus()
-        }
+            playlistNameEt.onNext {
+                submitName()
+            }
 
-        binding.urlEt.onDone {
-            viewModel.setUrl(binding.urlEt.text.toString())
-            it.hideKeyboard()
-        }
+            enterNameDoneBtn.setOnClickListener {
+                submitName()
+            }
 
-        binding.addBtn.setOnClickListener {
-            viewModel.validate()
+            urlEt.onDone {
+                submitURL(it)
+            }
+
+            enterUrlDoneBtn.setOnClickListener {
+                submitURL(it)
+            }
+
+
+            addBtn.setOnClickListener {
+                viewModel.validate()
+            }
         }
 
     }
@@ -170,6 +188,16 @@ class PlaylistAddFragment : Fragment() {
             }
 
         }.launchIn(lifecycleScope)
+    }
+
+    private fun submitName() {
+        viewModel.setPlaylistName(binding.playlistNameEt.text.toString())
+        binding.urlEt.requestFocus()
+    }
+
+    private fun submitURL(view: View) {
+        viewModel.setUrl(binding.urlEt.text.toString())
+        view.hideKeyboard()
     }
 
 
