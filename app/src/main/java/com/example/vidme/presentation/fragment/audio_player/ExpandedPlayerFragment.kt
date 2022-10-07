@@ -7,13 +7,10 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.vidme.R
 import com.example.vidme.databinding.FragmentExpandedAudioPlayerBinding
 import com.example.vidme.presentation.util.loadImage
-import com.google.android.material.behavior.SwipeDismissBehavior
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -59,8 +56,10 @@ class ExpandedPlayerFragment : AudioPlayerFragment() {
                 }
                 state.audioThumbnail?.let { thumbnail ->
                     if (thumbnail != currThumbnailUrl) {
+                        expandedImage.loadImage(thumbnail)
                         audioThumbnail.loadImage(thumbnail)
                         currThumbnailUrl = thumbnail
+
                     }
                 }
                 state.audioProgress.let { progress -> audioCurrentProgress.text = progress }

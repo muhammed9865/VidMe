@@ -8,6 +8,14 @@
     android:clickable="true"
     android:focusable="true">
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/expanded_image"
+        android:layout_width="match_parent"
+        android:elevation="0dp"
+        android:alpha="0.3"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/image_test"
+        android:layout_height="match_parent" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
