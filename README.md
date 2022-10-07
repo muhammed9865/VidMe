@@ -1,8 +1,16 @@
 # VidMe
-##  About
 
 VidMe is a download-app that will help you save online videos or even Youtube playlists with variety of choices for the videos like saving it as Audio or Video
 and deciding the video quality.
+
+## Features
+
+- Fetch videos from Youtube/facebook/instagram and many more.
+- Fetch an entire Youtube playlist.
+- Download fetched videos either as Video or Audio, and choosing the quality either Best or Worst.
+- Download an entire Playlist as either Videos or Audios, and choosing the quality.
+- Syncing added Playlists with Youtube.
+- Deleting Playlist or single Video/Audio.
 
 ## Tools
 
