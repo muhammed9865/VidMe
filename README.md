@@ -26,6 +26,7 @@ and deciding the video quality.
 - Foreground service
 - MediaPlayer
 - VideoView with MediaController
+- Files API
 
 ## Gallery
 
