@@ -41,4 +41,4 @@ and deciding the video quality.
 
 [Video of VidMe](https://drive.google.com/file/d/1LQeMeVnOndmyuzVucu71tALKmiEQuwyB/view?usp=sharing)
 
-Pictures of screen will be added later..
+Pictures of in-app screens will be added later..
