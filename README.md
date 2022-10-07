@@ -41,4 +41,19 @@ and deciding the video quality.
 
 [Video of VidMe](https://drive.google.com/file/d/1LQeMeVnOndmyuzVucu71tALKmiEQuwyB/view?usp=sharing)
 
-Pictures of in-app screens will be added later..
+<div>
+<span>
+<img src="gallery/singles.png" width="200" height="400" />
+<img src="gallery/playlists.png" width="200" height="400" />
+<img src="gallery/empty_list.png" width="200" height="400" />
+<img src="gallery/single_add.png" width="200" height="400" />
+<img src="gallery/single_download.png" width="200" height="400" />
+<img src="gallery/playlist_add.png" width="200" height="400" />
+<img src="gallery/inside_playlist.png" width="200" height="400" />
+<img src="gallery/audio_player.png" width="200" height="400" />
+<img src="gallery/video_player.png" width="200" height="400" />
+</span>
+</div>
+
+
+
