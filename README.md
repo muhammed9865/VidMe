@@ -27,6 +27,7 @@ and deciding the video quality.
 - MediaPlayer
 - VideoView with MediaController
 - Files API
+- Permissions
 
 ## Gallery
 
