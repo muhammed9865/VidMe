@@ -204,6 +204,15 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun resetStateAfterSync() {
+        setState(
+            _state.value.copy(
+                syncing = false,
+                simpleMessage = null
+            )
+        )
+    }
+
     fun synchronizeAllPlaylists() {
         tryAsync {
             _playlists.value.forEach { youtubePlaylistInfo ->

@@ -123,6 +123,7 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
             mainViewModel.state.collect { state ->
                 state.simpleMessage?.let {
                     showSimpleSnackBar(binding.root, it)
+                    mainViewModel.resetStateAfterSync()
                 }
 
                 state.error?.let {
@@ -131,6 +132,7 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
 
                 if (state.syncing) {
                     showSimpleSnackBar(binding.root, "Syncing..")
+                    mainViewModel.resetStateAfterSync()
                 }
             }
         }
