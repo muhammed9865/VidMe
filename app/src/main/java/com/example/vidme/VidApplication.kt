@@ -12,11 +12,13 @@ class VidApplication  : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
         Timber.plant(Timber.DebugTree())
         YoutubeDL.getInstance().init(applicationContext)
     }
 
     companion object {
         val executorService: ExecutorService = Executors.newFixedThreadPool(4)
+        lateinit var instance: VidApplication
     }
 }
