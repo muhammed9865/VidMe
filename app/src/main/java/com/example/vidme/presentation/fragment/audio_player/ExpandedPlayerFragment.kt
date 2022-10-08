@@ -41,6 +41,7 @@ class ExpandedPlayerFragment : AudioPlayerFragment() {
         onStateChanged()
         handleButtonsActions()
 
+        binding.audioTitle.isSelected = true
 
     }
 
