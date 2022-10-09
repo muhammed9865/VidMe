@@ -18,6 +18,9 @@ and deciding the video quality.
 - Android Studio
 - Figma for UI Design
 
+## Architecture
+
+##### MVVM with Repository
 ## Libraries
 
 - [Room](https://developer.android.com/training/data-storage/room) for caching
