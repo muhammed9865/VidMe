@@ -29,6 +29,7 @@ and deciding the video quality.
 - [Glide](https://github.com/bumptech/glide) for image loading.
 - [Sdp/SSP](https://www.google.com/search?q=ssp+android+studio&sxsrf=ALiCzsatoTGPsQ1bC06l02LtMpFv20sx4Q%3A1665102193696&ei=cXE_Y42MKrKP9u8PuZW4iAg&ved=0ahUKEwjNiJSG7cz6AhWyh_0HHbkKDoEQ4dUDCA0&uact=5&oq=ssp+android+studio&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIICAAQgAQQywE6CggAEEcQ1gQQsAM6DQguEMcBENEDELADEEM6BggAEB4QB0oECEEYAEoECEYYAFC7AViSB2DHCGgBcAF4AIABjwGIAagDkgEDMC4zmAEAoAEByAEJwAEB&sclient=gws-wiz-serp) for responsive dimensions
 - [Coroutines](https://developer.android.com/kotlin/coroutines) for asynchronous work
+- [Truth](https://truth.dev/) for Unit testing
 
 ## Framework tools
 
