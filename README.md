@@ -18,6 +18,9 @@ and deciding the video quality.
 - Android Studio
 - Figma for UI Design
 
+## Architecture
+
+##### MVVM with Repository
 ## Libraries
 
 - [Room](https://developer.android.com/training/data-storage/room) for caching
@@ -26,6 +29,7 @@ and deciding the video quality.
 - [Glide](https://github.com/bumptech/glide) for image loading.
 - [Sdp/SSP](https://www.google.com/search?q=ssp+android+studio&sxsrf=ALiCzsatoTGPsQ1bC06l02LtMpFv20sx4Q%3A1665102193696&ei=cXE_Y42MKrKP9u8PuZW4iAg&ved=0ahUKEwjNiJSG7cz6AhWyh_0HHbkKDoEQ4dUDCA0&uact=5&oq=ssp+android+studio&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIICAAQgAQQywE6CggAEEcQ1gQQsAM6DQguEMcBENEDELADEEM6BggAEB4QB0oECEEYAEoECEYYAFC7AViSB2DHCGgBcAF4AIABjwGIAagDkgEDMC4zmAEAoAEByAEJwAEB&sclient=gws-wiz-serp) for responsive dimensions
 - [Coroutines](https://developer.android.com/kotlin/coroutines) for asynchronous work
+- [Truth](https://truth.dev/) for Unit testing
 
 ## Framework tools
 
@@ -50,7 +54,7 @@ and deciding the video quality.
 <img src="gallery/single_download.png" width="200" height="400" />
 <img src="gallery/playlist_add.png" width="200" height="400" />
 <img src="gallery/inside_playlist.png" width="200" height="400" />
-<img src="gallery/audio_player.png" width="200" height="400" />
+<img src="gallery/audio_player_v2.png" width="200" height="400" />
 <img src="gallery/video_player.png" width="200" height="400" />
 </span>
 </div>
