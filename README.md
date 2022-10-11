@@ -54,7 +54,7 @@ and deciding the video quality.
 <img src="gallery/single_download.png" width="200" height="400" />
 <img src="gallery/playlist_add.png" width="200" height="400" />
 <img src="gallery/inside_playlist.png" width="200" height="400" />
-<img src="gallery/audio_player.png" width="200" height="400" />
+<img src="gallery/audio_player_v2.png" width="200" height="400" />
 <img src="gallery/video_player.png" width="200" height="400" />
 </span>
 </div>
