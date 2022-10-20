@@ -20,7 +20,7 @@ and deciding the video quality.
 
 ## Architecture
 
-##### MVVM with Repository
+##### MVVM with Repository, Single Activity principle. 
 ## Libraries
 
 - [Room](https://developer.android.com/training/data-storage/room) for caching
