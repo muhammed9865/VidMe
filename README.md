@@ -21,6 +21,30 @@ and deciding the video quality.
 ## Architecture
 
 ##### MVVM with Repository, Single Activity principle. 
+
+## Directory Structure
+<img src="gallery/directory_structure.png" width="200" height="400" />
+
+- __Data__: Handles the implementation of dealing with __Datasources__.
+  - Datasources in VidMe are the YoutubeDL and Room.
+  - _data/cache_: Contains the implmenetation of Caching method (Room).
+  - _data/downloader_: Interacts with YoutubeDL to process incoming Request and returns the extracted result using the Request extractor. Each request has it's unique extractor.
+  - _data/extractor_: Serializes the output of the downloader to a specific Info type.
+  - _data/mapper_: Data Transfer Object (DTO) that translates a model in __Data layer__ to it's corresponding in __Domain layer__.
+  - _data/pojo_: Data models that's used in Data layer scope only.
+  - _data/repository_: Implementation of main repository of the application. Repository will be explained in-details in Domain layer.
+  - _data/request_: Each request contains the information of what information is needed and the extractor who can extract that information.
+  
+- __DI__: Provides most of the dependencies that the application uses during it's lifecycle, like Downloader and Repository.
+
+- __Domain__: The Business logic that's used in __Presentation layer__.
+  - _domain/pojo_: Data models that's used in Domain layer scope and Presentaion layer.
+  - _domain/repository_: Repository purpose is to combine the __Data sources__ into one single source for __Use cases__.
+    - Combines between Downloader and Cache, whatever output comes from downloader is cached and then cached output is returned.
+  - _domain/usecase_: Use case is like a mapper between an action from Presentation layer to corresponding action handler in Repository with some constrains.
+  - _domain/util_: Provides helper methods in dealing with Files API and Strings.
+  
+
 ## Libraries
 
 - [Room](https://developer.android.com/training/data-storage/room) for caching
@@ -32,7 +56,6 @@ and deciding the video quality.
 - [Truth](https://truth.dev/) for Unit testing
 
 ## Framework tools
-
 - Android Threads
 - Notifications
 - Foreground service
