@@ -41,7 +41,7 @@ and deciding the video quality.
   - _domain/pojo_: Data models that's used in Domain layer scope and Presentaion layer.
   - _domain/repository_: Repository purpose is to combine the __Data sources__ into one single source for __Use cases__.
     - Combines between Downloader and Cache, whatever output comes from downloader is cached and then cached output is returned.
-  - _domain/usecase_: Use case is like a mapper between an action from Presentation layer to corresponding action handler in Repository with some constrains.
+  - _domain/usecase_: Use case specifiy an action that the system provides, like FetchYoutubePlaylistInfoUseCase, it will somehow get you the playlist info.
   - _domain/util_: Provides helper methods in dealing with Files API and Strings.
   
 
