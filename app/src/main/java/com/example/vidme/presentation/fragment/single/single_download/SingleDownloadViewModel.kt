@@ -23,9 +23,7 @@ class SingleDownloadViewModel @Inject constructor() : ViewModel() {
     }
 
     fun setDownloadType(type: String) {
-        val downloadType =
-            if (type.lowercase() == Request.TYPE_AUDIO) Request.TYPE_AUDIO else Request.TYPE_VIDEO
-        request = request.copy(type = downloadType)
+        request = request.copy(type = Request.typeFromString(type))
     }
 
     fun setVideoInfo(videoInfo: VideoInfo) {
@@ -33,9 +31,7 @@ class SingleDownloadViewModel @Inject constructor() : ViewModel() {
     }
 
     fun setDownloadQuality(quality: String) {
-        val downloadQuality =
-            if (quality.lowercase() == Request.QUALITY_BEST) Request.QUALITY_BEST else Request.QUALITY_WORST
-        request = request.copy(quality = downloadQuality)
+        request = request.copy(quality = Request.qualityFromString(quality))
     }
 
     fun finishSelection() {
