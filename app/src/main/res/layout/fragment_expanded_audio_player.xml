@@ -17,44 +17,6 @@
         app:srcCompat="@drawable/image_test"
         android:layout_height="match_parent" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:cardCornerRadius="@dimen/defaultCornerRadius"
-        app:cardElevation="@dimen/_20sdp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline19"
-        app:layout_constraintEnd_toStartOf="@+id/guideline21"
-        app:layout_constraintStart_toStartOf="@+id/guideline20"
-        app:layout_constraintTop_toTopOf="@+id/guideline22">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/audio_thumbnail"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="1"
-            android:scaleType="centerCrop"
-            android:transitionName="video_thumbnail_expanded_transition"
-            app:srcCompat="@drawable/image_test" />
-    </androidx.cardview.widget.CardView>
-
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline19"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.78" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline23"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.76" />
-
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline20"
         android:layout_width="wrap_content"
@@ -69,12 +31,6 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.96" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline22"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.07" />
 
     <TextView
         android:id="@+id/audio_title"
@@ -102,7 +58,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline21"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
-        app:layout_constraintTop_toTopOf="@+id/guideline22"
+        app:layout_constraintTop_toTopOf="parent"
         app:thumbColor="@color/toolbarColor"
         app:thumbElevation="@dimen/_3sdp"
         app:thumbRadius="@dimen/_5sdp"
@@ -194,13 +150,6 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline21"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/white" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="btn_close"
-        app:barrierDirection="bottom" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
