@@ -51,5 +51,8 @@ interface MediaRepository {
 
     suspend fun deletePlaylistByName(playlistName: String): Boolean
 
+    companion object {
+        const val RETRY_AFTER_FAIL_TIMES: Long = 3
+    }
 
 }

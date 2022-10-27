@@ -5,15 +5,17 @@ import com.example.vidme.data.downloader.Processor
 import com.example.vidme.data.mapper.toDomain
 import com.example.vidme.data.mapper.toYoutubePlaylistInfo
 import com.example.vidme.data.pojo.info.DownloadInfo
+import com.example.vidme.data.pojo.info.Info
 import com.example.vidme.data.pojo.info.VideoInfo
 import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 import com.example.vidme.data.request.*
 import com.example.vidme.domain.DataState
-import com.example.vidme.domain.pojo.request.VideoRequest
 import com.example.vidme.domain.pojo.YoutubePlaylistWithVideos
 import com.example.vidme.domain.pojo.request.PlaylistRequest
+import com.example.vidme.domain.pojo.request.VideoRequest
 import com.example.vidme.domain.repository.MediaRepository
 import com.example.vidme.domain.util.FileUtil
+import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 import java.util.concurrent.Executor
 import javax.inject.Inject
@@ -44,7 +46,7 @@ class MediaRepositoryImpl @Inject constructor(
 
         val request = VideoInfoRequest(url)
         // Before returning the flow, cache the result and return the result from database
-        val result = processor.process<VideoInfo>(executor, request)
+        val result = collectProcessorFlow<VideoInfo>(executor, request)
         result.collect { res ->
             if (res.isSuccessful) {
                 val data = res.data!!
@@ -87,7 +89,7 @@ class MediaRepositoryImpl @Inject constructor(
         val request = YoutubePlaylistInfoRequest(playlistName, url)
 
         // cache the result and return the result from database
-        val result = processor.process<YoutubePlaylistInfo>(executor, request)
+        val result = collectProcessorFlow<YoutubePlaylistInfo>(executor, request)
 
         result.collect { res ->
             if (res.isSuccessful) {
@@ -147,7 +149,7 @@ class MediaRepositoryImpl @Inject constructor(
 
 
         val request = VideoDownloadRequest(url, videoRequest)
-        val result = processor.process<DownloadInfo>(executor = executor, request = request)
+        val result = collectProcessorFlow<DownloadInfo>(executor = executor, request = request)
 
         result.collect { res ->
             if (res.isSuccessful) {
@@ -213,7 +215,7 @@ class MediaRepositoryImpl @Inject constructor(
         val request =
             YoutubePlaylistDownloadRequest(playlistRequest)
 
-        val result = processor.process<DownloadInfo>(executor, request)
+        val result = collectProcessorFlow<DownloadInfo>(executor, request)
 
         // Edited will be used if a video isn't valid so the [lastPlaylistIndex] will be decreased
         result.collect { res ->
@@ -290,7 +292,7 @@ class MediaRepositoryImpl @Inject constructor(
         val request = SynchronizePlaylistRequest(cachedPlaylistInfo)
 
         // Before returning the flow, cache the result and return the result from database
-        val result = processor.process<YoutubePlaylistInfo>(executor, request)
+        val result = collectProcessorFlow<YoutubePlaylistInfo>(executor, request)
         result.collect { res ->
             if (res.isSuccessful) {
                 val data = res.data!!
@@ -304,6 +306,13 @@ class MediaRepositoryImpl @Inject constructor(
                 onPlaylistInfo(DataState.failure(res.error))
             }
         }
+    }
+
+    private fun <T : Info> collectProcessorFlow(
+        executor: Executor,
+        request: DownloadRequest,
+    ): Flow<DataState<T>> {
+        return processor.process(executor, request)
     }
 
 }
