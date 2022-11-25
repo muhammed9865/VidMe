@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.example.vidme.domain.util.StringUtil
 import com.example.vidme.service.AudioService
 import com.example.vidme.service.audio.AudioManager
+import com.example.vidme.service.audio.AudioManagerImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -58,7 +58,6 @@ class ExpandedPlayerFragment : AudioPlayerFragment() {
                 state.audioThumbnail?.let { thumbnail ->
                     if (thumbnail != currThumbnailUrl) {
                         expandedImage.loadImage(thumbnail)
-                        audioThumbnail.loadImage(thumbnail)
                         currThumbnailUrl = thumbnail
 
                     }

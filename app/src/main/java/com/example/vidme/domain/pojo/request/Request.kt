@@ -16,13 +16,13 @@ abstract class Request(
     fun isAudio() = type == TYPE_AUDIO
 
     companion object {
-        const val TYPE_AUDIO = "audio"
+        const val TYPE_AUDIO = "Audio"
         private const val TYPE_AUDIO_AR = "صوت"
-        const val TYPE_VIDEO = "video"
+        const val TYPE_VIDEO = "Video"
         private const val TYPE_VIDEO_AR = "فيديو"
-        const val QUALITY_BEST = "best"
+        const val QUALITY_BEST = "Best"
         private const val QUALITY_BEST_AR: String = "الأفضل"
-        const val QUALITY_WORST = "worst"
+        const val QUALITY_WORST = "Worst"
         private const val QUALITY_WORST_AR = "الاسوأ"
 
         fun typeFromString(string: String): String {
