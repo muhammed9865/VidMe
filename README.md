@@ -65,7 +65,7 @@ and deciding the video quality.
 - Permissions
 
 ## Try it out
-[VidMe](https://www.mediafire.com/file/a99yx4vah4pnjja/VidMe.apk/file)
+[VidMe](https://www.mediafire.com/file/g3z4ia77eem69yq/VidMe.apk/file)
 ## Gallery
 
 [Video of VidMe](https://drive.google.com/file/d/1LQeMeVnOndmyuzVucu71tALKmiEQuwyB/view?usp=sharing)
