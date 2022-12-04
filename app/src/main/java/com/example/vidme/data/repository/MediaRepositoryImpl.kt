@@ -20,6 +20,9 @@ import timber.log.Timber
 import java.util.concurrent.Executor
 import javax.inject.Inject
 
+/*
+    Combine data sources into one single source.
+ */
 class MediaRepositoryImpl @Inject constructor(
     private val processor: Processor,
     private val cache: CacheDatabase,

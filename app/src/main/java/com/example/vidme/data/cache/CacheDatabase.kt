@@ -5,6 +5,7 @@ import com.example.vidme.data.pojo.cache.YoutubePlaylistInfoCache
 import com.example.vidme.data.pojo.info.VideoInfo
 import com.example.vidme.data.pojo.info.YoutubePlaylistInfo
 
+
 interface CacheDatabase {
     suspend fun saveVideoInfo(videoInfo: VideoInfo)
 

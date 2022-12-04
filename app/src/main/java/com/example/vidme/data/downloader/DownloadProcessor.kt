@@ -41,7 +41,7 @@ class DownloadProcessor @Inject constructor(
         this.request = request
         return callbackFlow {
             executor.execute {
-                logger.log("DownloadProcessor: Starting Process...")
+                logger.log("DownloadProcessor: Starting Process in thread $executor...")
                 try {
                     val _request = request.getRequest()
                     logger.log(_request.buildCommand().toString())
