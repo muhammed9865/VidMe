@@ -16,17 +16,17 @@ abstract class Request(
     fun isAudio() = type == TYPE_AUDIO
 
     companion object {
-        const val TYPE_AUDIO = "Audio"
+        const val TYPE_AUDIO = "audio"
         private const val TYPE_AUDIO_AR = "صوت"
-        const val TYPE_VIDEO = "Video"
+        const val TYPE_VIDEO = "video"
         private const val TYPE_VIDEO_AR = "فيديو"
-        const val QUALITY_BEST = "Best"
+        const val QUALITY_BEST = "best"
         private const val QUALITY_BEST_AR: String = "الأفضل"
-        const val QUALITY_WORST = "Worst"
+        const val QUALITY_WORST = "worst"
         private const val QUALITY_WORST_AR = "الاسوأ"
 
         fun typeFromString(string: String): String {
-            return when (string) {
+            return when (string.lowercase()) {
                 in audioTypes -> TYPE_AUDIO
                 in videoTypes -> TYPE_VIDEO
                 else -> throw IllegalStateException("$string is not a valid type, type must be one of ${audioTypes + videoTypes}")
@@ -34,7 +34,7 @@ abstract class Request(
         }
 
         fun qualityFromString(string: String): String {
-            return when (string) {
+            return when (string.lowercase()) {
                 in qualityBest -> QUALITY_BEST
                 in qualityWorst -> QUALITY_WORST
                 else -> throw IllegalStateException("$string is not a valid quality, quality must be one of ${qualityBest + qualityWorst}")
