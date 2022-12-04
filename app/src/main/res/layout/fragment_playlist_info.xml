@@ -76,7 +76,7 @@
                 android:orientation="vertical"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="2"
-                android:layout_gravity="bottom">
+                android:layout_gravity="start|bottom">
 
                 <TextView
                     android:id="@+id/playlist_singles_count"
@@ -84,6 +84,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:alpha="0.9"
+                    android:layout_gravity="start"
                     android:textSize="@dimen/_11ssp"
                     android:layout_marginBottom="@dimen/_2sdp"
                     tools:text="35 Media files" />
@@ -93,17 +94,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:layout_gravity="bottom"
+                    android:layout_gravity="start"
                     android:textSize="@dimen/_9ssp"
                     android:alpha="0.8"
-                    tools:text="Duration: 12:15:03h" />
+                    tools:text="33:08m" />
 
                 <TextView
                     android:id="@+id/playlist_last_synced"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:layout_gravity="bottom"
+                    android:layout_gravity="start"
                     android:textSize="@dimen/_8ssp"
                     android:alpha="0.8"
                     tools:text="Last synced: 12:15:03h" />
