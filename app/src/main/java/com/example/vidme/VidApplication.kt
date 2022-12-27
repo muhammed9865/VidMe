@@ -1,8 +1,12 @@
 package com.example.vidme
 
 import android.app.Application
+import android.os.StrictMode
 import com.yausername.youtubedl_android.YoutubeDL
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -11,10 +15,38 @@ import java.util.concurrent.Executors
 class VidApplication  : Application() {
 
     override fun onCreate() {
+        // This should detect any disk reads/write, any network calls on the UI Thread.
+        StrictMode.setThreadPolicy(
+            StrictMode.ThreadPolicy.Builder()
+                .detectDiskReads()
+                .detectDiskWrites()
+                .detectNetwork()
+                .penaltyLog()
+                .build()
+        )
+
+        StrictMode.setVmPolicy(
+            StrictMode.VmPolicy.Builder()
+                .detectLeakedSqlLiteObjects()
+                .detectLeakedClosableObjects()
+                .penaltyLog()
+                .build()
+        )
+
         super.onCreate()
         instance = this
         Timber.plant(Timber.DebugTree())
-        YoutubeDL.getInstance().init(applicationContext)
+
+        // Enabling YoutubeDL in another thread to fasten up the open up time.
+        val initYoutubeDL = CoroutineScope(Dispatchers.Default).launch {
+            YoutubeDL.getInstance().init(applicationContext)
+        }
+
+        initYoutubeDL.invokeOnCompletion {
+            if (it != null)
+                Timber.d(it.message)
+            initYoutubeDL.cancel()
+        }
     }
 
     companion object {
