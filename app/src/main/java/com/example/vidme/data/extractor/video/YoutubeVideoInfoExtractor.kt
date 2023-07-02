@@ -4,6 +4,7 @@ import com.example.vidme.data.extractor.InfoExtractor
 import com.example.vidme.data.pojo.info.Info
 import com.example.vidme.data.pojo.info.VideoInfo
 import com.example.vidme.domain.util.StringUtil
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -11,6 +12,10 @@ import javax.inject.Singleton
 class YoutubeVideoInfoExtractor @Inject constructor() : InfoExtractor {
 
     override fun extract(originalUrl: String, outputLines: Map<Int, String>): Info {
+        Timber.d("Extracting info from output lines...")
+        outputLines.forEach { (key, value) ->
+            Timber.d("Line $key: $value")
+        }
         var info = VideoInfo(originalUrl = originalUrl)
         outputLines.values.forEach { line ->
             info = if (line.contains(THUMBNAIL_SLICE)) {

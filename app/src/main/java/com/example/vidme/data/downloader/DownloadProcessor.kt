@@ -59,14 +59,12 @@ class DownloadProcessor @Inject constructor(
                         * Means it will exit the lambda scope when the execute finishes and returns all the output
                         * Code after the scope will be blocked till the execute finishes
                      */
-
                     ytInstance.execute(_request) { progress: Float, timeRemaining: Long, line: String ->
                         lines[linesCount] = line
                         linesCount++
                         if (isDownloading)
                             result = onDownloading(extractor, progress, timeRemaining, lines, this)
                     }
-
                     onFinish(result, isDownloading, extractor, lines, this)
 
                     close()
@@ -76,7 +74,7 @@ class DownloadProcessor @Inject constructor(
                     retryProcess(executor, request, e, this)
                     e.printStackTrace()
 
-                } catch (e: CancellationException) {
+                } catch (_: CancellationException) {
 
                 }
             }
@@ -131,6 +129,7 @@ class DownloadProcessor @Inject constructor(
                 DataState.success(data = downloadResult) as DataState<T>
             )
         }
+        request = null
     }
 
     private fun <T : Info> onDownloading(

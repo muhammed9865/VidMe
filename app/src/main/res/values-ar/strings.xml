@@ -7,7 +7,7 @@
     <string name="playlists">قوائم تشغيل</string>
     <string name="options">اختيارات</string>
     <string name="search">بحث</string>
-    <string name="files_count">مجموع الملفات: %s</string>
+    <string name="files_count">مجموع الملفات: %d</string>
     <string name="last_synced">اخر مزامنة: %s</string>
     <string name="add_playlist">أضف قائمة تشغيل</string>
     <string name="sync_all">مزامنة الكل</string>

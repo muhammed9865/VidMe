@@ -43,7 +43,7 @@ class MediaRepositoryImpl @Inject constructor(
                 return
             }
         } catch (e: Exception) {
-
+            e.printStackTrace()
         }
 
 

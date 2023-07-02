@@ -103,7 +103,6 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
                     popupMenu.setOnMenuItemClickListener { menuItem ->
                         if (menuItem.itemId == R.id.action_sync_all) {
                             mainViewModel.synchronizeAllPlaylists()
-                            showSimpleSnackBar(binding.root, "Testing")
                             true
                         } else
                             false

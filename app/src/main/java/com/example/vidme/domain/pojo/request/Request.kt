@@ -22,7 +22,7 @@ abstract class Request(
         private const val TYPE_VIDEO_AR = "فيديو"
         const val QUALITY_BEST = "best"
         private const val QUALITY_BEST_AR: String = "الأفضل"
-        const val QUALITY_WORST = "worst"
+        private const val QUALITY_WORST = "worst"
         private const val QUALITY_WORST_AR = "الاسوأ"
 
         fun typeFromString(string: String): String {

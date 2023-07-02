@@ -88,25 +88,4 @@ class PlaylistsFragment : Fragment(), FragmentsCommon by FragmentsCommonImpl() {
     }
 
 
-    private fun enableSwipeToDelete() {
-        binding.playlistsRv.setSwipeToDelete(RecyclerViewUtil.LEFT) { _, position ->
-            val playlist = mAdapter.currentList[position]
-            deletePlaylist(playlist, playlist.name)
-        }
-    }
-
-    private fun deletePlaylist(playlistInfo: YoutubePlaylistInfo, playlistName: String) {
-        val title = getString(R.string.deleting, playlistName)
-        val content = getString(R.string.confirm_deleting, playlistName)
-        DialogsUtil.showChoiceDialog(
-            requireContext(),
-            title,
-            content,
-            onOKPressed = {
-                mainViewModel.deletePlaylist(playlistInfo)
-                showSuccessSnackBar(binding.root, "Deleting $playlistName")
-            }
-        )
-    }
-
 }

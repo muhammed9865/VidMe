@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- This frameLayout is used to visualize any fragment that wants to take the full height of window-->
     <FrameLayout
         android:id="@+id/expanded_player_container"
         android:layout_width="match_parent"

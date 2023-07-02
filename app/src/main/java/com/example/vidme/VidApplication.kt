@@ -3,6 +3,7 @@ package com.example.vidme
 import android.app.Application
 import android.os.StrictMode
 import com.yausername.youtubedl_android.YoutubeDL
+import com.yausername.youtubedl_android.YoutubeDLException
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +40,12 @@ class VidApplication  : Application() {
 
         // Enabling YoutubeDL in another thread to fasten up the open up time.
         val initYoutubeDL = CoroutineScope(Dispatchers.Default).launch {
-            YoutubeDL.getInstance().init(applicationContext)
+            try {
+                YoutubeDL.getInstance().init(applicationContext)
+                YoutubeDL.getInstance().updateYoutubeDL(applicationContext)
+            } catch (e: YoutubeDLException) {
+                Timber.e(e.message)
+            }
         }
 
         initYoutubeDL.invokeOnCompletion {

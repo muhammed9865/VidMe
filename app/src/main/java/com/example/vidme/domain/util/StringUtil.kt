@@ -36,7 +36,7 @@ object StringUtil {
 
     fun calculateDuration(duration: String): Int {
         return if (isDigitsOnly(duration)) {
-            duration.toInt()
+            duration.toIntOrNull() ?: 0
         } else {
             var durationAsInt = 0
             val timeSplit = duration.split(":").map { it.toInt() }
