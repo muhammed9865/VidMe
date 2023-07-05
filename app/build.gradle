@@ -7,9 +7,18 @@ plugins {
 }
 
 android {
+    compileSdk 33
+
     signingConfigs {
         release {
-            storeFile file('E:\\AndroidStudioProjects\\ApplicationsKeyStore\\MyApplicationsKeyStore.jks')
+            storeFile file('keystore/release.jks')
+            storePassword 'QWas123456'
+            keyAlias 'VidMe'
+            keyPassword 'QWas123456'
+        }
+
+        staging {
+            storeFile file('keystore/staging.jks')
             storePassword 'QWas123456'
             keyAlias 'VidMe'
             keyPassword 'QWas123456'
@@ -19,7 +28,6 @@ android {
     lint {
         baseline = file("lint-baseline.xml")
     }
-    compileSdk 32
 
     defaultConfig {
         applicationId "com.example.vidme"
