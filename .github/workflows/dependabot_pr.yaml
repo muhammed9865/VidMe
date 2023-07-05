@@ -2,9 +2,9 @@ name: Dependabot PR Check
 on: pull_request
 
 permissions:
-  pull_request: write
+  pull_requests: write
   issues: write
-  repository_projects: write
+  repository-projects: write
 
 env:
   JAVA_VERSION: 17
