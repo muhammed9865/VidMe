@@ -12,26 +12,25 @@ open class VideoDownloadRequest @Inject constructor(
 ) :
     DownloadRequest(url, videoRequest.isAudio()) {
 
-    private val extractor: DownloadInfoExtractor by lazy { DownloadInfoExtractor() }
-
     override fun getOptions(): Map<String, String?> {
         val playlistName = videoRequest.videoInfo!!.playlistName
         val storageLocation =
-            if (playlistName != null && playlistName.isNotEmpty()) FileUtil.getStorageFileForPlaylist(
-                playlistName).absolutePath
+            if (!playlistName.isNullOrEmpty()) FileUtil.getStorageFileForPlaylist(
+                playlistName
+            ).absolutePath
             else
                 FileUtil.getStorageUri().toString()
 
         return mapOf(
             "-o" to "$storageLocation/%(title)s.%(ext)s",
             "--no-playlist" to null,
-            "-f" to videoRequest.buildType()
+            "-f" to videoRequest.getMediaType()
         )
 
     }
 
     override fun getExtractor(): InfoExtractor {
-        return extractor
+        return DownloadInfoExtractor()
     }
 
 }

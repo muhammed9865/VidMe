@@ -180,7 +180,6 @@ class PlaylistAddFragment : Fragment() {
             if (state.validUrl) {
                 binding.urlEt.error = null
                 translateViews(lifecycleScope, addViews)
-
             }
 
             if (state.success) {

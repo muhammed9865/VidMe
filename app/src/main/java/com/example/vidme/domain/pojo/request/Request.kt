@@ -4,7 +4,7 @@ abstract class Request(
     open val type: String = TYPE_AUDIO,
     open val quality: String = QUALITY_BEST,
 ) {
-    fun buildType(): String {
+    fun getMediaType(): String {
         return buildString {
             append(quality)
             if (type == TYPE_AUDIO)

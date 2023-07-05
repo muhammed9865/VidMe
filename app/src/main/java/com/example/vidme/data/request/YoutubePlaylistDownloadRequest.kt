@@ -16,7 +16,7 @@ open class YoutubePlaylistDownloadRequest constructor(
             FileUtil.getStorageFileForPlaylist(playlistRequest.playlistInfo!!.name).absolutePath
         return mapOf(
             "-o" to "$storageLocation/%(title)s.%(ext)s",
-            "-f" to playlistRequest.buildType(),
+            "-f" to playlistRequest.getMediaType(),
             "--download-archive" to "$storageLocation/done.txt"
 
         )
