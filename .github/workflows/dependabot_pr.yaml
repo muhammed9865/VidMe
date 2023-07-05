@@ -26,6 +26,7 @@ jobs:
 
       - name: Lint Check
         run: |
+          chmod +x gradlew
           ./gradlew lint
           echo "Lint successful"
   
@@ -47,6 +48,7 @@ jobs:
 
       - name: Build Staging
         run: |
+          chmod +x gradlew
           ./gradlew assembleStaging
           echo "Staging build successful"
   
@@ -68,6 +70,7 @@ jobs:
 
       - name: Run Unit Tests
         run: |
+          chmod +x gradlew
           ./gradlew test
           echo "Unit tests successful"
 
