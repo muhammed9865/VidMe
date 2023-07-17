@@ -88,7 +88,7 @@ dependencies {
     def fragment_version = "1.5.2"
     def lifecycle_version = "2.6.0-alpha01"
     def room_version = "2.4.3"
-    def lottieVersion = "5.2.0"
+    def lottieVersion = "6.1.0"
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation "androidx.media:media:1.6.0"
